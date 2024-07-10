@@ -41,9 +41,24 @@
   :type 'integer
   :group 'outline-indent)
 
+(defcustom outline-indent-ellipsis nil
+  "String used as the ellipsis character in `outline-indent-mode'."
+  :type '(choice string (const nil))
+  :group 'outline-indent)
+
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
   (/ (current-indentation) outline-indent-default-offset))
+
+(defun outline-indent--set-ellipsis ()
+  "Update the buffer's outline ellipsis."
+  (when outline-indent-ellipsis
+    (let* ((display-table (or buffer-display-table (make-display-table)))
+           (face-offset (* (face-id 'shadow) (lsh 1 22)))
+           (value (vconcat (mapcar (lambda (c) (+ face-offset c))
+                                   outline-indent-ellipsis))))
+      (set-display-table-slot display-table 'selective-display value)
+      (setq buffer-display-table display-table))))
 
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
