@@ -24,6 +24,7 @@ To install the `outline-indent` using `straight.el`:
              :type git
              :host github
              :repo "jamescherti/outline-indent.el")
+  :custom
   (outline-indent-ellipsis " ▼ "))
 ```
 
