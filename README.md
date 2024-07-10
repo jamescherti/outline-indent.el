@@ -62,7 +62,7 @@ If you are an Emacs Evil user, you may want to make `C-<return>` call the functi
 ``` emacs-lisp
 (evil-define-key '(normal insert) outline-indent-minor-mode-map
   (kbd "C-<return>")
-  (defun my-evil-insert-line-before-next-similar-level ()
+  (defun my-evil-outline-indent-insert-heading ()
     (interactive)
     (outline-indent-insert-heading)
     (evil-insert-state)))
