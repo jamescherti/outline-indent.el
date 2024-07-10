@@ -4,6 +4,8 @@ The `outline-indent.el` Emacs package provides a minor mode for Emacs that enabl
 
 The `outline-indent.el` leverages the built-in outline-minor-mode to automatically detect and fold sections according to their indentation hierarchy. The built-in outline-minor-mode enables utilizing functions such as demote, move indented blocks up, and move indented blocks down, significantly enhancing the editing experience for indented text. These functions are invaluable for restructuring and reorganizing content within indented sections.
 
+![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
+
 ![](https://raw.githubusercontent.com/jamescherti/outline-yaml.el/main/.screenshot.png)
 
 The `outline-indent.el` Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
