@@ -50,7 +50,7 @@
   "Determine the outline level based on the current indentation."
   (/ (current-indentation) outline-indent-default-offset))
 
-(defun outline-indent--set-ellipsis ()
+(defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
   (when outline-indent-ellipsis
     (let* ((display-table (or buffer-display-table (make-display-table)))
@@ -73,6 +73,7 @@ This mode sets up outline to work based on indentation."
         (setq-local outline-regexp (rx bol
                                        (zero-or-more (any " \t"))
                                        (not (any " \t\n"))))
+        (outline-indent--update-ellipsis)
         (outline-minor-mode 1))
     (outline-minor-mode -1)
     (kill-local-variable 'outline-level)
