@@ -44,15 +44,15 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 ### Functions specific to outline-indent-minor-mode
 
-#### outline-indent-insert-heading-before-next-matching-level
+#### outline-indent-insert-heading
 
-The `(outline-indent-insert-heading-before-next-matching-level)` function inserts a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level. It finds the nearest non-empty line with the same or less indentation as the current line and inserts a new line before it.
+The `(outline-indent-insert-heading)` function inserts a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level. It finds the nearest non-empty line with the same or less indentation as the current line and inserts a new line before it.
 
 In `outline-indent-minor-mode`, where most lines are treated as headings, this function is suitable for maintaining consistent indentation within the outline structure. It can be used as an alternative to `outline-insert-heading` to insert content at the same indentation level after the current fold.
 
 Example usage:
 ```
-(outline-indent-insert-heading-before-next-matching-level)
+(outline-indent-insert-heading)
 ```
 
 By default, this function can be invoked by pressing `C-<return>` in buffers where `outline-indent-minor-mode` is active.
@@ -64,7 +64,7 @@ If you are an Emacs Evil user, you may want to make `C-<return>` call the functi
   (kbd "C-<return>")
   (defun my-evil-insert-line-before-next-similar-level ()
     (interactive)
-    (outline-indent-insert-heading-before-next-matching-level)
+    (outline-indent-insert-heading)
     (evil-insert-state)))
 ```
 
