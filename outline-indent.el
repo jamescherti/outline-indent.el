@@ -6,7 +6,7 @@
 ;; Version: 1.0.0
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
-;; Package-Requires: ((emacs "24.1"))
+;; Package-Requires: ((emacs "24.3"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -37,13 +37,13 @@
   :prefix "outline-indent-")
 
 (defcustom outline-indent-default-offset 1
-  "Default indentation offset when mode-specific offset can't be determined."
+  "Default indentation offset."
   :type 'integer
   :group 'outline-indent)
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (current-indentation))
+  (/ (current-indentation) outline-indent-default-offset))
 
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
