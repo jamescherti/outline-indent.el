@@ -96,7 +96,7 @@ to insert content at the same indentation level after the current fold."
               (setq new-point (point))
               (setq found t))
           (forward-line 1)))
-      (when (eobp)
+      (when (and (not found) (eobp))
         (setq eobp t)))
 
     (cond (eobp
