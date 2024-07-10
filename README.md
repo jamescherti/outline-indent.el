@@ -24,7 +24,17 @@ To install the `outline-indent` using `straight.el`:
              :repo "jamescherti/outline-indent.el"))
 ```
 
-Once installed with `use-package` and activated with `outline-indent-minor-mode` in a YAML buffer. 
+## Activate outline-indent-minor-mode
+
+Once installed, the minor mode can be activated using:
+```
+(outline-indent-minor-mode)
+```
+
+The minor mode can also be automatically activated for a certain mode. For example for text-mode:
+```
+(add-hook 'text-mode-hook #'outline-indent-minor-mode)
+```
 
 ## Usage
 
@@ -52,7 +62,7 @@ In Evil mode, `outline-indent` works out of the box, and you can use the Evil ke
 
 ### How to change the Ellipsis (...) to (▼)?
 
-If you want to make the ellipsis of `outline-indent-mode` look like the screenshot above (▼), use the code snippet in this article: [Changing the Ellipsis (“…”) in outline-mode and outline-minor-mode](https://www.jamescherti.com/emacs-customize-ellipsis-outline-minor-mode/).
+If you want to make the ellipsis of `outline-indent-minor-mode` look like the screenshot above (▼), use the code snippet in this article: [Changing the Ellipsis (“…”) in outline-mode and outline-minor-mode](https://www.jamescherti.com/emacs-customize-ellipsis-outline-minor-mode/).
 
 ### Why not use origami.el?
 
