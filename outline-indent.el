@@ -46,6 +46,13 @@
   :type '(choice string (const nil))
   :group 'outline-indent)
 
+(defvar outline-indent-minor-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-<return>")
+                'outline-indent-insert-line-before-next-similar-level)
+    map)
+  "Keymap for `outline-indent-minor-mode'.")
+
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
   (/ (current-indentation) outline-indent-default-offset))
@@ -60,7 +67,7 @@
       (set-display-table-slot display-table 'selective-display value)
       (setq buffer-display-table display-table))))
 
-(defun outline-indent-insert-line-before-next-similar-heading ()
+(defun outline-indent-insert-line-before-next-similar-level ()
   "Inserts a new line with the same indentation level/depth as the current line
 just before the next heading that shares the same or less indentation level.
 
@@ -100,6 +107,7 @@ to insert content at the same indentation level after the current fold."
   "Toggle `outline-indent-minor-mode'.
 This mode sets up outline to work based on indentation."
   :lighter " OutlInd"
+  :keymap outline-indent-minor-mode-map
   :group 'outline-indent
   (if outline-indent-minor-mode
       (progn
