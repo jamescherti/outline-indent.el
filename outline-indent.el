@@ -83,6 +83,7 @@ to insert content at the same indentation level after the current fold."
   (let ((initial-point (point))
         (current-indent nil)
         (found nil)
+        (eobp nil)
         (new-point nil))
     (save-excursion
       (beginning-of-visual-line)
@@ -94,15 +95,20 @@ to insert content at the same indentation level after the current fold."
             (progn
               (setq new-point (point))
               (setq found t))
-          (forward-line 1))))
+          (forward-line 1)))
+      (when (eobp)
+        (setq eobp t)))
 
-    (if found
-        (progn (goto-char new-point)
-               (forward-line -1)
-               (end-of-line)
-               (newline)
-               (indent-to current-indent))
-      (goto-char initial-point))))
+    (cond (eobp
+           (goto-char (point-max))
+           (newline)
+           (indent-to current-indent))
+          (found (progn (goto-char new-point)
+                        (forward-line -1)
+                        (end-of-line)
+                        (newline)
+                        (indent-to current-indent)))
+          (t (goto-char initial-point)))))
 
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
