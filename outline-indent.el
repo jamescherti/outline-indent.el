@@ -61,7 +61,7 @@
   "Update the buffer's outline ellipsis."
   (when outline-indent-ellipsis
     (let* ((display-table (or buffer-display-table (make-display-table)))
-           (face-offset (* (face-id 'shadow) (lsh 1 22)))
+           (face-offset (* (face-id 'shadow) (ash 1 22)))
            (value (vconcat (mapcar (lambda (c) (+ face-offset c))
                                    outline-indent-ellipsis))))
       (set-display-table-slot display-table 'selective-display value)
@@ -81,7 +81,8 @@ to insert content at the same indentation level after the current fold."
   (interactive)
   (let ((initial-point (point))
         (current-indent nil)
-        (found nil))
+        (found nil)
+        (new-point nil))
     (save-excursion
       (beginning-of-visual-line)
       (setq current-indent (current-indentation))
