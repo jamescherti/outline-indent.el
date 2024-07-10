@@ -68,8 +68,9 @@
       (setq buffer-display-table display-table))))
 
 (defun outline-indent-insert-heading ()
-  "Inserts a new line with the same indentation level/depth as the current line
-just before the next heading that shares the same or less indentation level.
+  "Insert a new line with the same indentation level/depth as the current line.
+The line is inserted just before the next heading that shares the same or less
+indentation level.
 
 This function finds the nearest non-empty line with the same or less
 indentation as the current line and inserts a new line before it.
