@@ -49,7 +49,7 @@
 (defvar outline-indent-minor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-<return>")
-                'outline-indent-insert-line-before-next-similar-level)
+                'outline-indent-insert-heading-before-next-matching-level)
     map)
   "Keymap for `outline-indent-minor-mode'.")
 
@@ -67,7 +67,7 @@
       (set-display-table-slot display-table 'selective-display value)
       (setq buffer-display-table display-table))))
 
-(defun outline-indent-insert-line-before-next-similar-level ()
+(defun outline-indent-insert-heading-before-next-matching-level ()
   "Inserts a new line with the same indentation level/depth as the current line
 just before the next heading that shares the same or less indentation level.
 
