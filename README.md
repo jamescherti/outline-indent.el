@@ -64,9 +64,14 @@ In Evil mode, `outline-indent` works out of the box, and you can use the Evil ke
 
 ## Frequently asked questions
 
-### How to change the Ellipsis (...) to (▼) globally?
+### How to change the Ellipsis (...) to (▼)?
 
-To achieve the ellipsis style of `outline-indent-minor-mode` globally as shown in the screenshot above (▼), use the code snippet provided in this article: [Changing the Ellipsis (“…”) in outline-mode and outline-minor-mode](https://www.jamescherti.com/emacs-customize-ellipsis-outline-minor-mode/).
+The ellipsis of `outline-indent-minor-mode` can be changed using:
+```
+(setq outline-indent-ellipsis " ▼ ")
+```
+
+(However, if you want to change the Ellipsis globally (other modes than `outline-indent-minor-mode`), use the code snippet provided in [this article](https://www.jamescherti.com/emacs-customize-ellipsis-outline-minor-mode/).)
 
 ### Why not use origami.el?
 
