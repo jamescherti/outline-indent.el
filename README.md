@@ -92,7 +92,15 @@ In Evil mode, `outline-indent` works out of the box, and you can use the Evil ke
 
 ## Frequently asked questions
 
-### How to change the Ellipsis (...) to (▼)?
+### Maintaining blank lines between folded sections
+
+The `outline-blank-line` variable can be set to `t` (true) to maintain blank lines between folded sections, making it easier to distinguish between folds:
+
+```
+(setq outline-blank-line t)
+```
+
+### How to change the Ellipsis (...) to (▼) globally?
 
 To customize the ellipsis in outline-indent-minor-mode, use:
 ```
