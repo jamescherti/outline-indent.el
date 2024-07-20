@@ -55,7 +55,7 @@
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (/ (current-indentation) outline-indent-default-offset))
+  (/ (current-indentation) (max outline-indent-default-offset 1)))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
