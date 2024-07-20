@@ -100,14 +100,7 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 (setq outline-blank-line t)
 ```
 
-### How to change the Ellipsis (...) to (▼) globally?
-
-To customize the ellipsis in outline-indent-minor-mode, use:
-```
-(setq outline-indent-ellipsis " ▼ ")
-```
-
-(For global changes affecting modes other than outline-indent-minor-mode, refer to the code snippet provided in [this article](https://www.jamescherti.com/emacs-customize-ellipsis-outline-minor-mode/).)
+I recommend you read [Enhancing up and down subtree movement in outline-mode and outline-minor-mode](https://www.jamescherti.com/outline-mode-enhance-move-subtree-up-down/) to make `outline-move-subtree-up` and `outline-move-subtree-down` ignore the `outline-blank-line` variable, which allows moving the whole block up and down, including the blank line.
 
 ### Why not use origami.el?
 
