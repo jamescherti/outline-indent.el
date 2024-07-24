@@ -127,14 +127,22 @@ to insert content at the same indentation level after the current fold."
           (t (goto-char initial-point)))))
 
 (defun outline-indent-move-subtree-up (&optional arg)
-  "Move the current subtree up past ARG headlines of the same level."
+  "Move the current subtree up past ARG headlines of the same level.
+
+This function ensures the last blank line is included, even when
+`outline-blank-line' is set to t. It also restores the cursor position,
+addressing the issue where the cursor might be reset after the operation."
   (interactive "p")
   (unless arg
     (setq arg 1))
   (outline-indent-move-subtree-down (- arg)))
 
 (defun outline-indent-move-subtree-down (&optional arg)
-  "Move the current subtree down past ARG headlines of the same level."
+  "Move the current subtree down past ARG headlines of the same level.
+
+This function ensures the last blank line is included, even when
+`outline-blank-line' is set to t. It also restores the cursor position,
+addressing the issue where the cursor might be reset after the operation."
   (interactive "p")
   (unless arg
     (setq arg 1))
@@ -144,9 +152,9 @@ to insert content at the same indentation level after the current fold."
     (outline-back-to-heading)
     (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
                       'outline-get-last-sibling))
-           ;; Find the end of the subtree to be moved as well as the point to move
-           ;; it to, adding a newline if necessary, to ensure these points are at
-           ;; bol on the line below the subtree.
+           ;; Find the end of the subtree to be moved as well as the point to
+           ;; move it to, adding a newline if necessary, to ensure these points
+           ;; are at bol on the line below the subtree.
            (end-point-func (lambda ()
                              (outline-end-of-subtree)
                              (if (eq (char-after) ?\n) (forward-char 1)
