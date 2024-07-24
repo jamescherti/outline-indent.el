@@ -10,6 +10,26 @@ The `outline-indent.el` package leverages the built-in *outline-minor-mode*, whi
 
 The `outline-indent.el` Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+## Table of Contents
+
+- [Installation](#installation)
+    - [Install using straight](#install-using-straight)
+- [Activation](#activation)
+- [Usage](#usage)
+    - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
+        - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
+        - [outline-indent-insert-heading](#outline-indent-insert-heading)
+    - [Vanilla Emacs](#vanilla-emacs)
+    - [Evil mode](#evil-mode)
+- [Frequently asked questions](#frequently-asked-questions)
+    - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
+    - [Why not use origami.el?](#why-not-use-origamiel)
+- [License](#license)
+- [Links](#links)
+
+<!-- markdown-toc end -->
+
 ## Installation
 
 ### Install using straight
@@ -46,6 +66,22 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 ### Functions specific to outline-indent-minor-mode
 
+#### outline-indent-move-subtree-up and outline-indent-move-subtree-down
+
+These functions can be used to move the current subtree down past ARGS headlines of the same level.
+
+To move the subtree down, use:
+```
+(outline-indent-move-subtree-down)
+```
+
+To move the subtree up, use:
+```
+(outline-indent-move-subtree-up)
+```
+
+(By default, when `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)
+
 #### outline-indent-insert-heading
 
 The `(outline-indent-insert-heading)` function inserts a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level. It finds the nearest non-empty line with the same or less indentation as the current line and inserts a new line before it.
@@ -57,8 +93,6 @@ Example usage:
 (outline-indent-insert-heading)
 ```
 
-By default, this function can be invoked by pressing `C-<return>` in buffers where `outline-indent-minor-mode` is active.
-
 If you are an Emacs Evil user, you may want to make `C-<return>` call the function above and switch to insert mode:
 
 ``` emacs-lisp
@@ -69,6 +103,8 @@ If you are an Emacs Evil user, you may want to make `C-<return>` call the functi
     (outline-indent-insert-heading)
     (evil-insert-state)))
 ```
+
+(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline function `outline-insert-heading`)
 
 ### Vanilla Emacs
 
@@ -99,8 +135,6 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 ```
 (setq outline-blank-line t)
 ```
-
-I recommend you read [Enhancing up and down subtree movement in outline-mode and outline-minor-mode](https://www.jamescherti.com/outline-mode-enhance-move-subtree-up-down/) to make `outline-move-subtree-up` and `outline-move-subtree-down` ignore the `outline-blank-line` variable, which allows moving the whole block up and down, including the blank line.
 
 ### Why not use origami.el?
 

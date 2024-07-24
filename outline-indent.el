@@ -148,15 +148,13 @@ It only changes the behavior when `outline-indent-minor-mode' is active;
 otherwise, it calls the original function with the given arguments.
 
 This function ensures that:
-- The last blank line is included, even if `outline-blank-line' is set to t.
 - The cursor position is restored after the operation, addressing potential
   cursor displacement issues.
 
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
       ;; Adjust behavior specific to `outline-indent-minor-mode`
-      (let ((column (current-column))
-            (outline-blank-line nil))
+      (let ((column (current-column)))
         (apply orig-fun args)
         (move-to-column column))
     ;; Apply the original function without modification
