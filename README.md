@@ -2,7 +2,7 @@
 
 The `outline-indent.el` Emacs package provides a minor mode for Emacs that enables **code folding and outlining based on indentation levels**.
 
-The `outline-indent.el` leverages the built-in outline-minor-mode to automatically detect and fold sections according to their indentation hierarchy. The built-in outline-minor-mode enables utilizing functions such as demote, move indented blocks up, and move indented blocks down, significantly enhancing the editing experience for indented text. These functions are invaluable for restructuring and reorganizing content within indented sections.
+The `outline-indent.el` package leverages the built-in *outline-minor-mode*, which is maintained by the Emacs developers, to automatically detect and fold sections according to their indentation hierarchy. The built-in outline-minor-mode enables utilizing functions such as demote, move indented blocks up, and move indented blocks down, significantly enhancing the editing experience for indented text. These functions are invaluable for restructuring and reorganizing content within indented sections.
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
 
@@ -72,7 +72,7 @@ If you are an Emacs Evil user, you may want to make `C-<return>` call the functi
 
 ### Vanilla Emacs
 
-Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your YAML file:
+Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your indented file:
 - `outline-hide-body`: Hide all body lines in buffer, leaving all headings visible.
 - `outline-hide-other`: Hide everything except current body and parent and top-level headings.
 - `outline-hide-entry`: Hide the body directly following this heading.
@@ -121,4 +121,3 @@ You should have received a copy of the GNU General Public License along with thi
 ## Links
 
 - [outline-indent.el @GitHub](https://github.com/jamescherti/outline-indent.el)
-- Similar package from the same author: [outline-yaml.el @GitHub](https://github.com/jamescherti/outline-yaml.el)
