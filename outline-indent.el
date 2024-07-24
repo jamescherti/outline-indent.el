@@ -6,7 +6,7 @@
 ;; Version: 1.0.1
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((emacs "24.4"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -46,10 +46,26 @@
   :type '(choice string (const nil))
   :group 'outline-indent)
 
+(defcustom outline-indent-advise-outline-functions t
+  "If non-nil, advises built-in `outline' functions to improve compatibility.
+It is highly recommended to keep this set to `t'.
+
+If non-nil, advises built-in `outline-minor-mode' functions to improve
+compatibility with `outline-indent-minor-mode'.
+
+Functions that will be advised when `outline-indent-minor-mode' is active
+include:
+- `outline-insert-heading'
+- `outline-move-subtree-up'
+- `outline-move-subtree-down'
+
+The built-in `outline-minor-mode' functions will work exactly as before and will
+only exhibit different behavior when `outline-indent-minor-mode' is active."
+  :type 'boolean
+  :group 'outline-indent)
+
 (defvar outline-indent-minor-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-<return>")
-                'outline-indent-insert-heading)
     map)
   "Keymap for `outline-indent-minor-mode'.")
 
@@ -110,6 +126,64 @@ to insert content at the same indentation level after the current fold."
                         (indent-to current-indent)))
           (t (goto-char initial-point)))))
 
+(defun outline-indent--advice-insert-heading (orig-fun &rest args)
+  "Advice function for `outline-insert-heading'.
+
+If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
+Otherwise, call the original function with the given arguments.
+
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      ;; Use `outline-indent-insert-heading' if `outline-indent-minor-mode' is
+      ;; active
+      (outline-indent-insert-heading)
+    ;; Call the original function with its arguments if
+    ;; `outline-indent-minor-mode' is not active
+    (apply orig-fun args)))
+
+(defun outline-indent--advice-move-subtree-up-down (orig-fun &rest args)
+  "Advice for `outline-move-subtree-up' and `outline-move-subtree-down'.
+
+It only changes the behavior when `outline-indent-minor-mode' is active;
+otherwise, it calls the original function with the given arguments.
+
+This function ensures that:
+- The last blank line is included, even if `outline-blank-line' is set to `t'.
+- The cursor position is restored after the operation, addressing potential
+  cursor displacement issues.
+
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      ;; Adjust behavior specific to `outline-indent-minor-mode`
+      (let ((column (current-column))
+            (outline-blank-line nil))
+        (apply orig-fun args)
+        (move-to-column column))
+    ;; Apply the original function without modification
+    (apply orig-fun args)))
+
+(defun outline-indent-move-subtree-up (&optional arg)
+  "Move the current subtree up past ARG headlines of the same level."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-move-subtree-up-down
+                       'outline-move-subtree-up)
+      (outline-move-subtree-up arg)
+    (outline-indent--advice-move-subtree-up-down #'outline-move-subtree-up
+                                                 arg)))
+
+(defun outline-indent-move-subtree-down (&optional arg)
+  "Move the current subtree down past ARG headlines of the same level."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-move-subtree-up-down
+                       'outline-move-subtree-down)
+      (outline-move-subtree-down arg)
+    (outline-indent--advice-move-subtree-up-down #'outline-move-subtree-down
+                                                 arg)))
+
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
   "Toggle `outline-indent-minor-mode'.
@@ -119,13 +193,28 @@ This mode sets up outline to work based on indentation."
   :group 'outline-indent
   (if outline-indent-minor-mode
       (progn
+        ;; Enable minor mode
         (setq-local outline-level #'outline-indent-level)
         (setq-local outline-heading-end-regexp "\n")
         (setq-local outline-regexp (rx bol
                                        (zero-or-more (any " \t"))
                                        (not (any " \t\n"))))
         (outline-indent--update-ellipsis)
-        (outline-minor-mode 1))
+        (outline-minor-mode 1)
+
+        (when outline-indent-advise-outline-functions
+          ;; Advise the built-in `outline-mode' and `outline-minor-mode'
+          ;; functions to improve compatibility with
+          ;; `outline-indent-minor-mode'. The built-in `outline-minor-mode'
+          ;; functions will work exactly as before and will only exhibit
+          ;; different behavior when `outline-indent-minor-mode' is active.
+          (advice-add 'outline-insert-heading
+                      :around #'outline-indent--advice-insert-heading)
+          (advice-add 'outline-move-subtree-up
+                      :around #'outline-indent--advice-move-subtree-up-down)
+          (advice-add 'outline-move-subtree-down
+                      :around #'outline-indent--advice-move-subtree-up-down)))
+    ;; Disable minor mode
     (outline-minor-mode -1)
     (kill-local-variable 'outline-level)
     (kill-local-variable 'outline-heading-end-regexp)
