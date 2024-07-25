@@ -69,7 +69,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
 
-You can adjust the `outline-indent.el` indentation offset according to your preferences. While the default value of 1 is suitable for most modes, setting the correct offset ensures that promote and demote functions correctly adjust the indentation of blocks. For instance:
+You can adjust the `outline-indent-default-offset` according to your preferences. While the default value of 1 is suitable for most modes, setting the correct offset ensures that promote and demote functions correctly adjust the indentation of blocks. For instance:
 ```
 (dolist (hook '(python-mode python-ts-mode-hook))
     (add-hook hook #'(lambda()
