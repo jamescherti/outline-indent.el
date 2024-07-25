@@ -161,6 +161,12 @@ Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold
 - `outline-show-branches`: Show all subheadings of this heading, but not their bodies.
 - `outline-show-children`: Show all direct subheadings of this heading.
 
+You can also indent/unindent and move subtree up and down using:
+
+- `(outline-indent-demote)` and `(outline-indent-promote)`: Indent or unindent the entire subtree.
+- `(outline-indent-move-subtree-down)` and `(outline-indent-move-subtree-up)` to move the current subtree up or down.
+- `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.
+
 ### Evil mode
 
 In Evil mode, `outline-indent` works out of the box, and you can use the Evil keyboard mappings: zo, zc, zO, zC, za, zr, and zm to manage folds.
