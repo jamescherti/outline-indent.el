@@ -74,7 +74,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 #### outline-indent-promote and outline-indent-demote
 
-*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-promote)` and `(outline-indent-demote)`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-promote)` and `(outline-demote)` instead of `(outline-indent-promote)` and `(outline-indent-demote)`)*
 
 These functions can be used to indent or deindent the entire subtree.
 
@@ -91,7 +91,7 @@ The global variable `outline-indent-default-offset` is used to determine the num
 
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
 
-*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-move-subtree-up)` and `(outline-move-subtree-down)`, instead of `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)*
 
 These functions can be used to move the current subtree down past ARGS headlines of the same level.
 
@@ -107,7 +107,7 @@ To move the subtree up, use:
 
 #### outline-indent-insert-heading
 
-*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline function `outline-insert-heading`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline function `outline-insert-heading` instead of `outline-indent-insert-heading`)*
 
 The `(outline-indent-insert-heading)` function inserts a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level. It finds the nearest non-empty line with the same or less indentation as the current line and inserts a new line before it.
 
