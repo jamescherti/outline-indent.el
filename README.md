@@ -57,9 +57,12 @@ Once installed, the minor mode can be activated using:
 (outline-indent-minor-mode)
 ```
 
-The minor mode can also be automatically activated for a certain mode. For example for text-mode:
+The minor mode can also be automatically activated for a certain mode. For example for text-mode, Python, and YAML:
 ```
 (add-hook 'text-mode-hook #'outline-indent-minor-mode)
+(add-hook 'python-mode-hook #'outline-indent-minor-mode)
+(add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
+(add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
 
 ## Usage
