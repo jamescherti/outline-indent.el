@@ -233,6 +233,8 @@ This mode sets up outline to work based on indentation."
   (if outline-indent-minor-mode
       (progn
         ;; Enable minor mode
+        (setq-local outline-minor-mode-highlight nil)
+        (setq-local outline-heading-alist nil)
         (setq-local outline-level #'outline-indent-level)
         (setq-local outline-heading-end-regexp "\n")
         (setq-local outline-regexp (rx bol
