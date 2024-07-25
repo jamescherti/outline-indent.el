@@ -37,12 +37,21 @@
   :prefix "outline-indent-")
 
 (defcustom outline-indent-default-offset 1
-  "Default indentation offset."
+  "Default indentation offset.
+It is used by the `outline-level' function to determine the outline level based
+on the current indentation."
   :type 'integer
   :group 'outline-indent)
 
 (defcustom outline-indent-shift-width nil
   "Default shift width used by promote and demote.
+Used by:
+
+- `outline-indent-demote' or `outline-demote' to increase the indentation
+  level of the subtree.
+- `outline-indent-promote' or `outline-promote' to decrease the indentation
+  level of the subtree.
+
 If nil, use the value of `outline-indent-default-offset'."
   :type '(choice (const :tag "Use default" nil)
                  integer)
@@ -147,8 +156,9 @@ addressing the issue where the cursor might be reset after the operation."
 (defun outline-indent-demote (&optional which arg)
   "Demote the subtree, increasing its indentation level.
 
-The global variable `outline-indent-default-offset' is used to determine the
-number of spaces to indent the subtree.
+The global variable `outline-indent-shift-width' or
+`outline-indent-default-offset' is used to determine the number of spaces to
+indent the subtree.
 
 WHICH is ignored (backward compatibility with `outline-demote').
 If ARG is positive, indent the outline. If ARG is negative, unindent the
@@ -186,8 +196,9 @@ outline. Defaults to 1 if ARG is nil."
 
 (defun outline-indent-promote (&optional which)
   "Promote the subtree, decreasing its indentation level.
-The global variable `outline-indent-default-offset' is used to determine the
-number of spaces to unindent the subtree.
+The global variable `outline-indent-shift-width' or
+`outline-indent-default-offset' is used to determine the number of spaces to
+unindent the subtree.
 WHICH is ignored (backward compatibility with `outline-promote')."
   (interactive)
   (unless which
