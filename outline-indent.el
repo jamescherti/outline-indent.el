@@ -6,7 +6,7 @@
 ;; Version: 1.0.1
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "25.1"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -137,6 +137,119 @@ addressing the issue where the cursor might be reset after the operation."
     (setq arg 1))
   (outline-indent-move-subtree-down (- arg)))
 
+(defun outline-indent--shift (&optional arg)
+  "Indent or deindent the entire subtree.
+If ARG is positive, indent the outline. If ARG is negative, deindent the
+outline. Defaults to 1 if ARG is nil.
+
+The global variable `outline-indent-default-offset' is used to determine the
+number of spaces to indent or deindent the subtree."
+  (unless arg
+    (setq arg 1))
+  (let ((column (current-column))
+        (shift-width (if indent-tabs-mode
+                         1
+                       (max outline-indent-default-offset 1))))
+    (save-excursion
+      (outline-back-to-heading)
+      (let ((start (point))
+            (end (save-excursion
+                   (outline-end-of-subtree)
+                   (point)))
+            (folded (save-match-data
+                      (outline-end-of-heading)
+                      (outline-invisible-p))))
+        (indent-rigidly start end (if (>= arg 0)
+                                      shift-width
+                                    (* -1 shift-width)))
+        (if folded
+            (outline-hide-subtree))))
+    (move-to-column (+ column shift-width))))
+
+(defun outline-indent-demote (&optional which)
+  "Demote the subtree, increasing its indentation level.
+WHICH is ignored (backward compatibility with `outline-demote')."
+  (interactive)
+  (outline-indent--shift 1))
+
+(defun outline-indent-promote (&optional which)
+  "Promote the subtree, decreasing its indentation level.
+WHICH is ignored (backward compatibility with `outline-promote')."
+  (interactive)
+  (outline-indent--shift -1))
+
+(defun outline-indent--advice-promote (orig-fun &rest args)
+  "Advice function for `outline-indent-promote'.
+
+If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
+Otherwise, call the original function with the given arguments.
+
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      (outline-indent-promote)
+    (apply orig-fun args)))
+
+(defun outline-indent--advice-demote (orig-fun &rest args)
+  "Advice function for `outline-indent-demote'.
+
+If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
+Otherwise, call the original function with the given arguments.
+
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      (outline-indent-demote)
+    (apply orig-fun args)))
+
+(defun outline-indent-move-subtree-down (&optional arg)
+  "Move the current subtree down past ARG headlines of the same level.
+
+This function ensures the last blank line is included, even when
+`outline-blank-line' is set to t. It also restores the cursor position,
+addressing the issue where the cursor might be reset after the operation."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (let* ((original-outline-blank-line outline-blank-line)
+         (column (current-column))
+         (outline-blank-line nil))
+    (outline-back-to-heading)
+    (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
+                      'outline-get-last-sibling))
+           ;; Find the end of the subtree to be moved as well as the point to
+           ;; move it to, adding a newline if necessary, to ensure these points
+           ;; are at bol on the line below the subtree.
+           (end-point-func (lambda ()
+                             (outline-end-of-subtree)
+                             (if (eq (char-after) ?\n) (forward-char 1)
+                               (if (and (eobp) (not (bolp))) (insert "\n")))
+                             (point)))
+           (beg (point))
+           (folded (save-match-data
+                     (outline-end-of-heading)
+                     (outline-invisible-p)))
+           (end (save-match-data
+                  (funcall end-point-func)))
+           (ins-point (make-marker))
+           (cnt (abs arg)))
+      ;; Find insertion point, with error handling.
+      (goto-char beg)
+      (while (> cnt 0)
+        (or (funcall movfunc)
+            (progn (goto-char beg)
+                   (user-error "Cannot move past superior level")))
+        (setq cnt (1- cnt)))
+      (if (> arg 0)
+          ;; Moving forward - still need to move over subtree.
+          (funcall end-point-func))
+      (move-marker ins-point (point))
+      (insert (delete-and-extract-region beg end))
+      (goto-char ins-point)
+      (if folded
+          (let ((outline-blank-line original-outline-blank-line))
+            (outline-hide-subtree)))
+      (move-marker ins-point nil))
+    (move-to-column column)))
+
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
 
@@ -249,6 +362,10 @@ This mode sets up outline to work based on indentation."
           ;; `outline-indent-minor-mode'. The built-in `outline-minor-mode'
           ;; functions will work exactly as before and will only exhibit
           ;; different behavior when `outline-indent-minor-mode' is active.
+          (advice-add 'outline-promote
+                      :around #'outline-indent--advice-promote)
+          (advice-add 'outline-demote
+                      :around #'outline-indent--advice-demote)
           (advice-add 'outline-insert-heading
                       :around #'outline-indent--advice-insert-heading)
           (advice-add 'outline-move-subtree-up
