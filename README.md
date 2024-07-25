@@ -102,7 +102,7 @@ This configuration sets different shift widths for Python and YAML modes, allowi
 
 *(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-promote)` and `(outline-demote)` as an alternative to `(outline-indent-promote)` and `(outline-indent-demote)`)*
 
-These functions can be used to indent or unindent the entire subtree.
+These functions can be used to decrease and increase the indentation level of indented blocks.
 
 To increase indentation:
 ```
@@ -113,6 +113,7 @@ To decrease indentation:
 ```
 (outline-indent-promote)
 ```
+
 The global variable `outline-indent-default-offset` is used to determine the number of spaces to indent or unindent the subtree.
 
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
@@ -144,17 +145,6 @@ Example usage:
 (outline-indent-insert-heading)
 ```
 
-If you are an Emacs Evil user, you may want to make `C-<return>` call the function above and switch to insert mode:
-
-``` emacs-lisp
-(evil-define-key '(normal insert) outline-indent-minor-mode-map
-  (kbd "C-<return>")
-  (defun my-evil-outline-indent-insert-heading ()
-    (interactive)
-    (outline-indent-insert-heading)
-    (evil-insert-state)))
-```
-
 ### Vanilla Emacs
 
 Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your indented file:
@@ -174,6 +164,26 @@ Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold
 ### Evil mode
 
 In Evil mode, `outline-indent` works out of the box, and you can use the Evil keyboard mappings: zo, zc, zO, zC, za, zr, and zm to manage folds.
+
+You may want to set `M-h` and `M-l` to decrease and increase the indentation level of indented blocks, respectively:
+```emacs-lisp
+(with-eval-after-load "evil"
+  (evil-define-key 'normal outline-minor-mode-map (kbd "M-h")
+    #'outline-indent-promote)
+  (evil-define-key 'normal outline-minor-mode-map (kbd "M-l")
+    #'outline-indent-demote))
+```
+
+And `C-<return>` to insert a new line with the same indentation level/depth as the current line just before the next heading:
+```emacs-lisp
+(with-eval-after-load "evil"
+  (evil-define-key '(normal insert) outline-indent-minor-mode-map
+    (kbd "C-<return>")
+    (defun my-evil-outline-indent-insert-heading ()
+      (interactive)
+      (outline-indent-insert-heading)
+      (evil-insert-state))))
+```
 
 ## Frequently asked questions
 
