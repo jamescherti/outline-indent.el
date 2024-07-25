@@ -146,25 +146,29 @@ The global variable `outline-indent-default-offset' is used to determine the
 number of spaces to indent or deindent the subtree."
   (unless arg
     (setq arg 1))
-  (let ((column (current-column))
+  (let ((shift-right (>= arg 0))
+        (column (current-column))
+        (line (line-number-at-pos))
         (shift-width (if indent-tabs-mode
                          1
                        (max outline-indent-default-offset 1))))
-    (save-excursion
-      (outline-back-to-heading)
-      (let ((start (point))
-            (end (save-excursion
-                   (outline-end-of-subtree)
-                   (point)))
-            (folded (save-match-data
-                      (outline-end-of-heading)
-                      (outline-invisible-p))))
-        (indent-rigidly start end (if (>= arg 0)
-                                      shift-width
-                                    (* -1 shift-width)))
-        (if folded
-            (outline-hide-subtree))))
-    (move-to-column (+ column shift-width))))
+    (outline-back-to-heading)
+    (let ((start (point))
+          (end (save-excursion
+                 (outline-end-of-subtree)
+                 (point)))
+          (folded (save-match-data
+                    (outline-end-of-heading)
+                    (outline-invisible-p))))
+      (indent-rigidly start end (if shift-right
+                                    shift-width
+                                  (* -1 shift-width)))
+      (if folded
+          (outline-hide-subtree)))
+    (goto-line line)
+    (if shift-right
+        (move-to-column (+ column shift-width))
+      (move-to-column (max (- column shift-width) 0)))))
 
 (defun outline-indent-demote (&optional which)
   "Demote the subtree, increasing its indentation level.
@@ -199,56 +203,6 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
       (outline-indent-demote)
     (apply orig-fun args)))
-
-(defun outline-indent-move-subtree-down (&optional arg)
-  "Move the current subtree down past ARG headlines of the same level.
-
-This function ensures the last blank line is included, even when
-`outline-blank-line' is set to t. It also restores the cursor position,
-addressing the issue where the cursor might be reset after the operation."
-  (interactive "p")
-  (unless arg
-    (setq arg 1))
-  (let* ((original-outline-blank-line outline-blank-line)
-         (column (current-column))
-         (outline-blank-line nil))
-    (outline-back-to-heading)
-    (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
-                      'outline-get-last-sibling))
-           ;; Find the end of the subtree to be moved as well as the point to
-           ;; move it to, adding a newline if necessary, to ensure these points
-           ;; are at bol on the line below the subtree.
-           (end-point-func (lambda ()
-                             (outline-end-of-subtree)
-                             (if (eq (char-after) ?\n) (forward-char 1)
-                               (if (and (eobp) (not (bolp))) (insert "\n")))
-                             (point)))
-           (beg (point))
-           (folded (save-match-data
-                     (outline-end-of-heading)
-                     (outline-invisible-p)))
-           (end (save-match-data
-                  (funcall end-point-func)))
-           (ins-point (make-marker))
-           (cnt (abs arg)))
-      ;; Find insertion point, with error handling.
-      (goto-char beg)
-      (while (> cnt 0)
-        (or (funcall movfunc)
-            (progn (goto-char beg)
-                   (user-error "Cannot move past superior level")))
-        (setq cnt (1- cnt)))
-      (if (> arg 0)
-          ;; Moving forward - still need to move over subtree.
-          (funcall end-point-func))
-      (move-marker ins-point (point))
-      (insert (delete-and-extract-region beg end))
-      (goto-char ins-point)
-      (if folded
-          (let ((outline-blank-line original-outline-blank-line))
-            (outline-hide-subtree)))
-      (move-marker ins-point nil))
-    (move-to-column column)))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
