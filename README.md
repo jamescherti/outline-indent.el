@@ -11,13 +11,14 @@ The `outline-indent.el` package leverages the built-in *outline-minor-mode*, whi
 The `outline-indent.el` Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
-## Table of Contents
+**Table of Contents**
 
 - [Installation](#installation)
     - [Install using straight](#install-using-straight)
 - [Activation](#activation)
 - [Usage](#usage)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
+        - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
         - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
         - [outline-indent-insert-heading](#outline-indent-insert-heading)
     - [Vanilla Emacs](#vanilla-emacs)
