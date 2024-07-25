@@ -173,16 +173,12 @@ You may want to set a few additional key mappings:
     (interactive)
     ;; Set `M-h` and `M-l` to decrease and increase the indentation level of
     ;; indented blocks
-    (evil-define-key 'normal 'local (kbd "M-h")
-      #'outline-indent-promote)
-    (evil-define-key 'normal 'local (kbd "M-l")
-      #'outline-indent-demote)
+    (evil-define-key 'normal 'local (kbd "M-h") #'outline-indent-promote)
+    (evil-define-key 'normal 'local (kbd "M-l") #'outline-indent-demote)
 
     ;; Set `M-k` and `M-j` to move indented blocks up and down
-    (evil-define-key 'normal 'local (kbd "M-k")
-      #'outline-indent-move-subtree-up)
-    (evil-define-key 'normal 'local (kbd "M-j")
-      #'outline-indent-move-subtree-down)
+    (evil-define-key 'normal 'local (kbd "M-k") #'outline-indent-move-subtree-up)
+    (evil-define-key 'normal 'local (kbd "M-j") #'outline-indent-move-subtree-down)
 
     ;; Set C-<return> to insert a new line with the same indentation
     ;; level/depth as the current line just before the next heading
@@ -192,8 +188,7 @@ You may want to set a few additional key mappings:
         (outline-indent-insert-heading)
         (evil-insert-state))))
 
-  (add-hook 'outline-indent-minor-mode-hook
-            #'my-setup-outline-indent-minor-key-mappings))
+  (add-hook 'outline-indent-minor-mode-hook #'my-setup-outline-indent-minor-key-mappings))
 ```
 
 ## Frequently asked questions
