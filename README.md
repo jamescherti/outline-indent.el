@@ -74,6 +74,8 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 #### outline-indent-promote and outline-indent-demote
 
+**(By default, when `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-promote)` and `(outline-indent-demote)`)**
+
 These functions can be used to indent or deindent the entire subtree.
 
 To increase indentation:
@@ -87,9 +89,9 @@ To decrease indentation:
 ```
 The global variable `outline-indent-default-offset` is used to determine the number of spaces to indent or deindent the subtree.
 
-(By default, when `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-promote)` and `(outline-indent-demote)`)
-
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
+
+**(By default, when `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)**
 
 These functions can be used to move the current subtree down past ARGS headlines of the same level.
 
@@ -103,9 +105,9 @@ To move the subtree up, use:
 (outline-indent-move-subtree-up)
 ```
 
-(By default, when `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)
-
 #### outline-indent-insert-heading
+
+**(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline function `outline-insert-heading`)**
 
 The `(outline-indent-insert-heading)` function inserts a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level. It finds the nearest non-empty line with the same or less indentation as the current line and inserts a new line before it.
 
@@ -126,8 +128,6 @@ If you are an Emacs Evil user, you may want to make `C-<return>` call the functi
     (outline-indent-insert-heading)
     (evil-insert-state)))
 ```
-
-(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline function `outline-insert-heading`)
 
 ### Vanilla Emacs
 
