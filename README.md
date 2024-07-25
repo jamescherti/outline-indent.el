@@ -168,8 +168,7 @@ In Evil mode, `outline-indent` works out of the box, and you can use the Evil ke
 You may want to set a few additional key mappings:
 ```emacs-lisp
 (with-eval-after-load "evil"
-  (defun my-setup-outline-indent-minor-mode-key-mappings ()
-    "Replace `outline-mode-map` keymaps."
+  (defun my-evil-define-key-outline-indent-minor-mode ()
     ;; Set `M-h` and `M-l` to decrease and increase the indentation level of
     ;; indented blocks
     (evil-define-key 'normal 'local (kbd "M-h") #'outline-indent-promote)
@@ -187,7 +186,7 @@ You may want to set a few additional key mappings:
         (outline-indent-insert-heading)
         (evil-insert-state))))
 
-  (add-hook 'outline-indent-minor-mode-hook #'my-setup-outline-indent-minor-mode-key-mappings))
+  (add-hook 'outline-indent-minor-mode-hook #'my-evil-define-key-outline-indent-minor-mode))
 ```
 
 ## Frequently asked questions
