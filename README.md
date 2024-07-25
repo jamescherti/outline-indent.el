@@ -77,7 +77,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 ### Adjusting the shift width
 
-You can adjust the `outline-indent-shift-width` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate offset ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
+You can adjust the `outline-indent-shift-width` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate value ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
 ```
 ;; Python
 (dolist (hook '(python-mode python-ts-mode-hook))
