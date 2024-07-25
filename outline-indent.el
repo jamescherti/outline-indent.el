@@ -33,7 +33,7 @@
 
 (defgroup outline-indent nil
   "Non-nil if outline-indent mode mode is enabled."
-  :group 'outlines
+  :group 'outline-indent
   :prefix "outline-indent-")
 
 (defcustom outline-indent-default-offset 1
