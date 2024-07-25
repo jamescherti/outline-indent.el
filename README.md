@@ -1,6 +1,6 @@
 # outline-indent.el - Emacs Package to Outline and Fold Text Using Indentation Levels
 
-The `outline-indent.el` Emacs package provides a minor mode for Emacs that enables **code folding and outlining based on indentation levels** for various indent-based text files such as YAML, Python, and others. It not only allows code folding but also moving indented subtrees up/down, customizing the ellipsis, and inserting a heading that creates a new line with the same indentation level/depth as the current line, among other features.
+The `outline-indent.el` Emacs package provides a minor mode for Emacs that enables **code folding and outlining based on indentation levels** for various indent-based text files such as YAML, Python, and others. In addition to code folding, `outline-indent.el` allows moving indented subtrees up/down, customizing the ellipsis, and inserting a heading that creates a new line with the same indentation level/depth as the current line, among other features.
 
 The `outline-indent.el` package leverages the built-in *outline-minor-mode*, which is maintained by the Emacs developers, to automatically detect and fold sections according to their indentation hierarchy. The built-in outline-minor-mode enables utilizing functions such as demote, move indented blocks up, and move indented blocks down, significantly enhancing the editing experience for indented text. These functions are invaluable for restructuring and reorganizing content within indented sections.
 
