@@ -238,15 +238,18 @@ addressing the issue where the cursor might be reset after the operation."
   (interactive "p")
   (unless arg
     (setq arg 1))
+  ;; Update 1: Save outline-blank-line
   (let* ((original-outline-blank-line outline-blank-line)
+         ;; Update 2: Save the column
          (column (current-column))
+         ;; Update 3: Ensure that all empty lines are included
          (outline-blank-line nil))
     (outline-back-to-heading)
     (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
                       'outline-get-last-sibling))
            ;; Find the end of the subtree to be moved as well as the point to
-           ;; move it to, adding a newline if necessary, to ensure these points
-           ;; are at bol on the line below the subtree.
+           ;; move it to, adding a newline if necessary to ensure these points
+           ;; are at the beginning of the line below the subtree.
            (end-point-func (lambda ()
                              (outline-end-of-subtree)
                              (if (eq (char-after) ?\n) (forward-char 1)
@@ -274,9 +277,12 @@ addressing the issue where the cursor might be reset after the operation."
       (insert (delete-and-extract-region beg end))
       (goto-char ins-point)
       (if folded
+          ;; Update 4: Hide the subtree using the original outline-blank-line
+          ;; This ensures that the fold is closed properly
           (let ((outline-blank-line original-outline-blank-line))
             (outline-hide-subtree)))
       (move-marker ins-point nil))
+    ;; Update 5: Restore the column
     (move-to-column column)))
 
 (defun outline-indent--advice-insert-heading (orig-fun &rest args)
