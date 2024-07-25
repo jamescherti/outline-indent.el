@@ -64,7 +64,8 @@ When set to nil, the default behavior is not to modify the ellipsis."
 
 (defcustom outline-indent-advise-outline-functions t
   "If non-nil, advises built-in `outline' functions to improve compatibility.
-(It is highly recommended to keep this set to t.)
+It is highly recommended to keep `outline-indent-advise-outline-functions'
+set to t.
 
 If non-nil, advises built-in `outline-minor-mode' functions to improve
 compatibility with `outline-indent-minor-mode'.
