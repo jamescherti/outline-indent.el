@@ -44,15 +44,15 @@ on the current indentation."
   :group 'outline-indent)
 
 (defcustom outline-indent-shift-width nil
-  "Default shift width used by promote and demote.
-Used by:
+  "Default shift width for indentation adjustments in promote and demote.
+When set to nil, this variable defaults to the value of
+`outline-indent-default-offset'.
 
-- `outline-indent-demote' or `outline-demote' to increase the indentation
+This setting is used by:
+- `outline-indent-demote' (or `outline-demote') to increase the indentation
   level of the subtree.
-- `outline-indent-promote' or `outline-promote' to decrease the indentation
-  level of the subtree.
-
-If nil, use the value of `outline-indent-default-offset'."
+- `outline-indent-promote' (or `outline-promote') to decrease the indentation
+  level of the subtree."
   :type '(choice (const :tag "Use default" nil)
                  integer)
   :group 'outline-indent)
