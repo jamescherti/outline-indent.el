@@ -88,7 +88,7 @@ only exhibit different behavior when `outline-indent-minor-mode' is active."
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (/ (current-indentation) (max outline-indent-default-offset 1)))
+  (+ 1 (/ (current-indentation) (max outline-indent-default-offset 1))))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
