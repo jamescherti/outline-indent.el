@@ -58,13 +58,14 @@ This setting is used by:
   :group 'outline-indent)
 
 (defcustom outline-indent-ellipsis nil
-  "String used as the ellipsis character in `outline-indent-mode'."
+  "String used as the ellipsis character in `outline-indent-mode'.
+When set to nil, the default behavior is not to modify the ellipsis."
   :type '(choice string (const nil))
   :group 'outline-indent)
 
 (defcustom outline-indent-advise-outline-functions t
   "If non-nil, advises built-in `outline' functions to improve compatibility.
-It is highly recommended to keep this set to t.
+(It is highly recommended to keep this set to t.)
 
 If non-nil, advises built-in `outline-minor-mode' functions to improve
 compatibility with `outline-indent-minor-mode'.
