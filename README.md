@@ -74,7 +74,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 #### outline-indent-promote and outline-indent-demote
 
-*(By default, when `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-promote)` and `(outline-indent-demote)`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-promote)` and `(outline-indent-demote)`)*
 
 These functions can be used to indent or deindent the entire subtree.
 
@@ -91,7 +91,7 @@ The global variable `outline-indent-default-offset` is used to determine the num
 
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
 
-*(By default, when `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)*
 
 These functions can be used to move the current subtree down past ARGS headlines of the same level.
 
