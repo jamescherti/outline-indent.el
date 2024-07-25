@@ -66,9 +66,11 @@ Once installed, the minor mode can be activated using:
 
 The minor mode can also be automatically activated for a certain mode. For example for Python and YAML:
 ```
+;; Python
 (add-hook 'python-mode-hook #'outline-indent-minor-mode)
 (add-hook 'python-ts-mode-hook #'outline-indent-minor-mode)
 
+;; YAML
 (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
@@ -77,13 +79,15 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 You can adjust the `outline-indent-default-offset` according to your preferences. While the default value of 1 is suitable for most modes, setting the correct offset ensures that promote and demote functions correctly adjust the indentation of blocks. For instance:
 ```
+;; Python
 (dolist (hook '(python-mode python-ts-mode-hook))
-    (add-hook hook #'(lambda()
-                       (setq-local outline-indent-default-offset 4))))
+  (add-hook hook #'(lambda()
+                     (setq-local outline-indent-default-offset 4))))
 
-  (dolist (hook '(yaml-mode yaml-ts-mode-hook))
-    (add-hook hook #'(lambda()
-                       (setq-local outline-indent-default-offset 2)))
+;; YAML
+(dolist (hook '(yaml-mode yaml-ts-mode-hook))
+  (add-hook hook #'(lambda()
+                     (setq-local outline-indent-default-offset 2)))
 ```
 
 This configuration sets a different indentation offset for Python and YAML modes to better align with their typical coding styles.
