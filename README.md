@@ -55,10 +55,14 @@ To install the `outline-indent` using `straight.el`:
 
 ## Activation
 
+### Manual activation
+
 Once installed, the minor mode can be activated using:
 ```
 (outline-indent-minor-mode)
 ```
+
+### Auto activation
 
 The minor mode can also be automatically activated for a certain mode. For example for Python and YAML:
 ```
@@ -68,6 +72,8 @@ The minor mode can also be automatically activated for a certain mode. For examp
 (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
+
+### Adjusting the indentation offset
 
 You can adjust the `outline-indent-default-offset` according to your preferences. While the default value of 1 is suitable for most modes, setting the correct offset ensures that promote and demote functions correctly adjust the indentation of blocks. For instance:
 ```
