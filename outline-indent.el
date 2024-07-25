@@ -38,8 +38,7 @@
 
 (defcustom outline-indent-default-offset 1
   "Default indentation offset.
-It is used by the `outline-level' function to determine the outline level based
-on the current indentation."
+It is used by to determine the outline level based on the current indentation."
   :type 'integer
   :group 'outline-indent)
 
