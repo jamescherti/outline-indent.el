@@ -75,26 +75,24 @@ The minor mode can also be automatically activated for a certain mode. For examp
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
 
-### Adjusting the indentation offset
+### Adjusting the shift width
 
-You can adjust the `outline-indent-default-offset` and `outline-indent-shift-width` according to your preferences. While the default value of 1 is suitable for most modes, setting the correct offset ensures that promote and demote functions correctly adjust the indentation of blocks. For instance:
+You can adjust the `outline-indent-shift-width` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate offset ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
 ```
 ;; Python
 (dolist (hook '(python-mode python-ts-mode-hook))
   (add-hook hook #'(lambda()
-                     (setq-local outline-indent-default-offset 4)
                      (setq-local outline-indent-shift-width 4))))
 
 ;; YAML
 (dolist (hook '(yaml-mode yaml-ts-mode-hook))
   (add-hook hook #'(lambda()
-                     (setq-local outline-indent-default-offset 2)
                      (setq-local outline-indent-shift-width 2)))
 ```
 
-(By default, `outline-indent-default-shift-width` is nil, which means it uses the same value as `outline-indent-default-offset`.)
+This configuration sets different shift widths for Python and YAML modes, allowing for more precise control over the indentation of indented blocks during promotion and demotion.
 
-This configuration sets a different indentation offset for Python and YAML modes to better align with their typical coding styles.
+(By default, `outline-indent-default-shift-width` is nil, which means it uses the same value as `outline-indent-default-offset`, which is 1 by default.)
 
 ## Usage
 
