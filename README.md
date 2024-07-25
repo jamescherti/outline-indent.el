@@ -100,7 +100,7 @@ This configuration sets different shift widths for Python and YAML modes, allowi
 
 #### outline-indent-promote and outline-indent-demote
 
-*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-promote)` and `(outline-demote)` instead of `(outline-indent-promote)` and `(outline-indent-demote)`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-promote)` and `(outline-demote)` as an alternative to `(outline-indent-promote)` and `(outline-indent-demote)`)*
 
 These functions can be used to indent or unindent the entire subtree.
 
@@ -117,7 +117,7 @@ The global variable `outline-indent-default-offset` is used to determine the num
 
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
 
-*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-move-subtree-up)` and `(outline-move-subtree-down)`, instead of `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-move-subtree-up)` and `(outline-move-subtree-down)`, as an alternative to `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`)*
 
 These functions can be used to move the current subtree down past ARGS headlines of the same level.
 
@@ -133,7 +133,7 @@ To move the subtree up, use:
 
 #### outline-indent-insert-heading
 
-*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline function `outline-insert-heading` instead of `outline-indent-insert-heading`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline function `outline-insert-heading` as an alternative to `outline-indent-insert-heading`)*
 
 The `(outline-indent-insert-heading)` function inserts a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level. It finds the nearest non-empty line with the same or less indentation as the current line and inserts a new line before it.
 
