@@ -77,17 +77,17 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 ### Adjusting the indentation offset
 
-You can adjust the `outline-indent-default-offset` according to your preferences. While the default value of 1 is suitable for most modes, setting the correct offset ensures that promote and demote functions correctly adjust the indentation of blocks. For instance:
+You can adjust the `outline-indent-default-indent-offset` according to your preferences. While the default value of 1 is suitable for most modes, setting the correct offset ensures that promote and demote functions correctly adjust the indentation of blocks. For instance:
 ```
 ;; Python
 (dolist (hook '(python-mode python-ts-mode-hook))
   (add-hook hook #'(lambda()
-                     (setq-local outline-indent-default-offset 4))))
+                     (setq-local outline-indent-default-indent-offset 4))))
 
 ;; YAML
 (dolist (hook '(yaml-mode yaml-ts-mode-hook))
   (add-hook hook #'(lambda()
-                     (setq-local outline-indent-default-offset 2)))
+                     (setq-local outline-indent-default-indent-offset 2)))
 ```
 
 This configuration sets a different indentation offset for Python and YAML modes to better align with their typical coding styles.
@@ -111,7 +111,7 @@ To decrease indentation:
 ```
 (outline-indent-promote)
 ```
-The global variable `outline-indent-default-offset` is used to determine the number of spaces to indent or unindent the subtree.
+The global variable `outline-indent-default-indent-offset` is used to determine the number of spaces to indent or unindent the subtree.
 
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
 

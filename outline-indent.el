@@ -36,7 +36,7 @@
   :group 'outlines
   :prefix "outline-indent-")
 
-(defcustom outline-indent-default-offset 1
+(defcustom outline-indent-default-indent-offset 1
   "Default indentation offset."
   :type 'integer
   :group 'outline-indent)
@@ -71,7 +71,7 @@ only exhibit different behavior when `outline-indent-minor-mode' is active."
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (/ (current-indentation) (max outline-indent-default-offset 1)))
+  (/ (current-indentation) (max outline-indent-default-indent-offset 1)))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
@@ -140,7 +140,7 @@ addressing the issue where the cursor might be reset after the operation."
 (defun outline-indent-demote (&optional which arg)
   "Demote the subtree, increasing its indentation level.
 
-The global variable `outline-indent-default-offset' is used to determine the
+The global variable `outline-indent-default-indent-offset' is used to determine the
 number of spaces to indent the subtree.
 
 WHICH is ignored (backward compatibility with `outline-demote').
@@ -156,7 +156,7 @@ outline. Defaults to 1 if ARG is nil."
         (column (current-column))
         (shift-width (if indent-tabs-mode
                          1
-                       (max outline-indent-default-offset 1))))
+                       (max outline-indent-default-indent-offset 1))))
     (outline-back-to-heading)
     (let ((start (point))
           (end (save-excursion
@@ -176,7 +176,7 @@ outline. Defaults to 1 if ARG is nil."
 
 (defun outline-indent-promote (&optional which)
   "Promote the subtree, decreasing its indentation level.
-The global variable `outline-indent-default-offset' is used to determine the
+The global variable `outline-indent-default-indent-offset' is used to determine the
 number of spaces to unindent the subtree.
 WHICH is ignored (backward compatibility with `outline-promote')."
   (interactive)
