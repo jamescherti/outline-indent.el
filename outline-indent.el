@@ -144,7 +144,7 @@ The global variable `outline-indent-default-offset' is used to determine the
 number of spaces to indent the subtree.
 
 WHICH is ignored (backward compatibility with `outline-demote').
-If ARG is positive, indent the outline. If ARG is negative, deindent the
+If ARG is positive, indent the outline. If ARG is negative, unindent the
 outline. Defaults to 1 if ARG is nil."
   (interactive)
   (unless which
@@ -177,7 +177,7 @@ outline. Defaults to 1 if ARG is nil."
 (defun outline-indent-promote (&optional which)
   "Promote the subtree, decreasing its indentation level.
 The global variable `outline-indent-default-offset' is used to determine the
-number of spaces to deindent the subtree.
+number of spaces to unindent the subtree.
 WHICH is ignored (backward compatibility with `outline-promote')."
   (interactive)
   (unless which

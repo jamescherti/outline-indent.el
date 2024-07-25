@@ -76,7 +76,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 *(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-promote)` and `(outline-demote)` instead of `(outline-indent-promote)` and `(outline-indent-demote)`)*
 
-These functions can be used to indent or deindent the entire subtree.
+These functions can be used to indent or unindent the entire subtree.
 
 To increase indentation:
 ```
@@ -87,7 +87,7 @@ To decrease indentation:
 ```
 (outline-indent-promote)
 ```
-The global variable `outline-indent-default-offset` is used to determine the number of spaces to indent or deindent the subtree.
+The global variable `outline-indent-default-offset` is used to determine the number of spaces to indent or unindent the subtree.
 
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
 
