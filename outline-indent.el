@@ -139,9 +139,13 @@ addressing the issue where the cursor might be reset after the operation."
 
 (defun outline-indent-demote (&optional which arg)
   "Demote the subtree, increasing its indentation level.
+
 The global variable `outline-indent-default-offset' is used to determine the
 number of spaces to indent the subtree.
-WHICH is ignored (backward compatibility with `outline-demote')."
+
+WHICH is ignored (backward compatibility with `outline-demote').
+If ARG is positive, indent the outline. If ARG is negative, deindent the
+outline. Defaults to 1 if ARG is nil."
   (interactive)
   (unless which
     ;; Ignore: Warning: Unused lexical argument `which'
