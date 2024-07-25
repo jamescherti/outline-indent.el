@@ -137,13 +137,15 @@ addressing the issue where the cursor might be reset after the operation."
     (setq arg 1))
   (outline-indent-move-subtree-down (- arg)))
 
-(defun outline-indent--shift (&optional arg)
-  "Indent or deindent the entire subtree.
-If ARG is positive, indent the outline. If ARG is negative, deindent the
-outline. Defaults to 1 if ARG is nil.
-
+(defun outline-indent-demote (&optional which arg)
+  "Demote the subtree, increasing its indentation level.
 The global variable `outline-indent-default-offset' is used to determine the
-number of spaces to indent or deindent the subtree."
+number of spaces to indent the subtree.
+WHICH is ignored (backward compatibility with `outline-demote')."
+  (interactive)
+  (unless which
+    ;; Ignore: Warning: Unused lexical argument `which'
+    (setq which t))
   (unless arg
     (setq arg 1))
   (let ((shift-right (>= arg 0))
@@ -170,17 +172,16 @@ number of spaces to indent or deindent the subtree."
         (move-to-column (+ column shift-width))
       (move-to-column (max (- column shift-width) 0)))))
 
-(defun outline-indent-demote (&optional which)
-  "Demote the subtree, increasing its indentation level.
-WHICH is ignored (backward compatibility with `outline-demote')."
-  (interactive)
-  (outline-indent--shift 1))
-
 (defun outline-indent-promote (&optional which)
   "Promote the subtree, decreasing its indentation level.
+The global variable `outline-indent-default-offset' is used to determine the
+number of spaces to deindent the subtree.
 WHICH is ignored (backward compatibility with `outline-promote')."
   (interactive)
-  (outline-indent--shift -1))
+  (unless which
+    ;; Ignore: Warning: Unused lexical argument `which'
+    (setq which t))
+  (outline-indent-demote nil -1))
 
 (defun outline-indent--advice-promote (orig-fun &rest args)
   "Advice function for `outline-indent-promote'.
@@ -194,15 +195,15 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
     (apply orig-fun args)))
 
 (defun outline-indent--advice-demote (orig-fun &rest args)
-  "Advice function for `outline-indent-demote'.
+"Advice function for `outline-indent-demote'.
 
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
 Otherwise, call the original function with the given arguments.
 
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
-  (if (bound-and-true-p outline-indent-minor-mode)
-      (outline-indent-demote)
-    (apply orig-fun args)))
+(if (bound-and-true-p outline-indent-minor-mode)
+    (outline-indent-demote)
+  (apply orig-fun args)))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
