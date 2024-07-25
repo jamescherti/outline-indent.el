@@ -150,7 +150,6 @@ WHICH is ignored (backward compatibility with `outline-demote')."
     (setq arg 1))
   (let ((shift-right (>= arg 0))
         (column (current-column))
-        (line (line-number-at-pos))
         (shift-width (if indent-tabs-mode
                          1
                        (max outline-indent-default-offset 1))))
@@ -167,7 +166,6 @@ WHICH is ignored (backward compatibility with `outline-demote')."
                                   (* -1 shift-width)))
       (if folded
           (outline-hide-subtree)))
-    (goto-line line)
     (if shift-right
         (move-to-column (+ column shift-width))
       (move-to-column (max (- column shift-width) 0)))))
