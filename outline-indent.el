@@ -333,7 +333,6 @@ This mode sets up outline to work based on indentation."
                                        (zero-or-more (any " \t"))
                                        (not (any " \t\n"))))
         (outline-indent--update-ellipsis)
-        (outline-minor-mode 1)
 
         (when outline-indent-advise-outline-functions
           ;; Advise the built-in `outline-mode' and `outline-minor-mode'
@@ -350,7 +349,9 @@ This mode sets up outline to work based on indentation."
           (advice-add 'outline-move-subtree-up
                       :around #'outline-indent--advice-move-subtree-up)
           (advice-add 'outline-move-subtree-down
-                      :around #'outline-indent--advice-move-subtree-down)))
+                      :around #'outline-indent--advice-move-subtree-down))
+
+        (outline-minor-mode 1))
     ;; Disable minor mode
     (outline-minor-mode -1)
     (kill-local-variable 'outline-level)

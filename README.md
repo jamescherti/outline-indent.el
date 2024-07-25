@@ -165,24 +165,35 @@ Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold
 
 In Evil mode, `outline-indent` works out of the box, and you can use the Evil keyboard mappings: zo, zc, zO, zC, za, zr, and zm to manage folds.
 
-You may want to set `M-h` and `M-l` to decrease and increase the indentation level of indented blocks, respectively:
+You may want to set a few additional key mappings:
 ```emacs-lisp
 (with-eval-after-load "evil"
-  (evil-define-key 'normal outline-minor-mode-map (kbd "M-h")
-    #'outline-indent-promote)
-  (evil-define-key 'normal outline-minor-mode-map (kbd "M-l")
-    #'outline-indent-demote))
-```
+  (defun my-setup-outline-indent-minor-key-mappings ()
+    "Replace `outline-mode-map` keymaps."
+    (interactive)
+    ;; Set `M-h` and `M-l` to decrease and increase the indentation level of
+    ;; indented blocks
+    (evil-define-key 'normal 'local (kbd "M-h")
+      #'outline-indent-promote)
+    (evil-define-key 'normal 'local (kbd "M-l")
+      #'outline-indent-demote)
 
-And `C-<return>` to insert a new line with the same indentation level/depth as the current line just before the next heading:
-```emacs-lisp
-(with-eval-after-load "evil"
-  (evil-define-key '(normal insert) outline-indent-minor-mode-map
-    (kbd "C-<return>")
-    (defun my-evil-outline-indent-insert-heading ()
-      (interactive)
-      (outline-indent-insert-heading)
-      (evil-insert-state))))
+    ;; Set `M-k` and `M-j` to move indented blocks up and down
+    (evil-define-key 'normal 'local (kbd "M-k")
+      #'outline-indent-move-subtree-up)
+    (evil-define-key 'normal 'local (kbd "M-j")
+      #'outline-indent-move-subtree-down)
+
+    ;; Set C-<return> to insert a new line with the same indentation
+    ;; level/depth as the current line just before the next heading
+    (evil-define-key '(normal insert) 'local (kbd "C-<return>")
+      (defun my-evil-outline-indent-insert-heading ()
+        (interactive)
+        (outline-indent-insert-heading)
+        (evil-insert-state))))
+
+  (add-hook 'outline-indent-minor-mode-hook
+            #'my-setup-outline-indent-minor-key-mappings))
 ```
 
 ## Frequently asked questions
