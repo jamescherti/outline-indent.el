@@ -114,7 +114,7 @@ To decrease indentation:
 (outline-indent-promote)
 ```
 
-The global variable `outline-indent-default-offset` is used to determine the number of spaces to indent or unindent the subtree.
+The global variable `outline-indent-shift-width` is used to determine the number of spaces to indent or unindent the subtree.
 
 #### outline-indent-move-subtree-up and outline-indent-move-subtree-down
 
