@@ -167,9 +167,17 @@ You can also indent/unindent and move subtree up and down using:
 - `(outline-indent-move-subtree-down)` and `(outline-indent-move-subtree-up)` to move the current subtree up or down.
 - `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.
 
+Move to the next and previous visible fold:
+- `outline-previous-visible-heading`
+- `outline-next-visible-heading`
+
 ### Evil mode
 
-In Evil mode, `outline-indent` works out of the box, and you can use the Evil keyboard mappings: zo, zc, zO, zC, za, zr, and zm to manage folds.
+In Evil mode, `outline-indent` works out of the box, and you can use the Evil keyboard mappings:
+- Open fold(s): `zo`, `zO`, `zr`
+- Close fold(s): `zc`, `zC`, `zM`
+- Toggle folds: `za`
+- Next visible fold/heading: `]]` and `[[`
 
 You may want to set a few additional key mappings:
 ```emacs-lisp
