@@ -1,4 +1,5 @@
 # outline-indent.el - Emacs Package to Outline and Fold Text Using Indentation Levels
+![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.images/made-for-gnu-emacs.svg)
 
 The `outline-indent.el` Emacs package provides a minor mode that enables code folding and outlining based on indentation levels for various indentation-based text files, such as YAML, Python, and other indented text files.
 
