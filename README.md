@@ -225,6 +225,12 @@ On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mod
 - Fast,
 - Actively maintained by the Emacs developers.
 
+### Why not use folding.el?
+
+`folding.el` uses markers in the buffer to annotate folds.
+
+n contrast, `outline-indent.el` takes a different approach by utilizing indentation levels to determine foldable sections.
+
 ## License
 
 Copyright (C) 2024 [James Cherti](https://www.jamescherti.com)
