@@ -5,7 +5,7 @@ The `outline-indent.el` Emacs package provides a minor mode that enables code fo
 
 In addition to code folding, `outline-indent.el` allows moving indented subtrees up and down, promoting and demoting sections to adjust indentation levels, customizing the ellipsis, and inserting a new line with the same indentation level as the current line, among other features.
 
-The `outline-indent.el` package leverages the built-in *outline-minor-mode*, which is maintained by the Emacs developers and has less chance of being abandoned like *origami.el*.
+The `outline-indent.el` package uses the built-in `outline-minor-mode`, which is *maintained by the Emacs developers* and is less likely to be abandoned like `origami.el` or `yafolding.el`. Since `outline-indent.el` is based on `outline-minor-mode`, it's also much faster than `origami.el` and `yafolding.el`.
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
 
@@ -214,11 +214,16 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 (setq outline-blank-line t)
 ```
 
-### Why not use origami.el?
+### Why not use origami.el or yafolding?
 
-The `origami.el` package is no longer actively maintained and has known bugs that can affect its reliability and performance.
+The `origami.el` and `yafolding.el` package are:
+- No longer maintained (abandoned)
+- Slow,
+- Known to have bugs that affect their reliability and performance.
 
-On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mode`, which is actively maintained by the Emacs developers.
+On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mode`, which is:
+- Fast,
+- Actively maintained by the Emacs developers.
 
 ## License
 
