@@ -244,4 +244,4 @@ You should have received a copy of the GNU General Public License along with thi
 ## Links
 
 - [outline-indent.el @GitHub](https://github.com/jamescherti/outline-indent.el)
-- [Article: outline-indent.el – Indentation based Folding and Outlining in Emacs](https://www.jamescherti.com/fold-outline-indentation-emacs-package/)
+- Article: [outline-indent.el – Indentation based Folding and Outlining in Emacs](https://www.jamescherti.com/fold-outline-indentation-emacs-package/)
