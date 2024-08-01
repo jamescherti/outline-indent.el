@@ -7,7 +7,7 @@ In addition to code folding, `outline-indent.el` allows moving indented subtrees
 
 The `outline-indent.el` package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since `outline-indent.el` is based on *outline-minor-mode*, it's also much faster than *origami.el* and *yafolding.el*.
 
-![](https://raw.githubusercontent.com/jamescherti/outline-yaml.el/main/.screenshot.png)
+![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot2.png)
 
