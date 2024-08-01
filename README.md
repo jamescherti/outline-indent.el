@@ -227,9 +227,9 @@ On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mod
 
 ### Why not use folding.el?
 
-`folding.el` uses markers in the buffer to annotate folds.
+The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support utilizing indentation levels to determine foldable sections.
 
-In contrast, `outline-indent.el` takes a different approach by utilizing indentation levels to determine foldable sections.
+In contrast, `outline-indent.el` uses indentation levels to determine foldable sections.
 
 ## License
 
