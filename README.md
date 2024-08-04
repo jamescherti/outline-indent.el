@@ -216,8 +216,8 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 
 ### Why not use origami.el or yafolding?
 
-The `origami.el` and `yafolding.el` package are:
-- No longer maintained (abandoned)
+The `origami.el` and `yafolding.el` package are not reliable method for folding indented code because they are:
+- No longer maintained (abandoned),
 - Slow,
 - Known to have bugs that affect their reliability and performance.
 
