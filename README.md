@@ -1,11 +1,12 @@
 # outline-indent.el - Emacs Package to Outline and Fold Text Using Indentation Levels
+[![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.images/made-for-gnu-emacs.svg)
 
 The `outline-indent.el` Emacs package provides a minor mode that enables code folding and outlining based on indentation levels for various indentation-based text files, such as YAML, Python, and other indented text files.
 
 In addition to code folding, `outline-indent.el` allows moving indented subtrees up and down, promoting and demoting sections to adjust indentation levels, customizing the ellipsis, and inserting a new line with the same indentation level as the current line, among other features.
 
-The `outline-indent.el` package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since `outline-indent.el` is based on *outline-minor-mode*, it's also much faster than *origami.el* and *yafolding.el*.
+The `outline-indent.el` package utilizes the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since `outline-indent.el` is based on *outline-minor-mode*, it's also much much faster than *origami.el* and *yafolding.el*.
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
 
@@ -244,4 +245,5 @@ You should have received a copy of the GNU General Public License along with thi
 ## Links
 
 - [outline-indent.el @GitHub](https://github.com/jamescherti/outline-indent.el)
+- [outline-indent.el @MELPA](https://melpa.org/#/outline-indent)
 - Article: [outline-indent.el – Indentation based Folding and Outlining in Emacs](https://www.jamescherti.com/fold-outline-indentation-emacs-package/)
