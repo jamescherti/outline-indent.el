@@ -14,12 +14,15 @@ The `outline-indent.el` package utilizes the built-in *outline-minor-mode*, whic
 
 The `outline-indent.el` Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 ## Table of Contents
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
 
 - [Installation](#installation)
-    - [Install using straight](#install-using-straight)
 - [Activation](#activation)
+    - [Manual activation](#manual-activation)
+    - [Auto activation](#auto-activation)
+    - [Adjusting the shift width](#adjusting-the-shift-width)
 - [Usage](#usage)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
         - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
@@ -29,7 +32,8 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
     - [Evil mode](#evil-mode)
 - [Frequently asked questions](#frequently-asked-questions)
     - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
-    - [Why not use origami.el?](#why-not-use-origamiel)
+    - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
+    - [Why not use folding.el?](#why-not-use-foldingel)
 - [License](#license)
 - [Links](#links)
 
@@ -37,20 +41,10 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
 
 ## Installation
 
-### Install using straight
-
-To install the `outline-indent` using `straight.el`:
-
-1. If you haven't already done so, [add the straight.el bootstrap code](https://github.com/radian-software/straight.el?tab=readme-ov-file#getting-started) to your init file.
-
-2. Add the following code to your Emacs init file:
+To install the `outline-indent`, add the following code to your Emacs init file:
 ```
 (use-package outline-indent
   :ensure t
-  :straight (outline-indent
-             :type git
-             :host github
-             :repo "jamescherti/outline-indent.el")
   :custom
   (outline-indent-ellipsis " ▼ "))
 ```
