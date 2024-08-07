@@ -173,12 +173,12 @@ Move forward or backward to the subheading with the same indentation:
 
 ### Evil mode
 
-In Evil mode, `outline-indent` works out of the box, and you can use the Evil keyboard mappings:
+In Evil mode, `outline-indent` works out of the box if you install `evil-collection`, and you can use the Evil and evil-collection keyboard mappings:
 - Open fold(s): `zo`, `zO`, `zr`
 - Close fold(s): `zc`, `zC`, `zM`
 - Toggle folds: `za`
 - Next visible fold/heading: `]]` and `[[`
-- Move forward/backward to the subheading at the same level: `gj` and `gk` (requires `evil-collection`)
+- Move forward/backward to the subheading at the same level: `gj` and `gk`
 
 You may want to set a few additional key mappings:
 ```emacs-lisp
