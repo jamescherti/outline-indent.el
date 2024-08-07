@@ -167,9 +167,9 @@ Move to the next and previous visible fold:
 - `outline-previous-visible-heading`
 - `outline-next-visible-heading`
 
-Move forward or backward to the subheading with the same indentation:
-- `outline-forward-same-level`: Move forward to the subheading with the same indentation as the one under the cursor.
-- `outline-backward-same-level`: Move backward to the subheading with the same indentation as as the one under the cursor.
+Move forward or backward to the same indentation level:
+- `outline-forward-same-level`: Move forward to the same indentation level as the one under the cursor.
+- `outline-backward-same-level`: Move backward to the the same indentation level as as the one under the cursor.
 
 ### Evil mode
 
@@ -178,7 +178,7 @@ In Evil mode, `outline-indent` works out of the box if you install `evil-collect
 - Close fold(s): `zc`, `zC`, `zM`
 - Toggle folds: `za`
 - Next visible fold/heading: `]]` and `[[`
-- Move forward/backward to the subheading at the same level: `gj` and `gk`
+- Move forward/backward to the same indentation level: `gj` and `gk`
 
 You may want to set a few additional key mappings:
 ```emacs-lisp
