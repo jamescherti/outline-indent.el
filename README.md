@@ -42,7 +42,7 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
 ## Installation
 
 To install the `outline-indent`, add the following code to your Emacs init file:
-```
+``` emacs-lisp
 (use-package outline-indent
   :ensure t
   :custom
@@ -54,14 +54,14 @@ To install the `outline-indent`, add the following code to your Emacs init file:
 ### Manual activation
 
 Once installed, the minor mode can be activated using:
-```
+``` emacs-lisp
 (outline-indent-minor-mode)
 ```
 
 ### Auto activation
 
 The minor mode can also be automatically activated for a certain mode. For example for Python and YAML:
-```
+``` emacs-lisp
 ;; Python
 (add-hook 'python-mode-hook #'outline-indent-minor-mode)
 (add-hook 'python-ts-mode-hook #'outline-indent-minor-mode)
@@ -74,7 +74,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 ### Adjusting the shift width
 
 You can adjust the `outline-indent-shift-width` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate value ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
-```
+``` emacs-lisp
 ;; Python
 (dolist (hook '(python-mode python-ts-mode-hook))
   (add-hook hook #'(lambda()
@@ -101,12 +101,12 @@ This configuration sets different shift widths for Python and YAML modes, allowi
 These functions can be used to decrease and increase the indentation level of indented blocks.
 
 To increase indentation:
-```
+``` emacs-lisp
 (outline-indent-demote)
 ```
 
 To decrease indentation:
-```
+``` emacs-lisp
 (outline-indent-promote)
 ```
 
@@ -119,12 +119,12 @@ The global variable `outline-indent-shift-width` is used to determine the number
 These functions can be used to move the current subtree down past ARGS headlines of the same level.
 
 To move the subtree down, use:
-```
+``` emacs-lisp
 (outline-indent-move-subtree-down)
 ```
 
 To move the subtree up, use:
-```
+``` emacs-lisp
 (outline-indent-move-subtree-up)
 ```
 
@@ -137,7 +137,7 @@ The `(outline-indent-insert-heading)` function inserts a new line with the same 
 In `outline-indent-minor-mode`, where most lines are treated as headings, this function is suitable for maintaining consistent indentation within the outline structure. It can be used as an alternative to `outline-insert-heading` to insert content at the same indentation level after the current fold.
 
 Example usage:
-```
+``` emacs-lisp
 (outline-indent-insert-heading)
 ```
 
@@ -210,7 +210,7 @@ You may want to set a few additional key mappings:
 
 The `outline-blank-line` variable can be set to `t` (true) to maintain blank lines between folded sections, making it easier to distinguish between folds:
 
-```
+``` emacs-lisp
 (setq outline-blank-line t)
 ```
 
