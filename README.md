@@ -246,3 +246,6 @@ You should have received a copy of the GNU General Public License along with thi
 - [outline-indent.el @GitHub](https://github.com/jamescherti/outline-indent.el)
 - [outline-indent.el @MELPA](https://melpa.org/#/outline-indent)
 - Article: [outline-indent.el – Indentation based Folding and Outlining in Emacs](https://www.jamescherti.com/fold-outline-indentation-emacs-package/)
+
+Other Emacs packages from the same author:
+- [minimal-emacs.d](https://github.com/jamescherti/minimal-emacs.d): This repository hosts a minimal Emacs configuration designed to serve as a foundation for your vanilla Emacs setup and provide a solid base for an enhanced Emacs experience.
