@@ -6,7 +6,7 @@
 ;; Version: 1.0.5
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "26.1"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -343,7 +343,8 @@ This mode sets up outline to work based on indentation."
   (if outline-indent-minor-mode
       (progn
         ;; Enable minor mode
-        (setq-local outline-minor-mode-highlight nil)
+        (when (boundp 'outline-minor-mode-highlight)
+          (setq-local outline-minor-mode-highlight nil))
         (setq-local outline-heading-alist nil)
         (setq-local outline-level #'outline-indent-level)
         (setq-local outline-heading-end-regexp "\n")
