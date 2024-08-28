@@ -70,7 +70,11 @@ This setting is used by:
 
 (defcustom outline-indent-ellipsis nil
   "String used as the ellipsis character in `outline-indent-mode'.
-When set to nil, the default behavior is not to modify the ellipsis."
+When set to nil, the default behavior is not to modify the ellipsis.
+
+The change affects only `outline-indent-minor-mode' (which will then use its own
+display table). To apply the change, you need to execute
+`outline-indent-minor-mode' in the buffer."
   :type '(choice string (const nil))
   :group 'outline-indent)
 
