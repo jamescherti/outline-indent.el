@@ -129,35 +129,26 @@ this function is suitable for maintaining consistent indentation within the
 outline structure. It can be used as an alternative to `outline-insert-heading'
 to insert content at the same indentation level after the current fold."
   (interactive)
-  (let ((initial-point (point))
-        (current-indent nil)
-        (found nil)
-        (eobp nil)
-        (new-point nil))
+  (let ((initial-indentation nil)
+        (found-point nil))
     (save-excursion
       (beginning-of-visual-line)
-      (setq current-indent (current-indentation))
-      (forward-line 1)
-      (while (and (not found) (not (eobp)))
-        (if (and (>= current-indent (current-indentation))
+      (setq initial-indentation (current-indentation))
+      (while (and (not found-point) (not (eobp)))
+        (forward-line 1)
+        (if (and (>= initial-indentation (current-indentation))
                  (not (looking-at-p "^[ \t]*$")))
-            (progn
-              (setq new-point (point))
-              (setq found t))
-          (forward-line 1)))
-      (when (and (not found) (eobp))
-        (setq eobp t)))
+            (setq found-point (point))))
 
-    (cond (eobp
-           (goto-char (point-max))
-           (newline)
-           (indent-to current-indent))
-          (found (progn (goto-char new-point)
-                        (forward-line -1)
-                        (end-of-line)
-                        (newline)
-                        (indent-to current-indent)))
-          (t (goto-char initial-point)))))
+      (when (and (not found-point) (eobp))
+        (setq found-point (point))))
+
+    (when found-point
+      (goto-char found-point)
+      (forward-line -1)
+      (end-of-line)
+      (newline)
+      (indent-to initial-indentation))))
 
 (defun outline-indent-move-subtree-up (&optional arg)
   "Move the current subtree up past ARG headlines of the same level.
