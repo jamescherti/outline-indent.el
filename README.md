@@ -75,7 +75,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 
 ### Adjusting the shift width
 
-You can adjust the `outline-indent-shift-width` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate value ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
+You can adjust the `outline-indent-shift-width` and `outline-indent-default-offset` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate value ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
 ``` emacs-lisp
 ;; Python
 (dolist (hook '(python-mode python-ts-mode-hook))
@@ -90,9 +90,18 @@ You can adjust the `outline-indent-shift-width` according to your preferences. W
                      (setq-local outline-indent-shift-width 2)))
 ```
 
-This configuration sets different shift widths for Python and YAML modes, allowing for more precise control over the indentation of indented blocks during promotion and demotion.
+Explanation:
+1. **Outline Indentation Parameters**:
+   - **`outline-indent-default-offset`**: This variable determines the base indentation level for each outline level. It specifies the amount by which each successive outline level should be indented, effectively controlling the visual structure of the outline.
+   - **`outline-indent-shift-width`**: This variable determines the number of spaces by which to adjust the indentation when promoting or demoting an indented block with `(outline-promote)` and `(outline-demote)`.
 
-(By default, `outline-indent-default-shift-width` is nil, which means it uses the same value as `outline-indent-default-offset`, which is 1 by default.)
+2. **Why Customize These Values?**:
+   - **Language-specific Indentation**: Different programming languages and file formats have different indentation standards. Python typically uses 4 spaces per indentation level, while YAML often uses 2 spaces. Customizing these values for different modes ensures that your outline structure is consistent with the language's indentation practices.
+   - **Promotion and Demotion**: When you use `outline-promote` and `outline-demote` functions, these settings control how much the outline level is adjusted. For instance, in Python mode, promoting a block of code (moving it to a higher outline level) will decrease its indentation by 4 spaces, and demoting it will increase its indentation by 4 spaces.
+
+3. **Default Behavior**:
+   - By default, `outline-indent-default-offset` is set to 1, which works with any indentation level, as even a single space is enough to fold any indented block using `outline-indent`.
+   - By default, `outline-indent-default-shift-width` is `nil`, which means it inherits the value of `outline-indent-default-offset`. If you do not explicitly set `outline-indent-shift-width`, the promote and demote operations will use the same value as the offset. This default behavior works well in many cases, but fine-tuning these values can be necessary for languages or formats with specific indentation needs.
 
 ## Usage
 
