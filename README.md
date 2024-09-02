@@ -80,11 +80,13 @@ You can adjust the `outline-indent-shift-width` according to your preferences. W
 ;; Python
 (dolist (hook '(python-mode python-ts-mode-hook))
   (add-hook hook #'(lambda()
+                     (setq-local outline-indent-default-offset 4)
                      (setq-local outline-indent-shift-width 4))))
 
 ;; YAML
 (dolist (hook '(yaml-mode yaml-ts-mode-hook))
   (add-hook hook #'(lambda()
+                     (setq-local outline-indent-default-offset 2)
                      (setq-local outline-indent-shift-width 2)))
 ```
 
