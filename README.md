@@ -20,30 +20,36 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [Installation](#installation)
-- [Activation](#activation)
-    - [Manual activation](#manual-activation)
-    - [Auto activation](#auto-activation)
-    - [Adjusting the shift width](#adjusting-the-shift-width)
-- [Usage](#usage)
-    - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
-        - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
-        - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
-        - [outline-indent-insert-heading](#outline-indent-insert-heading)
-    - [Vanilla Emacs](#vanilla-emacs)
-    - [Evil mode](#evil-mode)
-- [Frequently asked questions](#frequently-asked-questions)
-    - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
-    - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
-    - [Why not use folding.el?](#why-not-use-foldingel)
-- [License](#license)
-- [Links](#links)
+- [outline-indent.el - Emacs Package to Outline and Fold Text Using Indentation Levels](#outline-indentel---emacs-package-to-outline-and-fold-text-using-indentation-levels)
+    - [Table of Contents](#table-of-contents)
+    - [Installation](#installation)
+    - [Activation](#activation)
+        - [Manual activation](#manual-activation)
+        - [Auto activation](#auto-activation)
+        - [Adjusting the shift width](#adjusting-the-shift-width)
+    - [Usage](#usage)
+        - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
+            - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
+            - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
+            - [outline-indent-insert-heading](#outline-indent-insert-heading)
+        - [Vanilla Emacs](#vanilla-emacs)
+        - [Evil mode](#evil-mode)
+    - [Frequently asked questions](#frequently-asked-questions)
+        - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
+        - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
+        - [Why not use folding.el?](#why-not-use-foldingel)
+    - [License](#license)
+    - [Links](#links)
 
 <!-- markdown-toc end -->
 
 ## Installation
 
-To install the `outline-indent`, add the following code to your Emacs init file:
+To install the `outline-indent` from MELPA:
+
+1. If you haven't already done so, [add MELPA repository to your Emacs configuration](https://melpa.org/#/getting-started).
+
+2. Add the following code to your Emacs init file to install `outline-indent` from MELPA:
 ``` emacs-lisp
 (use-package outline-indent
   :ensure t
