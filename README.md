@@ -50,12 +50,12 @@ To install the `outline-indent` from MELPA:
 1. If you haven't already done so, [add MELPA repository to your Emacs configuration](https://melpa.org/#/getting-started).
 
 2. Add the following code to your Emacs init file to install `outline-indent` from MELPA:
-   ``` emacs-lisp
-   (use-package outline-indent
-     :ensure t
-     :custom
-     (outline-indent-ellipsis " ▼ "))
-   ```
+``` emacs-lisp
+(use-package outline-indent
+  :ensure t
+  :custom
+  (outline-indent-ellipsis " ▼ "))
+```
 
 ## Activation
 
