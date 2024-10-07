@@ -163,18 +163,19 @@ Example usage:
 ### Vanilla Emacs
 
 Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your indented file:
-- `outline-hide-body`: Hide all body lines in buffer, leaving all headings visible.
-- `outline-hide-other`: Hide everything except current body and parent and top-level headings.
-- `outline-hide-entry`: Hide the body directly following this heading.
-- `outline-hide-leaves`: Hide the body after this heading and at deeper levels.
-- `outline-hide-subtree`: Hide everything after this heading at deeper levels.
-- `outline-show-children`: Show all direct subheadings of this heading.
-- `outline-hide-sublevels`: Hide everything but the top LEVELS levels of headers, in whole buffer.
-- `outline-show-all`: Show all of the text in the buffer.
-- `outline-show-entry`: Show the body directly following this heading.
-- `outline-show-subtree`: Show everything after this heading at deeper levels.
-- `outline-show-branches`: Show all subheadings of this heading, but not their bodies.
-- `outline-show-children`: Show all direct subheadings of this heading.
+- `(hide-sublevels 1)`: Fold all folds.
+- `(outline-hide-body)`: Hide all body lines in buffer, leaving all headings visible.
+- `(outline-hide-other)`: Hide everything except current body and parent and top-level headings.
+- `(outline-hide-entry)`: Hide the body directly following this heading.
+- `(outline-hide-leaves)`: Hide the body after this heading and at deeper levels.
+- `(outline-hide-subtree)`: Hide everything after this heading at deeper levels.
+- `(outline-show-children)`: Show all direct subheadings of this heading.
+- `(outline-hide-sublevels)`: Hide everything but the top LEVELS levels of headers, in whole buffer.
+- `(outline-show-all)`: Show all of the text in the buffer.
+- `(outline-show-entry)`: Show the body directly following this heading.
+- `(outline-show-subtree)`: Show everything after this heading at deeper levels.
+- `(outline-show-branches)`: Show all subheadings of this heading, but not their bodies.
+- `(outline-show-children)`: Show all direct subheadings of this heading.
 
 You can also indent/unindent and move subtree up and down using:
 
