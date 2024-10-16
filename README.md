@@ -38,6 +38,9 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
         - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
         - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
         - [Why not use folding.el?](#why-not-use-foldingel)
+        - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
+        - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
+            - [dtrt-indent](#dtrt-indent)
     - [License](#license)
     - [Links](#links)
 
@@ -250,6 +253,43 @@ On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mod
 The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support utilizing indentation levels to determine foldable sections.
 
 In contrast, `outline-indent.el` uses indentation levels to determine foldable sections.
+
+### How to make Emacs indent new lines based on previous non-blank line?
+
+The following code snippet configures Emacs to indent based on the indentation of the previous non-blank line:
+```emacs-lisp
+;; This ensures that pressing Enter will insert a new line and indent it.
+(global-set-key (kbd "RET") #'newline-and-indent)
+
+;; Indentation based on the indentation of the previous non-blank line.
+(setq-default indent-line-function #'indent-relative-first-indent-point)
+
+;; In modes such as `text-mode', pressing Enter multiple times removes
+;; the indentation. The following fixes the issue and ensures that text
+;; is properly indented using `indent-relative' or
+;; `indent-relative-first-indent-point'.
+(setq-default indent-line-ignored-functions '())
+```
+
+### What other packages can be used to maintain proper indentation in indentation-sensitive programming languages
+
+#### dtrt-indent
+
+The *dtrt-indent* provides an Emacs minor mode that detects the original indentation offset used in source code files and automatically adjusts Emacs settings accordingly, making it easier to edit files created with different indentation styles.
+
+You can install it by adding the following to your Emacs init files:
+```emacs-lisp
+(use-package dtrt-indent
+  :ensure t
+  :commands (dtrt-indent-global-mode
+             dtrt-indent-mode
+             dtrt-indent-adapt
+             dtrt-indent-undo
+             dtrt-indent-diagnosis
+             dtrt-indent-highlight)
+  :config
+  (dtrt-indent-global-mode))
+```
 
 ## License
 
