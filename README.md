@@ -39,8 +39,9 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
         - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
         - [Why not use folding.el?](#why-not-use-foldingel)
         - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
-        - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
-            - [dtrt-indent](#dtrt-indent)
+        - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
+            - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
+            - [Detecting indentation](#detecting-indentation)
     - [License](#license)
     - [Links](#links)
 
@@ -271,13 +272,18 @@ The following code snippet configures Emacs to indent based on the indentation o
 (setq-default indent-line-ignored-functions '())
 ```
 
-### What other packages can be used to maintain proper indentation in indentation-sensitive programming languages
+### What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?
 
-#### dtrt-indent
+#### Displaying vertical indentation guide bars
 
-The *dtrt-indent* provides an Emacs minor mode that detects the original indentation offset used in source code files and automatically adjusts Emacs settings accordingly, making it easier to edit files created with different indentation styles.
+Choose one of these packages to show vertical indentation guide bars:
+- [indent-bars](https://github.com/jdtsmith/indent-bars)
+- [highlight-indent-guides](https://github.com/DarthFennec/highlight-indent-guides)
+- [highlight-indentation-mode](https://github.com/antonj/Highlight-Indentation-for-Emacs)
 
-You can install it by adding the following to your Emacs init files:
+#### Detecting indentation
+
+The *dtrt-indent* package automatically detects the indentation offset used in source code files and adjusts Emacs settings to match, simplifying the editing of files with varying indentation styles. To install it, add the following to your Emacs init file:
 ```emacs-lisp
 (use-package dtrt-indent
   :ensure t
