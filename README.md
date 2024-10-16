@@ -276,10 +276,11 @@ The following code snippet configures Emacs to indent based on the indentation o
 
 #### Displaying vertical indentation guide bars
 
-Choose one of these packages to show vertical indentation guide bars:
-- [indent-bars](https://github.com/jdtsmith/indent-bars)
-- [highlight-indent-guides](https://github.com/DarthFennec/highlight-indent-guides)
-- [highlight-indentation-mode](https://github.com/antonj/Highlight-Indentation-for-Emacs)
+Choose one of these packages that are available on MELPA:
+- highlight-indentation
+- highlight-indent-guides
+
+(There is also indent-bars, but it is not yet available on MELPA.)
 
 #### Detecting indentation
 
