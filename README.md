@@ -60,8 +60,7 @@ To install the `outline-indent` from MELPA:
   :custom
   (outline-indent-ellipsis " ▼ "))
 
-;; The make-window-start-visible parameter is set to ensure that the
-;; beginning of the window always remains visible during certain actions,
+;; Ensure that the window-start always remains visible during certain actions,
 ;; such as when all folds are collapsed.
 (setq-default make-window-start-visible t)
 ```
