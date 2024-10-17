@@ -36,6 +36,7 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
         - [Evil mode](#evil-mode)
     - [Frequently asked questions](#frequently-asked-questions)
         - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
+        - [How to Prevent Emacs from Searching Folded Sections](#how-to-prevent-emacs-from-searching-folded-sections)
         - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
         - [Why not use folding.el?](#why-not-use-foldingel)
         - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
@@ -241,6 +242,15 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 ``` emacs-lisp
 (setq outline-blank-line t)
 ```
+
+### How to Prevent Emacs from Searching Folded Sections
+
+To prevent Emacs from searching within folded sections, set `search-invisible` to `nil` by adding the following line to your Emacs init file:
+```emacs-lisp
+(setq-default search-invisible nil)
+```
+
+This setting ensures that Emacs skips invisible or folded text during searches, so hidden sections are not included in the search results.
 
 ### Why not use origami.el or yafolding?
 
