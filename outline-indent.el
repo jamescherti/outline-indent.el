@@ -328,6 +328,11 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
     ;; Apply the original function without modification
     (apply orig-fun args)))
 
+(defvar outline-indent--backup-make-window-start-visible
+  (if (bound-and-true-p make-window-start-visible)
+      make-window-start-visible
+    nil))
+
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
   "Toggle `outline-indent-minor-mode'.
@@ -337,6 +342,14 @@ This mode sets up outline to work based on indentation."
   :group 'outline-indent
   (if outline-indent-minor-mode
       (progn
+        ;; Ensure that the window-start always remains visible during certain actions,
+        ;; such as when all folds are collapsed.
+        (setq-local outline-indent--backup-make-window-start-visible
+                    (if (bound-and-true-p make-window-start-visible)
+                        make-window-start-visible
+                      nil))
+        ;; (setq-local make-window-start-visible t)
+
         ;; Enable minor mode
         (when (boundp 'outline-minor-mode-highlight)
           (setq-local outline-minor-mode-highlight nil))
@@ -367,6 +380,8 @@ This mode sets up outline to work based on indentation."
 
         (outline-minor-mode 1))
     ;; Disable minor mode
+    (setq-local make-window-start-visible
+                outline-indent--backup-make-window-start-visible)
     (outline-minor-mode -1)
     (kill-local-variable 'outline-level)
     (kill-local-variable 'outline-heading-end-regexp)

@@ -60,10 +60,6 @@ To install the `outline-indent` from MELPA:
   :ensure t
   :custom
   (outline-indent-ellipsis " ▼ "))
-
-;; Ensure that the window-start always remains visible during certain actions,
-;; such as when all folds are collapsed.
-(setq-default make-window-start-visible t)
 ```
 
 ## Activation
