@@ -1,4 +1,4 @@
-;;; outline-indent.el --- Outline and fold text using indentation  -*- lexical-binding: t; -*-
+;;; outline-indent.el --- Fold text using indentation  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2024 James Cherti | https://www.jamescherti.com/contact/
 

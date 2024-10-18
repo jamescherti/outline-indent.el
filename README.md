@@ -1,4 +1,4 @@
-# outline-indent.el - Emacs Package to Outline and Fold Text Using Indentation Levels
+# outline-indent.el - Emacs Package Fold Text Using Indentation Levels
 [![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
 ![Build Status](https://github.com/jamescherti/outline-indent.el/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/github/license/jamescherti/outline-indent.el)
@@ -20,7 +20,7 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [outline-indent.el - Emacs Package to Outline and Fold Text Using Indentation Levels](#outline-indentel---emacs-package-to-outline-and-fold-text-using-indentation-levels)
+- [outline-indent.el - Emacs Package Fold Text Using Indentation Levels](#outline-indentel---emacs-package-fold-text-using-indentation-levels)
     - [Table of Contents](#table-of-contents)
     - [Installation](#installation)
     - [Activation](#activation)
