@@ -50,7 +50,7 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
 
 ## Installation
 
-To install the `outline-indent` from MELPA:
+To install `outline-indent` from MELPA:
 
 1. If you haven't already done so, [add MELPA repository to your Emacs configuration](https://melpa.org/#/getting-started).
 
