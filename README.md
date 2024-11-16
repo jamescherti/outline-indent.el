@@ -21,30 +21,30 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
 **Table of Contents**
 
 - [outline-indent.el - Emacs Package Fold Text Using Indentation Levels](#outline-indentel---emacs-package-fold-text-using-indentation-levels)
-    - [Table of Contents](#table-of-contents)
-    - [Installation](#installation)
-    - [Activation](#activation)
-        - [Manual activation](#manual-activation)
-        - [Auto activation](#auto-activation)
-        - [Adjusting the shift width](#adjusting-the-shift-width)
-    - [Usage](#usage)
-        - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
-            - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
-            - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
-            - [outline-indent-insert-heading](#outline-indent-insert-heading)
-        - [Vanilla Emacs](#vanilla-emacs)
-        - [Evil mode](#evil-mode)
-    - [Frequently asked questions](#frequently-asked-questions)
-        - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
-        - [How to Prevent Emacs from Searching Folded Sections](#how-to-prevent-emacs-from-searching-folded-sections)
-        - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
-        - [Why not use folding.el?](#why-not-use-foldingel)
-        - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
-        - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
-            - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
-            - [Detecting indentation](#detecting-indentation)
-    - [License](#license)
-    - [Links](#links)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Activation](#activation)
+    - [Manual activation](#manual-activation)
+    - [Auto activation](#auto-activation)
+    - [Adjusting the shift width](#adjusting-the-shift-width)
+  - [Usage](#usage)
+    - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
+      - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
+      - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
+      - [outline-indent-insert-heading](#outline-indent-insert-heading)
+    - [Vanilla Emacs](#vanilla-emacs)
+    - [Evil mode](#evil-mode)
+  - [Frequently asked questions](#frequently-asked-questions)
+    - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
+    - [How to Prevent Emacs from Searching Folded Sections](#how-to-prevent-emacs-from-searching-folded-sections)
+    - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
+    - [Why not use folding.el?](#why-not-use-foldingel)
+    - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
+    - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
+      - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
+      - [Detecting indentation](#detecting-indentation)
+  - [License](#license)
+  - [Links](#links)
 
 <!-- markdown-toc end -->
 
@@ -335,7 +335,7 @@ Other Emacs packages by the same author:
 - [Ultyas](https://github.com/jamescherti/ultyas/): A command-line tool designed to simplify the process of converting code snippets from UltiSnips to YASnippet format.
 - [dir-config.el](https://github.com/jamescherti/dir-config.el): Automatically find and evaluate .dir-config.el Elisp files to configure directory-specific settings.
 - [flymake-bashate.el](https://github.com/jamescherti/flymake-bashate.el): A package that provides a Flymake backend for the bashate Bash script style checker.
-- [flymake-ansible-lint.el](https://github.com/jamescherti/flymake-ansible-lint.el): An Emacs package that offers a Flymake backend for `ansible-lint`.
-- [compile-angel.el](https://github.com/jamescherti/compile-angel.el): An Emacs package that automatically compiles Emacs loaded or saved Elisp libraries. This lightweight alternative to `auto-compile` not only compiles Elisp files loaded with `load` and `require`, but also handles deferred and autoloaded files.
-- [inhibit-mouse.el](https://github.com/jamescherti/inhibit-mouse.el): A package that disables mouse input in Emacs, offering a simpler and faster alternative to the `disable-mouse` package.
+- [flymake-ansible-lint.el](https://github.com/jamescherti/flymake-ansible-lint.el): An Emacs package that offers a Flymake backend for ansible-lint.
+- [compile-angel.el](https://github.com/jamescherti/compile-angel.el): An Emacs package that automatically compiles Emacs loaded or saved Elisp libraries. This lightweight alternative to auto-compile not only compiles Elisp files loaded with load and require, but also handles deferred and autoloaded files.
+- [inhibit-mouse.el](https://github.com/jamescherti/inhibit-mouse.el): A package that disables mouse input in Emacs, offering a simpler and faster alternative to the disable-mouse package.
 - [quick-sdcv.el](https://github.com/jamescherti/quick-sdcv.el): This package enables Emacs to function as an offline dictionary by using the sdcv command-line tool directly within Emacs.
