@@ -51,11 +51,13 @@
 ;;   :custom
 ;;   (outline-indent-ellipsis " ▼ "))
 ;;
-;; Usage:
-;; ------
+;; Activation:
+;; -----------
 ;; Once installed, the minor mode can be activated using:
 ;;   (outline-indent-minor-mode)
 ;;
+;; Activation using a hook:
+;; ------------------------
 ;; The minor mode can also be automatically activated for a certain mode. For
 ;; example for Python and YAML:
 ;;   ;; Python
@@ -66,11 +68,31 @@
 ;;   (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 ;;   (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ;;
+;; Adjusting the shift width and default offset
+;; --------------------------------------------
+;; You can adjust the outline-indent-shift-width and
+;; outline-indent-default-offset according to your preferences. While the
+;; default value of 1 is adequate for most modes, setting the appropriate value
+;; ensures that the promote and demote functions correctly adjust the
+;; indentation of blocks.
+;;
+;; For example:
+;;   ;; Python
+;;   (dolist (hook '(python-mode python-ts-mode-hook))
+;;     (add-hook hook #'(lambda()
+;;                        (setq-local outline-indent-default-offset 4)
+;;                        (setq-local outline-indent-shift-width 4))))
+;;
+;;   ;; YAML
+;;   (dolist (hook '(yaml-mode yaml-ts-mode-hook))
+;;     (add-hook hook #'(lambda()
+;;                        (setq-local outline-indent-default-offset 2)
+;;                        (setq-local outline-indent-shift-width 2)))
+;;
 ;; Links:
 ;; ------
 ;; - More information about outline-indent (Frequently asked questions, usage...):
 ;; https://github.com/jamescherti/outline-indent.el
-;;
 
 ;;; Code:
 

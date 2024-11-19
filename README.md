@@ -32,8 +32,8 @@ The *outline-indent.el* Emacs package offers a similar functionality to Vim's `s
   - [Installation](#installation)
   - [Activation](#activation)
     - [Manual activation](#manual-activation)
-    - [Auto activation](#auto-activation)
-    - [Adjusting the shift width](#adjusting-the-shift-width)
+    - [Automatic activation using hooks](#automatic-activation-using-hooks)
+    - [Adjusting the shift width and default offset](#adjusting-the-shift-width-and-default-offset)
   - [Usage](#usage)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
       - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
@@ -78,7 +78,7 @@ Once installed, the minor mode can be activated using:
 (outline-indent-minor-mode)
 ```
 
-### Auto activation
+### Automatic activation using hooks
 
 The minor mode can also be automatically activated for a certain mode. For example for Python and YAML:
 ``` emacs-lisp
@@ -91,7 +91,7 @@ The minor mode can also be automatically activated for a certain mode. For examp
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
 
-### Adjusting the shift width
+### Adjusting the shift width and default offset
 
 You can adjust the `outline-indent-shift-width` and `outline-indent-default-offset` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate value ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
 ``` emacs-lisp
