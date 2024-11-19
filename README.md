@@ -4,17 +4,24 @@
 ![License](https://img.shields.io/github/license/jamescherti/outline-indent.el)
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.images/made-for-gnu-emacs.svg)
 
-The `outline-indent.el` Emacs package provides a minor mode that enables code folding and outlining based on indentation levels for various indentation-based text files, such as YAML, Python, and any other indented text files.
+The *outline-indent* Emacs package provides a minor mode that enables code folding based on indentation levels.
 
-In addition to code folding, `outline-indent.el` allows moving indented subtrees up and down, promoting and demoting sections to adjust indentation levels, customizing the ellipsis, and inserting a new line with the same indentation level as the current line, among other features.
+The *outline-indent* package is a fast and reliable alternative to the *origami.el* and *yafolding.el* packages. (*origami.el* and *yafolding.el* are no longer maintained, slow, and known to have bugs that impact their reliability and performance.)
 
-The `outline-indent.el` package utilizes the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since `outline-indent.el` is based on *outline-minor-mode*, it's also much much faster than *origami.el* and *yafolding.el*.
+In addition to code folding, *outline-indent* allows:
+- Moving indented subtrees up and down,
+- promoting and demoting sections to adjust indentation levels,
+- customizing the ellipsis,
+- inserting a new line with the same indentation level as the current line,
+- and other features.
+
+The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much much faster than *origami.el* and *yafolding.el*.
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot2.png)
 
-The `outline-indent.el` Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
+The *outline-indent.el* Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
 
 ## Table of Contents
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
@@ -50,11 +57,11 @@ The `outline-indent.el` Emacs package offers a similar functionality to Vim's `s
 
 ## Installation
 
-To install `outline-indent` from MELPA:
+To install *outline-indent* from MELPA:
 
 1. If you haven't already done so, [add MELPA repository to your Emacs configuration](https://melpa.org/#/getting-started).
 
-2. Add the following code to your Emacs init file to install `outline-indent` from MELPA:
+2. Add the following code to your Emacs init file to install *outline-indent* from MELPA:
 ``` emacs-lisp
 (use-package outline-indent
   :ensure t
@@ -111,7 +118,7 @@ Explanation:
    - **Promotion and Demotion**: When you use `outline-promote` and `outline-demote` functions, these settings control how much the outline level is adjusted. For instance, in Python mode, promoting a block of code (moving it to a higher outline level) will decrease its indentation by 4 spaces, and demoting it will increase its indentation by 4 spaces.
 
 3. **Default Behavior**:
-   - By default, `outline-indent-default-offset` is set to 1, which works with any indentation level, as even a single space is enough to fold any indented block using `outline-indent`.
+   - By default, `outline-indent-default-offset` is set to 1, which works with any indentation level, as even a single space is enough to fold any indented block using *outline-indent*.
    - By default, `outline-indent-default-shift-width` is `nil`, which means it inherits the value of `outline-indent-default-offset`. If you do not explicitly set `outline-indent-shift-width`, the promote and demote operations will use the same value as the offset. This default behavior works well in many cases, but fine-tuning these values can be necessary for languages or formats with specific indentation needs.
 
 ## Usage
@@ -198,7 +205,7 @@ Move forward or backward to the same indentation level:
 
 ### Evil mode
 
-In Evil mode, `outline-indent` works out of the box if you install `evil-collection`, and you can use the Evil and evil-collection keyboard mappings:
+In Evil mode, *outline-indent* works out of the box if you install `evil-collection`, and you can use the Evil and evil-collection keyboard mappings:
 - Open fold(s): `zo`, `zO`, `zr`
 - Close fold(s): `zc`, `zC`, `zM`
 - Toggle folds: `za`
@@ -261,7 +268,7 @@ On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mod
 
 ### Why not use folding.el?
 
-The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support utilizing indentation levels to determine foldable sections.
+The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support using indentation levels to determine foldable sections.
 
 In contrast, `outline-indent.el` uses indentation levels to determine foldable sections.
 
@@ -310,7 +317,7 @@ The *dtrt-indent* package automatically detects the indentation offset used in s
 
 ## License
 
-The `outline-indent` Emacs package has been written by [James Cherti](https://www.jamescherti.com/) and is distributed under terms of the GNU General Public License version 3, or, at your choice, any later version.
+The *outline-indent* Emacs package has been written by [James Cherti](https://www.jamescherti.com/) and is distributed under terms of the GNU General Public License version 3, or, at your choice, any later version.
 
 Copyright (C) 2024 [James Cherti](https://www.jamescherti.com)
 
