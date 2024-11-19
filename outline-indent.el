@@ -1,4 +1,4 @@
-;;; outline-indent.el --- Folding text blocks based on indentation -*- lexical-binding: t; -*-
+;;; outline-indent.el --- Folding text based on indentation (origami alternative) -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2024 James Cherti | https://www.jamescherti.com/contact/
 
