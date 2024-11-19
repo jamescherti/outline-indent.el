@@ -10,7 +10,7 @@ The **outline-indent** package is a fast and reliable alternative to the **origa
 
 In addition to code folding, *outline-indent* allows:
 - Moving indented subtrees up and down,
-- indent/unindent (demoting/promoting) sections to adjust indentation levels,
+- indent/unindent sections to adjust indentation levels,
 - customizing the ellipsis,
 - inserting a new line with the same indentation level as the current line,
 - and other features.

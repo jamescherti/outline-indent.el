@@ -33,7 +33,7 @@
 ;;
 ;; In addition to code folding, outline-indent allows:
 ;; - Moving indented subtrees up and down,
-;; - promoting and demoting sections to adjust indentation levels,
+;; - indent/unindent sections to adjust indentation levels,
 ;; - customizing the ellipsis,
 ;; - inserting a new line with the same indentation level as the current line,
 ;; - and other features.
