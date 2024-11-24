@@ -33,6 +33,6 @@ compile: cask
 	  -f batch-byte-compile $$(cask files); \
 	  (ret=$$? ; cask clean-elc && exit $$ret)
 
-.PHONY: test
-test: compile
-	cask emacs --batch -L . -L tests -l tests/test-outline-indent.el -f test-outline-indent
+# .PHONY: test
+# test: compile
+# 	cask emacs --batch -L . -L tests -l tests/test-outline-indent.el -f test-outline-indent

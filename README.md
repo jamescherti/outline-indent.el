@@ -9,13 +9,14 @@ The **outline-indent** Emacs package provides a minor mode that enables code fol
 The **outline-indent** package is a fast and reliable alternative to the **origami.el** and **yafolding.el** packages. (*origami.el* and *yafolding.el* are no longer maintained, slow, and known to have bugs that impact their reliability and performance.)
 
 In addition to code folding, *outline-indent* allows:
-- Moving indented subtrees up and down,
-- indent/unindent sections to adjust indentation levels,
-- customizing the ellipsis,
-- inserting a new line with the same indentation level as the current line,
+- moving indented blocks up and down with `(outline-move-subtree-up)` and `(outline-move-subtree-down)`,
+- indenting/unindenting to adjust indentation levels with `(outline-demote)` and `(outline-promote)`,
+- inserting a new line with the same indentation level as the current line with `(outline-indent-insert-heading)`,
+- Move backward/forward to the indentation level of the current line with `(outline-backward-same-level)` and `(outline-forward-same-level)`.
+- Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
 - and other features.
 
-The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much much faster than *origami.el* and *yafolding.el*.
+The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
 
@@ -191,6 +192,7 @@ Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold
 
 You can also indent/unindent and move subtree up and down using:
 
+- `(outline-backward-same-level)` and `(outline-forward-same-level)`: Move backward/forward to the indentation level of the current line.
 - `(outline-indent-demote)` and `(outline-indent-promote)`: Indent or unindent the entire subtree.
 - `(outline-indent-move-subtree-down)` and `(outline-indent-move-subtree-up)` to move the current subtree up or down.
 - `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.

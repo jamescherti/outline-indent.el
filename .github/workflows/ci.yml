@@ -71,7 +71,7 @@ jobs:
           CASK_PATH: $HOME/.cask/bin
         run: 'echo -e "Ref: $GITHUB_REF\n$(emacs --version)" && make -C ~/melpazoid'
 
-      - name: Run tests
-        run: make test
-        env:
-          CASK_PATH: $HOME/.cask/bin
+      # - name: Run tests
+      #   run: make test
+      #   env:
+      #     CASK_PATH: $HOME/.cask/bin

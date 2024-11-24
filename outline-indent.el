@@ -396,6 +396,32 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
     ;; Apply the original function without modification
     (apply orig-fun args)))
 
+(defun outline-indent--advice-forward-same-level (orig-fun &rest args)
+  "Advice for `outline-forward-same-level'.
+It only changes the behavior when `outline-indent-minor-mode' is active.
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      ;; Adjust behavior specific to `outline-indent-minor-mode`
+      (let ((column (current-column)))
+        (unwind-protect
+            (apply orig-fun args)
+          (move-to-column column)))
+    ;; Apply the original function without modification
+    (apply orig-fun args)))
+
+(defun outline-indent--advice-backward-same-level (orig-fun &rest args)
+  "Advice for `outline-backward-same-level'.
+It only changes the behavior when `outline-indent-minor-mode' is active.
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      ;; Adjust behavior specific to `outline-indent-minor-mode`
+      (let ((column (current-column)))
+        (unwind-protect
+            (apply orig-fun args)
+          (move-to-column column)))
+    ;; Apply the original function without modification
+    (apply orig-fun args)))
+
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
   "Toggle `outline-indent-minor-mode'.
@@ -433,6 +459,10 @@ This mode sets up outline to work based on indentation."
                       :around #'outline-indent--advice-demote)
           (advice-add 'outline-insert-heading
                       :around #'outline-indent--advice-insert-heading)
+          (advice-add 'outline-forward-same-level
+                      :around #'outline-indent--advice-forward-same-level)
+          (advice-add 'outline-backward-same-level
+                      :around #'outline-indent--advice-backward-same-level)
           (advice-add 'outline-move-subtree-up
                       :around #'outline-indent--advice-move-subtree-up)
           (advice-add 'outline-move-subtree-down
