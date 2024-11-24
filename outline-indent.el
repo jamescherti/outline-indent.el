@@ -417,8 +417,9 @@ This mode sets up outline to work based on indentation."
         (outline-indent--update-ellipsis)
 
         ;; Ensures that window-start is never invisible
-        (setq-local make-window-start-visible
-                    outline-indent-make-window-start-visible)
+        (when (boundp 'make-window-start-visible)
+          (setq-local make-window-start-visible
+                      outline-indent-make-window-start-visible))
 
         (when outline-indent-advise-outline-functions
           ;; Advise the built-in `outline-mode' and `outline-minor-mode'
