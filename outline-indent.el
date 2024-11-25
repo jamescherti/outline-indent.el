@@ -166,30 +166,31 @@ Functions that will be advised include:
 
 It is recommended to keep this set to t for improved behavior."
   :type 'boolean
-  :set (lambda (symbol value)
-         (set-default symbol value)
-         (if value
-             ;; Advise the built-in `outline-mode' and `outline-minor-mode'
-             ;; functions to improve compatibility with
-             ;; `outline-indent-minor-mode'. The built-in `outline-minor-mode'
-             ;; functions will work exactly as before and will only exhibit
-             ;; different behavior when `outline-indent-minor-mode' is active.
-             (progn
-               (advice-add 'outline-promote :around #'outline-indent--advice-promote)
-               (advice-add 'outline-demote :around #'outline-indent--advice-demote)
-               (advice-add 'outline-insert-heading :around #'outline-indent--advice-insert-heading)
-               (advice-add 'outline-forward-same-level :around #'outline-indent--advice-forward-same-level)
-               (advice-add 'outline-backward-same-level :around #'outline-indent--advice-backward-same-level)
-               (advice-add 'outline-move-subtree-up :around #'outline-indent--advice-move-subtree-up)
-               (advice-add 'outline-move-subtree-down :around #'outline-indent--advice-move-subtree-down))
-           (progn
-             (advice-remove 'outline-promote #'outline-indent--advice-promote)
-             (advice-remove 'outline-demote #'outline-indent--advice-demote)
-             (advice-remove 'outline-insert-heading #'outline-indent--advice-insert-heading)
-             (advice-remove 'outline-forward-same-level #'outline-indent--advice-forward-same-level)
-             (advice-remove 'outline-backward-same-level #'outline-indent--advice-backward-same-level)
-             (advice-remove 'outline-move-subtree-up #'outline-indent--advice-move-subtree-up)
-             (advice-remove 'outline-move-subtree-down #'outline-indent--advice-move-subtree-down))))
+  :set
+  (lambda (symbol value)
+    (set-default symbol value)
+    (if value
+        ;; Advise the built-in `outline-mode' and `outline-minor-mode'
+        ;; functions to improve compatibility with
+        ;; `outline-indent-minor-mode'. The built-in `outline-minor-mode'
+        ;; functions will work exactly as before and will only exhibit
+        ;; different behavior when `outline-indent-minor-mode' is active.
+        (progn
+          (advice-add 'outline-promote :around #'outline-indent--advice-promote)
+          (advice-add 'outline-demote :around #'outline-indent--advice-demote)
+          (advice-add 'outline-insert-heading :around #'outline-indent--advice-insert-heading)
+          (advice-add 'outline-forward-same-level :around #'outline-indent--advice-forward-same-level)
+          (advice-add 'outline-backward-same-level :around #'outline-indent--advice-backward-same-level)
+          (advice-add 'outline-move-subtree-up :around #'outline-indent--advice-move-subtree-up)
+          (advice-add 'outline-move-subtree-down :around #'outline-indent--advice-move-subtree-down))
+      ;; Disable
+      (advice-remove 'outline-promote #'outline-indent--advice-promote)
+      (advice-remove 'outline-demote #'outline-indent--advice-demote)
+      (advice-remove 'outline-insert-heading #'outline-indent--advice-insert-heading)
+      (advice-remove 'outline-forward-same-level #'outline-indent--advice-forward-same-level)
+      (advice-remove 'outline-backward-same-level #'outline-indent--advice-backward-same-level)
+      (advice-remove 'outline-move-subtree-up #'outline-indent--advice-move-subtree-up)
+      (advice-remove 'outline-move-subtree-down #'outline-indent--advice-move-subtree-down)))
   :group 'outline-indent)
 
 (defvar outline-indent-minor-mode-map
@@ -263,8 +264,8 @@ addressing the issue where the cursor might be reset after the operation."
     (setq arg 1))
   (outline-indent-move-subtree-down (- arg)))
 
-(defun outline-indent-shift-right (&optional which arg)
-  "Demote the subtree, increasing its indentation level.
+(defun outline-indent-shift-right (&optional _which arg)
+  "Increasing the indentation level.
 
 The global variable `outline-indent-shift-width' or
 `outline-indent-default-offset' is used to determine the number of spaces to
@@ -273,10 +274,10 @@ indent the subtree.
 WHICH is ignored (backward compatibility with `outline-demote').
 If ARG is positive, indent the outline. If ARG is negative, unindent the
 outline. Defaults to 1 if ARG is nil."
-  (interactive)
-  (unless which
-    ;; Ignore: Warning: Unused lexical argument `which'
-    (setq which t))
+  (interactive
+   (list (if (and transient-mark-mode mark-active) 'region
+	         (outline-back-to-heading)
+	         (if current-prefix-arg nil 'subtree))))
   (unless arg
     (setq arg 1))
   (let ((shift-right (>= arg 0))
@@ -304,16 +305,17 @@ outline. Defaults to 1 if ARG is nil."
         (move-to-column (+ column shift-width))
       (move-to-column (max (- column shift-width) 0)))))
 
-(defun outline-indent-shift-left (&optional which)
-  "Promote the subtree, decreasing its indentation level.
+(defun outline-indent-shift-left (&optional _which)
+  "Decreasing the indentation level. Equivalent to `outline-promote'.
+
 The global variable `outline-indent-shift-width' or
 `outline-indent-default-offset' is used to determine the number of spaces to
 unindent the subtree.
+
 WHICH is ignored (backward compatibility with `outline-promote')."
-  (interactive)
-  (unless which
-    ;; Ignore: Warning: Unused lexical argument `which'
-    (setq which t))
+  (interactive (list (if (and transient-mark-mode mark-active) 'region
+	                     (outline-back-to-heading)
+	                     (if current-prefix-arg nil 'subtree))))
   (outline-indent-shift-right nil -1))
 
 (defalias 'outline-indent-demote #'outline-indent-shift-right
@@ -463,6 +465,30 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
           (move-to-column column)))
     ;; Apply the original function without modification
     (apply orig-fun args)))
+
+(defun outline-indent-backward-same-level (&optional arg)
+  "Move backward to the ARG'th subheading at same indentation level as this one.
+Stop at the first and last indented blocks of a superior indentation."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-backward-same-level
+                       'outline-backward-same-level)
+      (outline-backward-same-level arg)
+    (outline-indent--advice-backward-same-level 'outline-backward-same-level
+                                                arg)))
+
+(defun outline-indent-forward-same-level (&optional arg)
+  "Move forward to the ARG'th subheading at same indentation level as this one.
+Stop at the first and last indented blocks of a superior indentation."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-forward-same-level
+                       'outline-forward-same-level)
+      (outline-forward-same-level arg)
+    (outline-indent--advice-forward-same-level 'outline-forward-same-level
+                                               arg)))
 
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode

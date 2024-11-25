@@ -9,10 +9,10 @@ The **outline-indent** Emacs package provides a minor mode that enables code fol
 The **outline-indent** package is a fast and reliable alternative to the **origami.el** and **yafolding.el** packages. (*origami.el* and *yafolding.el* are no longer maintained, slow, and known to have bugs that impact their reliability and performance.)
 
 In addition to code folding, *outline-indent* allows:
-- moving indented blocks up and down with `(outline-move-subtree-up)` and `(outline-move-subtree-down)`,
+- moving indented blocks up and down with `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`,
 - indenting/unindenting to adjust indentation levels with `(outline-indent-shift-right)` and `(outline-indent-shift-left)`,
 - inserting a new line with the same indentation level as the current line with `(outline-indent-insert-heading)`,
-- Move backward/forward to the indentation level of the current line with `(outline-backward-same-level)` and `(outline-forward-same-level)`.
+- Move backward/forward to the indentation level of the current line with `(outline-indent-backward-same-level)` and `(outline-indent-forward-same-level)`.
 - Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
 - and other features.
 
@@ -38,6 +38,7 @@ The *outline-indent.el* Emacs package offers a similar functionality to Vim's `s
   - [Usage](#usage)
     - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
+      - [outline-indent-backward-same-level and outline-indent-forward-same-level](#outline-indent-backward-same-level-and-outline-indent-forward-same-level)
       - [outline-indent-shift-left and outline-indent-shift-right](#outline-indent-shift-left-and-outline-indent-shift-right)
       - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
       - [outline-indent-insert-heading](#outline-indent-insert-heading)
@@ -134,6 +135,22 @@ Run the following function to fold all indented blocks:
 ```
 
 ### Functions specific to outline-indent-minor-mode
+
+#### outline-indent-backward-same-level and outline-indent-forward-same-level
+
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-backward-same-level)` and `(outline-forward-same-level)` as an alternative to `(outline-indent-backward-same-level)` and `(outline-indent-forward-same-level)`)*
+
+To move to the next block with the same indentation level:
+
+``` emacs-lisp
+(outline-indent-forward-same-level)
+```
+
+To move to the previous block with the same indentation level:
+
+``` emacs-lisp
+(outline-indent-backward-same-level)
+```
 
 #### outline-indent-shift-left and outline-indent-shift-right
 
