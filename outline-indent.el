@@ -375,46 +375,48 @@ addressing the issue where the cursor might be reset after the operation."
          (column (current-column))
          ;; Update 3: Ensure that all empty lines are included
          (outline-blank-line nil))
-    (outline-back-to-heading)
-    (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
-                      'outline-get-last-sibling))
-           ;; Find the end of the subtree to be moved as well as the point to
-           ;; move it to, adding a newline if necessary to ensure these points
-           ;; are at the beginning of the line below the subtree.
-           (end-point-func (lambda ()
-                             (outline-end-of-subtree)
-                             (if (eq (char-after) ?\n) (forward-char 1)
-                               (if (and (eobp) (not (bolp))) (insert "\n")))
-                             (point)))
-           (beg (point))
-           (folded (save-match-data
-                     (outline-end-of-heading)
-                     (outline-invisible-p)))
-           (end (save-match-data
-                  (funcall end-point-func)))
-           (ins-point (make-marker))
-           (cnt (abs arg)))
-      ;; Find insertion point, with error handling.
-      (goto-char beg)
-      (while (> cnt 0)
-        (or (funcall movfunc)
-            (progn (goto-char beg)
-                   (user-error "Cannot move past superior level")))
-        (setq cnt (1- cnt)))
-      (if (> arg 0)
-          ;; Moving forward - still need to move over subtree.
-          (funcall end-point-func))
-      (move-marker ins-point (point))
-      (insert (delete-and-extract-region beg end))
-      (goto-char ins-point)
-      (if folded
-          ;; Update 4: Hide the subtree using the original outline-blank-line
-          ;; This ensures that the fold is closed properly
-          (let ((outline-blank-line original-outline-blank-line))
-            (outline-hide-subtree)))
-      (move-marker ins-point nil))
-    ;; Update 5: Restore the column
-    (move-to-column column)))
+    (unwind-protect
+        (progn
+          (outline-back-to-heading)
+          (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
+                            'outline-get-last-sibling))
+                 ;; Find the end of the subtree to be moved as well as the point to
+                 ;; move it to, adding a newline if necessary to ensure these points
+                 ;; are at the beginning of the line below the subtree.
+                 (end-point-func (lambda ()
+                                   (outline-end-of-subtree)
+                                   (if (eq (char-after) ?\n) (forward-char 1)
+                                     (if (and (eobp) (not (bolp))) (insert "\n")))
+                                   (point)))
+                 (beg (point))
+                 (folded (save-match-data
+                           (outline-end-of-heading)
+                           (outline-invisible-p)))
+                 (end (save-match-data
+                        (funcall end-point-func)))
+                 (ins-point (make-marker))
+                 (cnt (abs arg)))
+            ;; Find insertion point, with error handling.
+            (goto-char beg)
+            (while (> cnt 0)
+              (or (funcall movfunc)
+                  (progn (goto-char beg)
+                         (user-error "Cannot move past superior level")))
+              (setq cnt (1- cnt)))
+            (if (> arg 0)
+                ;; Moving forward - still need to move over subtree.
+                (funcall end-point-func))
+            (move-marker ins-point (point))
+            (insert (delete-and-extract-region beg end))
+            (goto-char ins-point)
+            (if folded
+                ;; Update 4: Hide the subtree using the original outline-blank-line
+                ;; This ensures that the fold is closed properly
+                (let ((outline-blank-line original-outline-blank-line))
+                  (outline-hide-subtree)))
+            (move-marker ins-point nil)))
+      ;; Update 5: Restore the column
+      (move-to-column column))))
 
 (defun outline-indent--advice-insert-heading (orig-fun &rest args)
   "Advice function for `outline-insert-heading'.
