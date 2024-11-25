@@ -304,6 +304,12 @@ addressing the issue where the cursor might be reset after the operation."
     (setq arg 1))
   (outline-indent-move-subtree-down (- arg)))
 
+(defun outline-indent--deactivate-region ()
+  "Deactivate the current region and move point to the start of the region."
+  (when (use-region-p)
+    (goto-char (region-beginning))
+    (deactivate-mark)))
+
 (defun outline-indent-shift-right (&optional _which arg)
   "Increasing the indentation level.
 The global variable `outline-indent-shift-width' or
@@ -315,9 +321,7 @@ outline. Defaults to 1 if ARG is nil."
   (interactive)
   (unless arg
     (setq arg 1))
-  (when (use-region-p)
-    (goto-char (region-beginning))
-    (deactivate-mark))
+  (outline-indent--deactivate-region)
   (let ((shift-right (>= arg 0))
         (column (current-column))
         (shift-width
@@ -387,6 +391,7 @@ addressing the issue where the cursor might be reset after the operation."
   (interactive "p")
   (unless arg
     (setq arg 1))
+  (outline-indent--deactivate-region)
   ;; Update 1: Save outline-blank-line
   (let* ((original-outline-blank-line outline-blank-line)
          ;; Update 2: Save the column
@@ -483,7 +488,9 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
       ;; Adjust behavior specific to `outline-indent-minor-mode`
       (let ((column (current-column)))
         (unwind-protect
-            (apply orig-fun args)
+            (progn
+              (outline-indent--deactivate-region)
+              (apply orig-fun args))
           (move-to-column column)))
     ;; Apply the original function without modification
     (apply orig-fun args)))
@@ -496,7 +503,9 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
       ;; Adjust behavior specific to `outline-indent-minor-mode`
       (let ((column (current-column)))
         (unwind-protect
-            (apply orig-fun args)
+            (progn
+              (outline-indent--deactivate-region)
+              (apply orig-fun args))
           (move-to-column column)))
     ;; Apply the original function without modification
     (apply orig-fun args)))
@@ -528,9 +537,7 @@ Stop at the first and last indented blocks of a superior indentation."
 (defun outline-indent-select ()
   "Select the indented block at point."
   (interactive)
-  (when (use-region-p)
-    (goto-char (region-beginning))
-    (deactivate-mark))
+  (outline-indent--deactivate-region)
   (let ((begin (save-excursion
                  (outline-back-to-heading)
                  (point)))
