@@ -10,7 +10,7 @@ The **outline-indent** package is a fast and reliable alternative to the **origa
 
 In addition to code folding, *outline-indent* allows:
 - moving indented blocks up and down with `(outline-move-subtree-up)` and `(outline-move-subtree-down)`,
-- indenting/unindenting to adjust indentation levels with `(outline-demote)` and `(outline-promote)`,
+- indenting/unindenting to adjust indentation levels with `(outline-indent-shift-right)` and `(outline-indent-shift-left)`,
 - inserting a new line with the same indentation level as the current line with `(outline-indent-insert-heading)`,
 - Move backward/forward to the indentation level of the current line with `(outline-backward-same-level)` and `(outline-forward-same-level)`.
 - Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
@@ -38,7 +38,7 @@ The *outline-indent.el* Emacs package offers a similar functionality to Vim's `s
   - [Usage](#usage)
     - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
-      - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
+      - [outline-indent-shift-left and outline-indent-shift-right](#outline-indent-shift-left-and-outline-indent-shift-right)
       - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
       - [outline-indent-insert-heading](#outline-indent-insert-heading)
     - [Vanilla Emacs](#vanilla-emacs)
@@ -113,11 +113,11 @@ You can adjust the `outline-indent-shift-width` and `outline-indent-default-offs
 Explanation:
 1. **Outline Indentation Parameters**:
    - **`outline-indent-default-offset`**: This variable determines the base indentation level for each outline level. It specifies the amount by which each successive outline level should be indented, effectively controlling the visual structure of the outline.
-   - **`outline-indent-shift-width`**: This variable determines the number of spaces by which to adjust the indentation when promoting or demoting an indented block with `(outline-promote)` and `(outline-demote)`.
+   - **`outline-indent-shift-width`**: This variable determines the number of spaces by which to adjust the indentation when promoting or demoting an indented block with `(outline-indent-shift-right)` and `(outline-indent-shift-left)`.
 
 2. **Why Customize These Values?**:
    - **Language-specific Indentation**: Different programming languages and file formats have different indentation standards. Python typically uses 4 spaces per indentation level, while YAML often uses 2 spaces. Customizing these values for different modes ensures that your outline structure is consistent with the language's indentation practices.
-   - **Promotion and Demotion**: When you use `outline-promote` and `outline-demote` functions, these settings control how much the outline level is adjusted. For instance, in Python mode, promoting a block of code (moving it to a higher outline level) will decrease its indentation by 4 spaces, and demoting it will increase its indentation by 4 spaces.
+   - **Shift right and shift left**: When you use `outline-indent-shift-left` and `outline-indent-shift-right` functions, these settings control how much the outline level is adjusted. For instance, in Python mode, promoting a block of code (moving it to a higher outline level) will decrease its indentation by 4 spaces, and demoting it will increase its indentation by 4 spaces.
 
 3. **Default Behavior**:
    - By default, `outline-indent-default-offset` is set to 1, which works with any indentation level, as even a single space is enough to fold any indented block using *outline-indent*.
@@ -135,20 +135,20 @@ Run the following function to fold all indented blocks:
 
 ### Functions specific to outline-indent-minor-mode
 
-#### outline-indent-promote and outline-indent-demote
+#### outline-indent-shift-left and outline-indent-shift-right
 
-*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-promote)` and `(outline-demote)` as an alternative to `(outline-indent-promote)` and `(outline-indent-demote)`)*
+*(By default, `outline-indent-advise-outline-functions` is set to t, which means that you can also use the built-in outline functions `(outline-promote)` and `(outline-demote)` as an alternative to `(outline-indent-shift-left)` and `(outline-indent-shift-right)`)*
 
 These functions can be used to decrease and increase the indentation level of indented blocks.
 
 To increase indentation:
 ``` emacs-lisp
-(outline-indent-demote)
+(outline-indent-shift-right)
 ```
 
 To decrease indentation:
 ``` emacs-lisp
-(outline-indent-promote)
+(outline-indent-shift-left)
 ```
 
 The global variable `outline-indent-shift-width` is used to determine the number of spaces to indent or unindent the subtree.
@@ -202,7 +202,7 @@ Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold
 You can also indent/unindent and move subtree up and down using:
 
 - `(outline-backward-same-level)` and `(outline-forward-same-level)`: Move backward/forward to the indentation level of the current line.
-- `(outline-indent-demote)` and `(outline-indent-promote)`: Indent or unindent the entire subtree.
+- `(outline-indent-shift-right)` and `(outline-indent-shift-left)`: Indent or unindent the entire subtree.
 - `(outline-indent-move-subtree-down)` and `(outline-indent-move-subtree-up)` to move the current subtree up or down.
 - `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.
 
@@ -229,8 +229,8 @@ You may want to set a few additional key mappings:
   (defun my-evil-define-key-outline-indent-minor-mode ()
     ;; Set `M-h` and `M-l` to decrease and increase the indentation level of
     ;; indented blocks
-    (evil-define-key 'normal 'local (kbd "M-h") #'outline-indent-promote)
-    (evil-define-key 'normal 'local (kbd "M-l") #'outline-indent-demote)
+    (evil-define-key 'normal 'local (kbd "M-h") #'outline-indent-shift-left)
+    (evil-define-key 'normal 'local (kbd "M-l") #'outline-indent-shift-right)
 
     ;; Set `M-k` and `M-j` to move indented blocks up and down
     (evil-define-key 'normal 'local (kbd "M-k") #'outline-indent-move-subtree-up)

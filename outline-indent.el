@@ -98,6 +98,8 @@
 
 (require 'outline)
 
+;;; Customizations
+
 (defgroup outline-indent nil
   "Non-nil if outline-indent mode mode is enabled."
   :group 'outline-indent
@@ -115,9 +117,9 @@ When set to nil, this variable defaults to the value of
 `outline-indent-default-offset'.
 
 This setting is used by:
-- `outline-indent-demote' (or `outline-demote') to increase the indentation
+- `outline-indent-shift-right' (or `outline-demote') to increase the indentation
   level of the subtree.
-- `outline-indent-promote' (or `outline-promote') to decrease the indentation
+- `outline-indent-shift-left' (or `outline-promote') to decrease the indentation
   level of the subtree."
   :type '(choice (const :tag "Use default" nil)
                  integer)
@@ -195,6 +197,13 @@ It is recommended to keep this set to t for improved behavior."
     map)
   "Keymap for `outline-indent-minor-mode'.")
 
+;;; Internal variables
+
+(defvar outline-indent--disable nil
+  "Non-nil to make outline functions to behave as if they are not advised.")
+
+;;; Functions
+
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
   (+ 1 (/ (current-indentation) (max outline-indent-default-offset 1))))
@@ -254,7 +263,7 @@ addressing the issue where the cursor might be reset after the operation."
     (setq arg 1))
   (outline-indent-move-subtree-down (- arg)))
 
-(defun outline-indent-demote (&optional which arg)
+(defun outline-indent-shift-right (&optional which arg)
   "Demote the subtree, increasing its indentation level.
 
 The global variable `outline-indent-shift-width' or
@@ -295,7 +304,7 @@ outline. Defaults to 1 if ARG is nil."
         (move-to-column (+ column shift-width))
       (move-to-column (max (- column shift-width) 0)))))
 
-(defun outline-indent-promote (&optional which)
+(defun outline-indent-shift-left (&optional which)
   "Promote the subtree, decreasing its indentation level.
 The global variable `outline-indent-shift-width' or
 `outline-indent-default-offset' is used to determine the number of spaces to
@@ -305,29 +314,37 @@ WHICH is ignored (backward compatibility with `outline-promote')."
   (unless which
     ;; Ignore: Warning: Unused lexical argument `which'
     (setq which t))
-  (outline-indent-demote nil -1))
+  (outline-indent-shift-right nil -1))
+
+(defalias 'outline-indent-demote #'outline-indent-shift-right
+  "Deprecated alias for `outline-indent-shift-right'.")
+(make-obsolete 'outline-indent-demote 'outline-indent-shift-right "1.1.1")
+
+(defalias 'outline-indent-promote #'outline-indent-shift-left
+  "Deprecated alias for `outline-indent-shift-left'.")
+(make-obsolete 'outline-indent-promote 'outline-indent-shift-left "1.1.1")
 
 (defun outline-indent--advice-promote (orig-fun &rest args)
-  "Advice function for `outline-indent-promote'.
+  "Advice function for `outline-indent-shift-left'.
 
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
 Otherwise, call the original function with the given arguments.
 
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
-      (outline-indent-promote)
+      (outline-indent-shift-left)
     (apply orig-fun args)))
 
 (defun outline-indent--advice-demote (orig-fun &rest args)
-"Advice function for `outline-indent-demote'.
+  "Advice function for `outline-indent-shift-right'.
 
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
 Otherwise, call the original function with the given arguments.
 
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
-(if (bound-and-true-p outline-indent-minor-mode)
-    (outline-indent-demote)
-  (apply orig-fun args)))
+  (if (bound-and-true-p outline-indent-minor-mode)
+      (outline-indent-shift-right)
+    (apply orig-fun args)))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
