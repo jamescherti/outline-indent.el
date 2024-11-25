@@ -535,9 +535,9 @@ Stop at the first and last indented blocks of a superior indentation."
                  (outline-back-to-heading)
                  (point)))
         (end (outline-indent--next-lower-or-equal-indentation)))
-    (goto-char begin)
+    (goto-char (+ end 1))
     (push-mark)
-    (goto-char end)
+    (goto-char begin)
     (activate-mark)))
 
 (defun outline-indent-close-folds ()

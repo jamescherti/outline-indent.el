@@ -279,6 +279,9 @@ You may want to set a few additional key mappings:
     (evil-define-key 'normal 'local (kbd "M-k") #'outline-indent-move-subtree-up)
     (evil-define-key 'normal 'local (kbd "M-j") #'outline-indent-move-subtree-down)
 
+    (evil-define-key 'normal 'local (kbd "]]") #'outline-indent-forward-same-level)
+    (evil-define-key 'normal 'local (kbd "[[") #'outline-indent-backward-same-level)
+
     ;; Set C-<return> to insert a new line with the same indentation
     ;; level/depth as the current line just before the next heading
     (evil-define-key '(normal insert) 'local (kbd "C-<return>")
@@ -287,7 +290,8 @@ You may want to set a few additional key mappings:
         (outline-indent-insert-heading)
         (evil-insert-state))))
 
-  (add-hook 'outline-indent-minor-mode-hook #'my-evil-define-key-outline-indent-minor-mode))
+  (add-hook 'outline-indent-minor-mode-hook
+            #'my-evil-define-key-outline-indent-minor-mode))
 ```
 
 ## Frequently asked questions
