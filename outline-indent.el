@@ -181,6 +181,8 @@ It is recommended to keep this set to t for improved behavior."
           (advice-add 'outline-insert-heading :around #'outline-indent--advice-insert-heading)
           (advice-add 'outline-forward-same-level :around #'outline-indent--advice-forward-same-level)
           (advice-add 'outline-backward-same-level :around #'outline-indent--advice-backward-same-level)
+          ;; (advice-add 'outline-next-visible-heading :around #'outline-indent--advice-next-visible-heading)
+          ;; (advice-add 'outline-previous-visible-heading :around #'outline-indent--advice-previous-visible-heading)
           (advice-add 'outline-move-subtree-up :around #'outline-indent--advice-move-subtree-up)
           (advice-add 'outline-move-subtree-down :around #'outline-indent--advice-move-subtree-down))
       ;; Disable
@@ -189,6 +191,8 @@ It is recommended to keep this set to t for improved behavior."
       (advice-remove 'outline-insert-heading #'outline-indent--advice-insert-heading)
       (advice-remove 'outline-forward-same-level #'outline-indent--advice-forward-same-level)
       (advice-remove 'outline-backward-same-level #'outline-indent--advice-backward-same-level)
+      ;; (advice-remove 'outline-next-visible-heading #'outline-indent--advice-next-visible-heading)
+      ;; (advice-remove 'outline-previous-visible-heading #'outline-indent--advice-previous-visible-heading)
       (advice-remove 'outline-move-subtree-up #'outline-indent--advice-move-subtree-up)
       (advice-remove 'outline-move-subtree-down #'outline-indent--advice-move-subtree-down)))
   :group 'outline-indent)
@@ -197,11 +201,6 @@ It is recommended to keep this set to t for improved behavior."
   (let ((map (make-sparse-keymap)))
     map)
   "Keymap for `outline-indent-minor-mode'.")
-
-;;; Internal variables
-
-(defvar outline-indent--disable nil
-  "Non-nil to make outline functions to behave as if they are not advised.")
 
 ;;; Functions
 
@@ -439,6 +438,24 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
       (outline-indent-move-subtree-down)
     ;; Apply the original function without modification
     (apply orig-fun args)))
+
+;; (defun outline-indent--advice-next-visible-heading (orig-fun &rest args)
+;;   "Advice for `outline-next-visible-heading'.
+;; It only changes the behavior when `outline-indent-minor-mode' is active.
+;; ORIG-FUN is the original function being advised, and ARGS are its arguments."
+;;   (if (bound-and-true-p outline-indent-minor-mode)
+;;       (outline-indent-forward-same-level)
+;;     ;; Apply the original function without modification
+;;     (apply orig-fun args)))
+;;
+;; (defun outline-indent--advice-previous-visible-heading (orig-fun &rest args)
+;;   "Advice for `outline-previous-visible-heading'.
+;; It only changes the behavior when `outline-indent-minor-mode' is active.
+;; ORIG-FUN is the original function being advised, and ARGS are its arguments."
+;;   (if (bound-and-true-p outline-indent-minor-mode)
+;;       (outline-indent-backward-same-level)
+;;     ;; Apply the original function without modification
+;;     (apply orig-fun args)))
 
 (defun outline-indent--advice-forward-same-level (orig-fun &rest args)
   "Advice for `outline-forward-same-level'.
