@@ -38,6 +38,7 @@ The *outline-indent.el* Emacs package offers a similar functionality to Vim's `s
   - [Usage](#usage)
     - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
+      - [Managing folds](#managing-folds)
       - [outline-indent-backward-same-level and outline-indent-forward-same-level](#outline-indent-backward-same-level-and-outline-indent-forward-same-level)
       - [outline-indent-shift-left and outline-indent-shift-right](#outline-indent-shift-left-and-outline-indent-shift-right)
       - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
@@ -135,6 +136,22 @@ Run the following function to fold all indented blocks:
 ```
 
 ### Functions specific to outline-indent-minor-mode
+
+#### Managing folds
+
+These functions help you manage the visibility of code blocks or headings in `outline-indent-minor-mode`. Use them to control which sections of your document are visible or hidden:
+
+Fold at point:
+- `(outline-indent-open-fold)`: Open fold at point.
+- `(outline-indent-close-fold)`: Close fold at point.
+
+All folds:
+- `(outline-indent-close-folds)`: Close all folds.
+- `(outline-indent-open-folds)`: Open all folds.
+
+Other:
+- `(outline-indent-open-fold-rec)`: Open fold at point recursively.
+- `(outline-indent-toggle-fold)`: Open or close a fold under point.
 
 #### outline-indent-backward-same-level and outline-indent-forward-same-level
 
