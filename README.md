@@ -36,6 +36,7 @@ The *outline-indent.el* Emacs package offers a similar functionality to Vim's `s
     - [Automatic activation using hooks](#automatic-activation-using-hooks)
     - [Adjusting the shift width and default offset](#adjusting-the-shift-width-and-default-offset)
   - [Usage](#usage)
+    - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
       - [outline-indent-promote and outline-indent-demote](#outline-indent-promote-and-outline-indent-demote)
       - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
@@ -123,6 +124,14 @@ Explanation:
    - By default, `outline-indent-default-shift-width` is `nil`, which means it inherits the value of `outline-indent-default-offset`. If you do not explicitly set `outline-indent-shift-width`, the promote and demote operations will use the same value as the offset. This default behavior works well in many cases, but fine-tuning these values can be necessary for languages or formats with specific indentation needs.
 
 ## Usage
+
+### How to check if it is working?
+
+Run the following function to fold all indented blocks:
+
+``` emacs-lisp
+(hide-sublevels 1)
+```
 
 ### Functions specific to outline-indent-minor-mode
 
