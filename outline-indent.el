@@ -242,18 +242,13 @@ It is recommended to keep this set to t for improved behavior."
       (set-display-table-slot display-table 'selective-display value)
       (setq buffer-display-table display-table))))
 
-(defun outline-indent-insert-heading ()
-  "Insert a new line with the same indentation level/depth as the current line.
-The line is inserted just before the next heading that shares the same or less
-indentation level.
+(defun outline-indent--next-lower-or-equal-indentation ()
+  "Go to the same indentation level/depth as the current line.
+Go to just before the next heading that shares the same or less indentation
+level.
 
 This function finds the nearest non-empty line with the same or less
-indentation as the current line and inserts a new line before it.
-
-In `outline-indent-minor-mode', where most lines are treated as headings,
-this function is suitable for maintaining consistent indentation within the
-outline structure. It can be used as an alternative to `outline-insert-heading'
-to insert content at the same indentation level after the current fold."
+indentation as the current line."
   (interactive)
   (let ((initial-indentation nil)
         (found-point nil))
@@ -267,12 +262,32 @@ to insert content at the same indentation level after the current fold."
             (setq found-point (point))))
 
       (when (and (not found-point) (eobp))
-        (setq found-point (point))))
+        (setq found-point (point)))
 
-    (when found-point
-      (goto-char found-point)
-      (forward-line -1)
-      (end-of-line)
+      (when found-point
+        (goto-char found-point)
+        (forward-line -1)
+        (end-of-line)
+        (point)))))
+
+(defun outline-indent-insert-heading ()
+  "Insert a new line with the same indentation level/depth as the current line.
+The line is inserted just before the next heading that shares the same or less
+indentation level.
+
+This function finds the nearest non-empty line with the same or less
+indentation as the current line and inserts a new line before it.
+
+In `outline-indent-minor-mode', where most lines are treated as headings,
+this function is suitable for maintaining consistent indentation within the
+outline structure. It can be used as an alternative to `outline-insert-heading'
+to insert content at the same indentation level after the current fold."
+  (interactive)
+  (let ((initial-indentation (save-excursion (beginning-of-visual-line)
+                                             (current-indentation)))
+        (point (outline-indent--next-lower-or-equal-indentation)))
+    (when point
+      (goto-char point)
       (newline)
       (when outline-indent-insert-heading-add-blank-line
         (newline)
@@ -509,6 +524,21 @@ Stop at the first and last indented blocks of a superior indentation."
       (outline-forward-same-level arg)
     (outline-indent--advice-forward-same-level 'outline-forward-same-level
                                                arg)))
+
+(defun outline-indent-select ()
+  "Select the indented block at point."
+  (interactive)
+  (when (use-region-p)
+    (goto-char (region-beginning))
+    (deactivate-mark))
+  (let ((begin (save-excursion
+                 (outline-back-to-heading)
+                 (point)))
+        (end (outline-indent--next-lower-or-equal-indentation)))
+    (goto-char begin)
+    (push-mark)
+    (goto-char end)
+    (activate-mark)))
 
 (defun outline-indent-close-folds ()
   "Close all folds."

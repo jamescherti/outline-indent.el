@@ -14,6 +14,7 @@ In addition to code folding, *outline-indent* allows:
 - inserting a new line with the same indentation level as the current line with `(outline-indent-insert-heading)`,
 - Move backward/forward to the indentation level of the current line with `(outline-indent-backward-same-level)` and `(outline-indent-forward-same-level)`.
 - Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
+- Selecting the indented block with `(outline-indent-select)`.
 - and other features.
 
 The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
@@ -39,6 +40,7 @@ The *outline-indent.el* Emacs package offers a similar functionality to Vim's `s
     - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
       - [Managing folds](#managing-folds)
+      - [Selecting indented text](#selecting-indented-text)
       - [outline-indent-backward-same-level and outline-indent-forward-same-level](#outline-indent-backward-same-level-and-outline-indent-forward-same-level)
       - [outline-indent-shift-left and outline-indent-shift-right](#outline-indent-shift-left-and-outline-indent-shift-right)
       - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
@@ -152,6 +154,13 @@ All folds:
 Other:
 - `(outline-indent-open-fold-rec)`: Open fold at point recursively.
 - `(outline-indent-toggle-fold)`: Open or close a fold under point.
+
+#### Selecting indented text
+
+The current indented text can be selected using:
+```elisp
+(outline-indent-select)
+```
 
 #### outline-indent-backward-same-level and outline-indent-forward-same-level
 
