@@ -146,6 +146,15 @@ enabling `outline-indent-minor-mode'."
   :type 'boolean
   :group 'outline-indent)
 
+(defcustom outline-indent-insert-heading-add-blank-line t
+  "Non-nil to make `outline-indent-insert-heading' add a blank line.
+
+If non-nil, a blank line is inserted immediately before the newly added line,
+and the cursor is moved to it. This behavior is useful for maintaining a visual
+separation between the new indented block and surrounding content."
+  :type 'boolean
+  :group 'outline-indent)
+
 (defcustom outline-indent-advise-outline-functions t
   "If non-nil, advises built-in `outline' functions to improve compatibility.
 It is highly recommended to keep `outline-indent-advise-outline-functions'
@@ -216,6 +225,9 @@ to insert content at the same indentation level after the current fold."
       (forward-line -1)
       (end-of-line)
       (newline)
+      (when outline-indent-insert-heading-add-blank-line
+        (newline)
+        (forward-line -1))
       (indent-to initial-indentation))))
 
 (defun outline-indent-move-subtree-up (&optional arg)
