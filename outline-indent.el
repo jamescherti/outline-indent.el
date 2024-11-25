@@ -490,6 +490,38 @@ Stop at the first and last indented blocks of a superior indentation."
     (outline-indent--advice-forward-same-level 'outline-forward-same-level
                                                arg)))
 
+(defun outline-indent-close-folds ()
+  "Close all folds."
+  (interactive)
+  (with-no-warnings (outline-hide-sublevels 1)))
+
+(defun outline-indent-open-folds ()
+  "Open all folds."
+  (interactive)
+  (outline-show-all))
+
+(defun outline-indent-open-fold ()
+  "Open fold at point."
+  (interactive)
+  (with-no-warnings
+    (outline-show-entry)
+    (outline-show-children)))
+
+(defun outline-indent-close-fold ()
+  "Close fold at point."
+  (interactive)
+  (outline-hide-subtree))
+
+(defun outline-indent-open-fold-rec ()
+  "Open fold at point recursively."
+  (interactive)
+  (outline-show-subtree))
+
+(defun outline-indent-toggle-fold ()
+  "Open or close a fold under point."
+  (interactive)
+  (outline-toggle-children))
+
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
   "Toggle `outline-indent-minor-mode'.
