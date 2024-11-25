@@ -132,7 +132,7 @@ Explanation:
 Run the following function to fold all indented blocks:
 
 ``` emacs-lisp
-(hide-sublevels 1)
+(outline-indent-close-folds)
 ```
 
 ### Functions specific to outline-indent-minor-mode
@@ -146,8 +146,8 @@ Fold at point:
 - `(outline-indent-close-fold)`: Close fold at point.
 
 All folds:
-- `(outline-indent-close-folds)`: Close all folds.
 - `(outline-indent-open-folds)`: Open all folds.
+- `(outline-indent-close-folds)`: Close all folds.
 
 Other:
 - `(outline-indent-open-fold-rec)`: Open fold at point recursively.
