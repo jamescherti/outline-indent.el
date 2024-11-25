@@ -185,21 +185,35 @@ It is recommended to keep this set to t for improved behavior."
         ;; functions will work exactly as before and will only exhibit
         ;; different behavior when `outline-indent-minor-mode' is active.
         (progn
-          (advice-add 'outline-promote :around #'outline-indent--advice-promote)
-          (advice-add 'outline-demote :around #'outline-indent--advice-demote)
-          (advice-add 'outline-insert-heading :around #'outline-indent--advice-insert-heading)
-          (advice-add 'outline-forward-same-level :around #'outline-indent--advice-forward-same-level)
-          (advice-add 'outline-backward-same-level :around #'outline-indent--advice-backward-same-level)
-          (advice-add 'outline-move-subtree-up :around #'outline-indent--advice-move-subtree-up)
-          (advice-add 'outline-move-subtree-down :around #'outline-indent--advice-move-subtree-down))
+          (advice-add 'outline-promote :around
+                      #'outline-indent--advice-promote)
+          (advice-add 'outline-demote :around
+                      #'outline-indent--advice-demote)
+          (advice-add 'outline-insert-heading :around
+                      #'outline-indent--advice-insert-heading)
+          (advice-add 'outline-forward-same-level :around
+                      #'outline-indent--advice-forward-same-level)
+          (advice-add 'outline-backward-same-level :around
+                      #'outline-indent--advice-backward-same-level)
+          (advice-add 'outline-move-subtree-up :around
+                      #'outline-indent--advice-move-subtree-up)
+          (advice-add 'outline-move-subtree-down :around
+                      #'outline-indent--advice-move-subtree-down))
       ;; Disable
-      (advice-remove 'outline-promote #'outline-indent--advice-promote)
-      (advice-remove 'outline-demote #'outline-indent--advice-demote)
-      (advice-remove 'outline-insert-heading #'outline-indent--advice-insert-heading)
-      (advice-remove 'outline-forward-same-level #'outline-indent--advice-forward-same-level)
-      (advice-remove 'outline-backward-same-level #'outline-indent--advice-backward-same-level)
-      (advice-remove 'outline-move-subtree-up #'outline-indent--advice-move-subtree-up)
-      (advice-remove 'outline-move-subtree-down #'outline-indent--advice-move-subtree-down)))
+      (advice-remove 'outline-promote
+                     #'outline-indent--advice-promote)
+      (advice-remove 'outline-demote
+                     #'outline-indent--advice-demote)
+      (advice-remove 'outline-insert-heading
+                     #'outline-indent--advice-insert-heading)
+      (advice-remove 'outline-forward-same-level
+                     #'outline-indent--advice-forward-same-level)
+      (advice-remove 'outline-backward-same-level
+                     #'outline-indent--advice-backward-same-level)
+      (advice-remove 'outline-move-subtree-up
+                     #'outline-indent--advice-move-subtree-up)
+      (advice-remove 'outline-move-subtree-down
+                     #'outline-indent--advice-move-subtree-down)))
   :group 'outline-indent)
 
 (defvar outline-indent-minor-mode-map
@@ -267,7 +281,6 @@ to insert content at the same indentation level after the current fold."
 
 (defun outline-indent-move-subtree-up (&optional arg)
   "Move the current subtree up past ARG headlines of the same level.
-
 This function ensures the last blank line is included, even when
 `outline-blank-line' is set to t. It also restores the cursor position,
 addressing the issue where the cursor might be reset after the operation."
@@ -278,20 +291,18 @@ addressing the issue where the cursor might be reset after the operation."
 
 (defun outline-indent-shift-right (&optional _which arg)
   "Increasing the indentation level.
-
 The global variable `outline-indent-shift-width' or
 `outline-indent-default-offset' is used to determine the number of spaces to
 indent the subtree.
-
 WHICH is ignored (backward compatibility with `outline-demote').
 If ARG is positive, indent the outline. If ARG is negative, unindent the
 outline. Defaults to 1 if ARG is nil."
-  (interactive
-   (list (if (and transient-mark-mode mark-active) 'region
-	         (outline-back-to-heading)
-	         (if current-prefix-arg nil 'subtree))))
+  (interactive)
   (unless arg
     (setq arg 1))
+  (when (use-region-p)
+    (goto-char (region-beginning))
+    (deactivate-mark))
   (let ((shift-right (>= arg 0))
         (column (current-column))
         (shift-width
@@ -300,34 +311,31 @@ outline. Defaults to 1 if ARG is nil."
 
                (t
                 (max outline-indent-default-offset 1)))))
-    (outline-back-to-heading)
-    (let ((start (point))
-          (end (save-excursion
-                 (outline-end-of-subtree)
-                 (point)))
-          (folded (save-match-data
+    (let ((folded (save-match-data
                     (outline-end-of-heading)
                     (outline-invisible-p))))
-      (indent-rigidly start end (if shift-right
-                                    shift-width
-                                  (* -1 shift-width)))
+      (save-excursion
+        (outline-back-to-heading)
+        (let ((start (point))
+              (end (save-excursion
+                     (outline-end-of-subtree)
+                     (point))))
+          (indent-rigidly start end (if shift-right
+                                        shift-width
+                                      (* -1 shift-width)))))
+      (if shift-right
+          (move-to-column (+ column shift-width))
+        (move-to-column (max (- column shift-width) 0)))
       (if folded
-          (outline-hide-subtree)))
-    (if shift-right
-        (move-to-column (+ column shift-width))
-      (move-to-column (max (- column shift-width) 0)))))
+          (outline-hide-subtree)))))
 
 (defun outline-indent-shift-left (&optional _which)
   "Decreasing the indentation level. Equivalent to `outline-promote'.
-
 The global variable `outline-indent-shift-width' or
 `outline-indent-default-offset' is used to determine the number of spaces to
 unindent the subtree.
-
 WHICH is ignored (backward compatibility with `outline-promote')."
-  (interactive (list (if (and transient-mark-mode mark-active) 'region
-	                     (outline-back-to-heading)
-	                     (if current-prefix-arg nil 'subtree))))
+  (interactive)
   (outline-indent-shift-right nil -1))
 
 (defalias 'outline-indent-demote #'outline-indent-shift-right
@@ -340,10 +348,8 @@ WHICH is ignored (backward compatibility with `outline-promote')."
 
 (defun outline-indent--advice-promote (orig-fun &rest args)
   "Advice function for `outline-indent-shift-left'.
-
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
 Otherwise, call the original function with the given arguments.
-
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
       (outline-indent-shift-left)
@@ -351,10 +357,8 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 
 (defun outline-indent--advice-demote (orig-fun &rest args)
   "Advice function for `outline-indent-shift-right'.
-
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
 Otherwise, call the original function with the given arguments.
-
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
       (outline-indent-shift-right)
@@ -362,7 +366,6 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
-
 This function ensures the last blank line is included, even when
 `outline-blank-line' is set to t. It also restores the cursor position,
 addressing the issue where the cursor might be reset after the operation."
@@ -380,13 +383,15 @@ addressing the issue where the cursor might be reset after the operation."
           (outline-back-to-heading)
           (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
                             'outline-get-last-sibling))
-                 ;; Find the end of the subtree to be moved as well as the point to
-                 ;; move it to, adding a newline if necessary to ensure these points
-                 ;; are at the beginning of the line below the subtree.
+                 ;; Find the end of the subtree to be moved as well as the point
+                 ;; to move it to, adding a newline if necessary to ensure these
+                 ;; points are at the beginning of the line below the subtree.
                  (end-point-func (lambda ()
                                    (outline-end-of-subtree)
-                                   (if (eq (char-after) ?\n) (forward-char 1)
-                                     (if (and (eobp) (not (bolp))) (insert "\n")))
+                                   (if (eq (char-after) ?\n)
+                                       (forward-char 1)
+                                     (if (and (eobp) (not (bolp)))
+                                         (insert "\n")))
                                    (point)))
                  (beg (point))
                  (folded (save-match-data
@@ -410,8 +415,9 @@ addressing the issue where the cursor might be reset after the operation."
             (insert (delete-and-extract-region beg end))
             (goto-char ins-point)
             (if folded
-                ;; Update 4: Hide the subtree using the original outline-blank-line
-                ;; This ensures that the fold is closed properly
+                ;; Update 4: Hide the subtree using the original
+                ;; outline-blank-line This ensures that the fold is closed
+                ;; properly
                 (let ((outline-blank-line original-outline-blank-line))
                   (outline-hide-subtree)))
             (move-marker ins-point nil)))
