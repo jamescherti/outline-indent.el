@@ -57,6 +57,7 @@ The *outline-indent.el* Emacs package offers a similar functionality to Vim's `s
     - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
       - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
       - [Detecting indentation](#detecting-indentation)
+    - [How to view different outline-indent folds in separate windows?](#how-to-view-different-outline-indent-folds-in-separate-windows)
   - [License](#license)
   - [Links](#links)
 
@@ -378,6 +379,20 @@ The *dtrt-indent* package automatically detects the indentation offset used in s
              dtrt-indent-highlight)
   :config
   (dtrt-indent-global-mode))
+```
+
+### How to view different outline-indent folds in separate windows?
+
+You can use indirect buffers, a feature that allow multiple views of the same underlying data in separate windows.
+
+Indirect buffers are useful when working with outline-indent folds where you might want to focus on different sections of a document simultaneously, without altering the view in other windows.
+
+For example, one window might display a fully expanded view (original buffer), while another window (the indirect buffer) shows only specific folds or indentation levels, allowing you to compare or edit sections side by side.
+
+To create an indirect buffer of the current buffer, you can use the following function:
+
+``` emacs-lisp
+(clone-indirect-buffer nil t)
 ```
 
 ## License
