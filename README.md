@@ -15,6 +15,7 @@ In addition to code folding, *outline-indent* allows:
 - Move backward/forward to the indentation level of the current line with `(outline-indent-backward-same-level)` and `(outline-indent-forward-same-level)`.
 - Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
 - Selecting the indented block with `(outline-indent-select)`.
+- Toggle the visibility of the indentation level under the cursor: `(outline-indent-toggle-level-at-point)`
 - and other features.
 
 The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
@@ -153,6 +154,10 @@ All folds:
 
 Other:
 - `(outline-indent-open-fold-rec)`: Open fold at point recursively.
+
+Toggle:
+
+- `(outline-indent-toggle-level-at-point)`: Toggle the visibility of the indentation level under the cursor.
 - `(outline-indent-toggle-fold)`: Open or close a fold under point.
 
 #### Selecting indented text
