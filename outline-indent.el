@@ -592,7 +592,7 @@ Stop at the first and last indented blocks of a superior indentation."
   (interactive)
   (let ((level (outline-indent-level))
         (is-hidden (save-excursion
-                     (end-of-line)
+                     (outline-end-of-heading)
                      (outline-invisible-p (point)))))
     (if is-hidden
         (outline-indent-open-level level)
