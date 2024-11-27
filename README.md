@@ -21,6 +21,7 @@ In addition to code folding, *outline-indent* allows:
 The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot.png)
+*(The Emacs theme in the screenshot above is the [tomorrow-night-deepblue-theme](https://github.com/jamescherti/tomorrow-night-deepblue-theme.el))*
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot2.png)
 
