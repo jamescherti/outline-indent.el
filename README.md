@@ -25,7 +25,7 @@ The *outline-indent* package uses the built-in *outline-minor-mode*, which is *m
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.screenshot2.png)
 
-The *outline-indent.el* Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
+The *outline-indent* Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
 
 ## Table of Contents
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
@@ -329,7 +329,7 @@ The `origami.el` and `yafolding.el` package are not reliable method for folding 
 - Slow,
 - Known to have bugs that affect their reliability and performance.
 
-On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mode`, which is:
+On the other hand, `outline-indent` leverages the built-in `outline-minor-mode`, which is:
 - Fast,
 - Actively maintained by the Emacs developers.
 
@@ -337,7 +337,7 @@ On the other hand, `outline-indent.el` leverages the built-in `outline-minor-mod
 
 The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support using indentation levels to determine foldable sections.
 
-In contrast, `outline-indent.el` uses indentation levels to determine foldable sections.
+In contrast, `outline-indent` uses indentation levels to determine foldable sections.
 
 ### How to make Emacs indent new lines based on previous non-blank line?
 
@@ -410,9 +410,9 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Links
 
-- [outline-indent.el @GitHub](https://github.com/jamescherti/outline-indent.el)
-- [outline-indent.el @MELPA](https://melpa.org/#/outline-indent)
-- Article: [outline-indent.el – Indentation based Folding and Outlining in Emacs](https://www.jamescherti.com/fold-outline-indentation-emacs-package/)
+- [outline-indent @GitHub](https://github.com/jamescherti/outline-indent.el)
+- [outline-indent @MELPA](https://melpa.org/#/outline-indent)
+- Article: [outline-indent – Indentation based Folding and Outlining in Emacs](https://www.jamescherti.com/fold-outline-indentation-emacs-package/)
 
 Other Emacs packages by the same author:
 - [minimal-emacs.d](https://github.com/jamescherti/minimal-emacs.d): This repository hosts a minimal Emacs configuration designed to serve as a foundation for your vanilla Emacs setup and provide a solid base for an enhanced Emacs experience.
