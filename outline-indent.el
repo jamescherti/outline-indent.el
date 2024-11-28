@@ -579,14 +579,6 @@ Stop at the first and last indented blocks of a superior indentation."
   (interactive)
   (outline-toggle-children))
 
-(defun outline-indent-open-level (level)
-  "Open folds the specified indentation LEVEL."
-  (outline-hide-sublevels (+ 1 level)))
-
-(defun outline-indent-close-level (level)
-  "Close folds the specified indentation LEVEL."
-  (outline-hide-sublevels level))
-
 (defun outline-indent-folded-p ()
   "Return non-nil when the current heading is folded."
   (when (outline-on-heading-p)
@@ -598,10 +590,11 @@ Stop at the first and last indented blocks of a superior indentation."
   "Toggle the visibility of the indentation level under the cursor."
   (interactive)
   (when (outline-on-heading-p)
-    (let ((level (outline-indent-level)))
+    (let ((level (save-excursion (outline-next-heading)
+                                 (outline-indent-level))))
       (if (outline-indent-folded-p)
-          (outline-indent-open-level level)
-        (outline-indent-close-level level)))))
+          (outline-hide-sublevels level)
+        (outline-hide-sublevels (- level 1))))))
 
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
