@@ -29,7 +29,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
 
 ## Table of Contents
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
-**Table of Contents**
+## Table of Contents
 
 - [outline-indent.el - Make Emacs Fold Text Using Indentation Levels](#outline-indentel---make-emacs-fold-text-using-indentation-levels)
   - [Table of Contents](#table-of-contents)
@@ -427,3 +427,7 @@ Other Emacs packages by the same author:
 - [flymake-ansible-lint.el](https://github.com/jamescherti/flymake-ansible-lint.el): An Emacs package that offers a Flymake backend for ansible-lint.
 - [inhibit-mouse.el](https://github.com/jamescherti/inhibit-mouse.el): A package that disables mouse input in Emacs, offering a simpler and faster alternative to the disable-mouse package.
 - [quick-sdcv.el](https://github.com/jamescherti/quick-sdcv.el): This package enables Emacs to function as an offline dictionary by using the sdcv command-line tool directly within Emacs.
+- [enhanced-evil-paredit.el](https://github.com/jamescherti/enhanced-evil-paredit.el): An Emacs package that prevents parenthesis imbalance when
+using *evil-mode* with *paredit*. It intercepts *evil-mode* commands such as
+delete, change, and paste, blocking their execution if they would break the
+parenthetical structure.
