@@ -44,7 +44,7 @@
 ;; outline-minor-mode, it's also much much faster than origami.el and
 ;; yafolding.el.
 ;;
-;; Installation:
+;; Installation from MELPA:
 ;; -------------
 ;; (use-package outline-indent
 ;;   :ensure t
