@@ -148,7 +148,7 @@ enabling `outline-indent-minor-mode'."
   :type 'boolean
   :group 'outline-indent)
 
-(defcustom outline-indent-insert-heading-add-blank-line t
+(defcustom outline-indent-insert-heading-add-blank-line nil
   "Non-nil to make `outline-indent-insert-heading' add a blank line.
 
 If non-nil, a blank line is inserted immediately before the newly added line,
