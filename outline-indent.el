@@ -226,11 +226,6 @@ It is recommended to keep this set to t for improved behavior."
     map)
   "Keymap for `outline-indent-minor-mode'.")
 
-;;; Internal variables
-
-(defvar outline-indent--disable nil
-  "Non-nil to make outline functions to behave as if they are not advised.")
-
 ;;; Functions
 
 (defun outline-indent-level ()
