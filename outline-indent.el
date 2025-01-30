@@ -253,10 +253,10 @@ indentation as the current line."
         (found-point nil))
     (save-excursion
       (beginning-of-visual-line)
-      (setq initial-indentation (current-indentation))
+      (setq initial-indentation (outline-indent-level))
       (while (and (not found-point) (not (eobp)))
         (forward-line 1)
-        (if (and (>= initial-indentation (current-indentation))
+        (if (and (>= initial-indentation (outline-indent-level))
                  (not (looking-at-p "^[ \t]*$")))
             (setq found-point (point))))
 
