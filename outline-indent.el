@@ -249,7 +249,6 @@ level.
 
 This function finds the nearest non-empty line with the same or less
 indentation as the current line."
-  (interactive)
   (let ((initial-indentation nil)
         (found-point nil))
     (save-excursion
