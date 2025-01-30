@@ -157,6 +157,46 @@ separation between the new indented block and surrounding content."
   :type 'boolean
   :group 'outline-indent)
 
+(defun outline-indent--advise-func (advise)
+  "Advise `outline' functions.
+When ADVISE is set to t, advise the `outline' functions."
+  (if advise
+      ;; Advise the built-in `outline-mode' and `outline-minor-mode'
+      ;; functions to improve compatibility with
+      ;; `outline-indent-minor-mode'. The built-in `outline-minor-mode'
+      ;; functions will work exactly as before and will only exhibit
+      ;; different behavior when `outline-indent-minor-mode' is active.
+      (progn
+        (advice-add 'outline-promote :around
+                    #'outline-indent--advice-promote)
+        (advice-add 'outline-demote :around
+                    #'outline-indent--advice-demote)
+        (advice-add 'outline-insert-heading :around
+                    #'outline-indent--advice-insert-heading)
+        (advice-add 'outline-forward-same-level :around
+                    #'outline-indent--advice-forward-same-level)
+        (advice-add 'outline-backward-same-level :around
+                    #'outline-indent--advice-backward-same-level)
+        (advice-add 'outline-move-subtree-up :around
+                    #'outline-indent--advice-move-subtree-up)
+        (advice-add 'outline-move-subtree-down :around
+                    #'outline-indent--advice-move-subtree-down))
+    ;; Disable
+    (advice-remove 'outline-promote
+                   #'outline-indent--advice-promote)
+    (advice-remove 'outline-demote
+                   #'outline-indent--advice-demote)
+    (advice-remove 'outline-insert-heading
+                   #'outline-indent--advice-insert-heading)
+    (advice-remove 'outline-forward-same-level
+                   #'outline-indent--advice-forward-same-level)
+    (advice-remove 'outline-backward-same-level
+                   #'outline-indent--advice-backward-same-level)
+    (advice-remove 'outline-move-subtree-up
+                   #'outline-indent--advice-move-subtree-up)
+    (advice-remove 'outline-move-subtree-down
+                   #'outline-indent--advice-move-subtree-down)))
+
 (defcustom outline-indent-advise-outline-functions t
   "If non-nil, advises built-in `outline' functions to improve compatibility.
 
@@ -178,42 +218,7 @@ It is recommended to keep this set to t for improved behavior."
   :set
   (lambda (symbol value)
     (set-default symbol value)
-    (if value
-        ;; Advise the built-in `outline-mode' and `outline-minor-mode'
-        ;; functions to improve compatibility with
-        ;; `outline-indent-minor-mode'. The built-in `outline-minor-mode'
-        ;; functions will work exactly as before and will only exhibit
-        ;; different behavior when `outline-indent-minor-mode' is active.
-        (progn
-          (advice-add 'outline-promote :around
-                      #'outline-indent--advice-promote)
-          (advice-add 'outline-demote :around
-                      #'outline-indent--advice-demote)
-          (advice-add 'outline-insert-heading :around
-                      #'outline-indent--advice-insert-heading)
-          (advice-add 'outline-forward-same-level :around
-                      #'outline-indent--advice-forward-same-level)
-          (advice-add 'outline-backward-same-level :around
-                      #'outline-indent--advice-backward-same-level)
-          (advice-add 'outline-move-subtree-up :around
-                      #'outline-indent--advice-move-subtree-up)
-          (advice-add 'outline-move-subtree-down :around
-                      #'outline-indent--advice-move-subtree-down))
-      ;; Disable
-      (advice-remove 'outline-promote
-                     #'outline-indent--advice-promote)
-      (advice-remove 'outline-demote
-                     #'outline-indent--advice-demote)
-      (advice-remove 'outline-insert-heading
-                     #'outline-indent--advice-insert-heading)
-      (advice-remove 'outline-forward-same-level
-                     #'outline-indent--advice-forward-same-level)
-      (advice-remove 'outline-backward-same-level
-                     #'outline-indent--advice-backward-same-level)
-      (advice-remove 'outline-move-subtree-up
-                     #'outline-indent--advice-move-subtree-up)
-      (advice-remove 'outline-move-subtree-down
-                     #'outline-indent--advice-move-subtree-down)))
+    (outline-indent--advise-func value))
   :group 'outline-indent)
 
 (defvar outline-indent-minor-mode-map
@@ -608,6 +613,7 @@ This mode sets up outline to work based on indentation."
   :group 'outline-indent
   (if outline-indent-minor-mode
       (progn
+        (outline-indent--advise-func outline-indent-advise-outline-functions)
         ;; Enable minor mode
         (when (boundp 'outline-minor-mode-highlight)
           (setq-local outline-minor-mode-highlight nil))
