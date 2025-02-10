@@ -74,6 +74,8 @@ To install *outline-indent* from MELPA:
 ``` emacs-lisp
 (use-package outline-indent
   :ensure t
+  :defer t
+  :commands outline-indent-minor-mode
   :custom
   (outline-indent-ellipsis " ▼ "))
 ```
@@ -89,7 +91,7 @@ Once installed, the minor mode can be activated using:
 
 ### Automatic activation using hooks
 
-The minor mode can also be automatically activated for a certain mode. For example for Python and YAML:
+The minor mode can also be automatically activated for a certain modes. For example for Python and YAML:
 ``` emacs-lisp
 ;; Python
 (add-hook 'python-mode-hook #'outline-indent-minor-mode)
