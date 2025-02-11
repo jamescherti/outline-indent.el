@@ -101,7 +101,7 @@
 ;;; Customizations
 
 (defgroup outline-indent nil
-  "Non-nil if outline-indent mode mode is enabled."
+  "Folding text based on indentation."
   :group 'outline-indent
   :prefix "outline-indent-")
 
