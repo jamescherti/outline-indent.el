@@ -228,9 +228,28 @@ It is recommended to keep this set to t for improved behavior."
 
 ;;; Functions
 
+(defvar outline-custom-levels '((1 . 2)))
+(defvar outline-custom-headers nil)
+(setq outline-custom-headers
+      '(("^###" . 1)))
+
+(defun outline-indent--custom-headers-level (line)
+  "Get the level of the custom header in the LINE.
+LINE represents a line of text."
+  (assoc-default line outline-custom-headers 'string-match))
+
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (+ 1 (/ (current-indentation) (max outline-indent-default-offset 1))))
+  (let* ((line (thing-at-point 'line t))
+         (level (or (assoc-default line outline-custom-headers 'string-match)
+                    (+ 1
+                       (/ (current-indentation)
+                          (max outline-indent-default-offset 1))))))
+    level))
+
+;; (defun outline-indent-level ()
+;;   "Determine the outline level based on the current indentation."
+;;   (+ 1 (/ (current-indentation) (max outline-indent-default-offset 1))))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
