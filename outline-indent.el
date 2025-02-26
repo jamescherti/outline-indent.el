@@ -612,7 +612,8 @@ This mode sets up outline to work based on indentation."
         ;; Enable minor mode
         (when (boundp 'outline-minor-mode-highlight)
           (setq-local outline-minor-mode-highlight nil))
-        (setq-local outline-search-function nil)
+        (when (boundp 'outline-search-function)
+          (setq-local outline-search-function nil))
         (setq-local outline-heading-alist nil)
         (setq-local outline-level #'outline-indent-level)
         (setq-local outline-heading-end-regexp "\n")
