@@ -135,7 +135,7 @@ display table). To apply the change, you need to execute
   :type '(choice string (const nil))
   :group 'outline-indent)
 
-(defcustom outline-indent-make-window-start-visible t
+(defcustom outline-indent-make-window-start-visible nil
   "Non-nil to ensure `window-start' is never invisible.
 If you're in doubt, leave this to its default (t).
 
