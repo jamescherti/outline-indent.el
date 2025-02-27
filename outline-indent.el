@@ -135,18 +135,12 @@ display table). To apply the change, you need to execute
   :type '(choice string (const nil))
   :group 'outline-indent)
 
-(defcustom outline-indent-make-window-start-visible nil
-  "Non-nil to ensure `window-start' is never invisible.
-If you're in doubt, leave this to its default (t).
 
-Setting this to t improves the user experience by ensuring that the first line
-in a window is fully visible, rather than potentially becoming invisible. This
-sets the buffer local variable `make-window-start-visible'.
-
-You need to set the value of `outline-indent-make-window-start-visible' before
-enabling `outline-indent-minor-mode'."
-  :type 'boolean
-  :group 'outline-indent)
+(define-obsolete-variable-alias
+  'outline-indent-make-window-start-visible
+  'make-window-start-visible
+  "1.1.2"
+  "Obsolete. Use `make-window-start-visible' instead.")
 
 (defcustom outline-indent-insert-heading-add-blank-line nil
   "Non-nil to make `outline-indent-insert-heading' add a blank line.
@@ -621,11 +615,6 @@ This mode sets up outline to work based on indentation."
                                        (zero-or-more (any " \t"))
                                        (not (any " \t\n"))))
         (outline-indent--update-ellipsis)
-
-        ;; Ensures that window-start is never invisible
-        (when (boundp 'make-window-start-visible)
-          (setq-local make-window-start-visible
-                      outline-indent-make-window-start-visible))
         (outline-minor-mode 1))
     ;; Disable minor mode
     (outline-minor-mode -1)
