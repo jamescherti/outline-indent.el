@@ -397,7 +397,6 @@ addressing the issue where the cursor might be reset after the operation."
                  ;; subtree.
                  (add-new-line nil)
                  (end-point-func (lambda ()
-                                   ;; NOTE: PATCH1 (Sent to emacs-devel)
                                    (let ((outline-blank-line nil))
                                      (outline-end-of-subtree))
 
@@ -408,7 +407,8 @@ addressing the issue where the cursor might be reset after the operation."
                                     ((and (eobp) (not (bolp)))
                                      (insert "\n"))
 
-                                    ((and outline-blank-line (eobp) (bolp))
+                                    ((and (< arg 0) outline-blank-line
+                                          (eobp) (bolp))
                                      (setq add-new-line t)))
 
                                    (point)))
@@ -430,8 +430,17 @@ addressing the issue where the cursor might be reset after the operation."
             (if (> arg 0)
                 ;; Moving forward - still need to move over subtree.
                 (funcall end-point-func))
+            (when (> arg 0)
+              (when (and (eobp) (bolp)
+                         (save-excursion
+                           (forward-line -1)
+                           (not (string-blank-p (thing-at-point 'line t)))))
+                (insert "\n")))
             (move-marker ins-point (point))
-            (insert (delete-and-extract-region beg end))
+            ;; Fix when moving the subtree of the node immediately preceding
+            ;; the last one to the position after the last one.
+            (let ((data (delete-and-extract-region beg end)))
+              (insert data))
             (when add-new-line
               (insert "\n"))
             (goto-char ins-point)
