@@ -1,6 +1,7 @@
 # outline-indent.el - Make Emacs Fold Text Using Indentation Levels
-[![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
 ![Build Status](https://github.com/jamescherti/outline-indent.el/actions/workflows/ci.yml/badge.svg)
+[![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
+[![MELPA Stable](https://stable.melpa.org/packages/outline-indent-badge.svg)](https://stable.melpa.org/#/outline-indent)
 ![License](https://img.shields.io/github/license/jamescherti/outline-indent.el)
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.images/made-for-gnu-emacs.svg)
 
