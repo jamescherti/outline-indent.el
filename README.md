@@ -289,10 +289,11 @@ You may want to set a few additional key mappings:
     (evil-define-key 'normal 'local (kbd "M-k") #'outline-indent-move-subtree-up)
     (evil-define-key 'normal 'local (kbd "M-j") #'outline-indent-move-subtree-down)
 
-    (evil-define-key 'normal 'local (kbd "]]") #'outline-indent-forward-same-level)
-    (evil-define-key 'normal 'local (kbd "[[") #'outline-indent-backward-same-level)
-    (evil-define-key 'normal 'local (kbd "gj") #'outline-indent-forward-same-level)
-    (evil-define-key 'normal 'local (kbd "gk") #'outline-indent-backward-same-level)
+    (unless (derived-mode-p 'prog-mode)
+      (evil-define-key 'normal 'local (kbd "]]") #'outline-indent-forward-same-level)
+      (evil-define-key 'normal 'local (kbd "[[") #'outline-indent-backward-same-level)
+      (evil-define-key 'normal 'local (kbd "gj") #'outline-indent-forward-same-level)
+      (evil-define-key 'normal 'local (kbd "gk") #'outline-indent-backward-same-level))
 
     ;; Set C-<return> to insert a new line with the same indentation
     ;; level/depth as the current line just before the next heading
