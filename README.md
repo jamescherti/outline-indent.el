@@ -290,10 +290,14 @@ You may want to set a few additional key mappings:
     (evil-define-key 'normal 'local (kbd "M-j") #'outline-indent-move-subtree-down)
 
     (unless (derived-mode-p 'prog-mode)
+      ;; In prog-mode, [[, ]], gj, and gk provide navigation to the previous
+      ;; and next function, so there is no need to override them.
       (evil-define-key 'normal 'local (kbd "]]") #'outline-indent-forward-same-level)
       (evil-define-key 'normal 'local (kbd "[[") #'outline-indent-backward-same-level)
       (evil-define-key 'normal 'local (kbd "gj") #'outline-indent-forward-same-level)
       (evil-define-key 'normal 'local (kbd "gk") #'outline-indent-backward-same-level))
+
+    (evil-define-key 'normal 'local (kbd "gV") #'outline-indent-select)
 
     ;; Set C-<return> to insert a new line with the same indentation
     ;; level/depth as the current line just before the next heading
