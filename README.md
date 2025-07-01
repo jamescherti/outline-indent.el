@@ -78,7 +78,7 @@ To install *outline-indent* from MELPA:
   :defer t
   :commands outline-indent-minor-mode
   :custom
-  (outline-indent-ellipsis " ▼ "))
+  (outline-indent-ellipsis " ▼"))
 ```
 
 ## Activation
