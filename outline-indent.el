@@ -130,7 +130,7 @@ This setting is used by:
 
 When non-nil, this string will be used as the display text for outline folding
 ellipses, replacing the default `outline-ellipsis` (which is typically \"...\"
-or a Unicode character such as ‘…’ depending on your configuration).
+or a Unicode character such as \"…\" depending on your configuration).
 
 This setting applies only to buffers where `outline-indent-minor-mode' is
 enabled. When enabled, the minor mode installs a buffer-local display
@@ -669,6 +669,9 @@ This mode sets up outline to work based on indentation."
         (outline-minor-mode 1))
     ;; Disable minor mode
     (outline-minor-mode -1)
+    (kill-local-variable 'outline-minor-mode-highlight)
+    (kill-local-variable 'outline-search-function)
+    (kill-local-variable 'outline-heading-alist)
     (kill-local-variable 'outline-level)
     (kill-local-variable 'outline-heading-end-regexp)
     (kill-local-variable 'outline-regexp)))
