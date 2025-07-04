@@ -127,11 +127,26 @@ This setting is used by:
 
 (defcustom outline-indent-ellipsis nil
   "String used as the ellipsis character in `outline-indent-mode'.
-When set to nil, the default behavior is not to modify the ellipsis.
 
-The change affects only `outline-indent-minor-mode' (which will then use its own
-display table). To apply the change, you need to execute
-`outline-indent-minor-mode' in the buffer."
+When non-nil, this string will be used as the display text for outline folding
+ellipses, replacing the default `outline-ellipsis` (which is typically \"...\"
+or a Unicode character such as ‘…’ depending on your configuration).
+
+This setting applies only to buffers where `outline-indent-minor-mode' is
+enabled. When enabled, the minor mode installs a buffer-local display
+table that replaces the default ellipsis with this string. If this
+variable is set to nil, no replacement occurs and the default ellipsis
+mechanism remains in place.
+
+Note: Trailing whitespace after the ellipsis is automatically removed to prevent
+a specific visual and editing issue. When lines are wrapped or truncated, any
+trailing space following the ellipsis may appear on a separate visual line,
+creating the illusion of an additional line. This can mislead the user and cause
+confusion during editing—for example, deleting what appears to be only the
+whitespace may in fact delete the entire folded line.
+
+Recommended values include \" ▼\", \"↴\", \"…\", \"...\", or any compact string
+suitable for representing folded content."
   :type '(choice string (const nil))
   :group 'outline-indent)
 
@@ -220,7 +235,7 @@ It is recommended to keep this set to t for improved behavior."
     map)
   "Keymap for `outline-indent-minor-mode'.")
 
-;;; Functions
+;;; Internal Functions
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
@@ -232,7 +247,15 @@ It is recommended to keep this set to t for improved behavior."
     (let* ((display-table (or buffer-display-table (make-display-table)))
            (face-offset (* (face-id 'shadow) (ash 1 22)))
            (value (vconcat (mapcar (lambda (c) (+ face-offset c))
-                                   outline-indent-ellipsis))))
+                                   ;; Trim trailing whitespace after the
+                                   ;; ellipsis, as it can be misleading when the
+                                   ;; line is not truncated. Wrapping may
+                                   ;; display only the space after the ellipsis
+                                   ;; on the next line, creating the illusion of
+                                   ;; a new line. Deleting that apparent "new
+                                   ;; line" may delete the entire logical line
+                                   ;; containing the ellipsis.
+                                   (string-trim-right outline-indent-ellipsis)))))
       (set-display-table-slot display-table 'selective-display value)
       (setq buffer-display-table display-table))))
 
@@ -523,6 +546,8 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
     ;; Apply the original function without modification
     (apply orig-fun args)))
 
+;;; Functions
+
 (defun outline-indent-backward-same-level (&optional arg)
   "Move backward to the ARG'th subheading at same indentation level as this one.
 Stop at the first and last indented blocks of a superior indentation."
@@ -617,6 +642,8 @@ Stop at the first and last indented blocks of a superior indentation."
           (outline-hide-sublevels level)
         (outline-hide-sublevels (- level 1))))))
 
+;;; Mode
+
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
   "Toggle `outline-indent-minor-mode'.
@@ -645,6 +672,8 @@ This mode sets up outline to work based on indentation."
     (kill-local-variable 'outline-level)
     (kill-local-variable 'outline-heading-end-regexp)
     (kill-local-variable 'outline-regexp)))
+
+;;; Provide
 
 (provide 'outline-indent)
 
