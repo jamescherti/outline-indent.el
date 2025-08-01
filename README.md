@@ -398,7 +398,7 @@ Indirect buffers are useful when working with outline-indent folds where you mig
 
 For example, one window might display a fully expanded view (original buffer), while another window (the indirect buffer) shows only specific folds or indentation levels, allowing you to compare or edit sections side by side.
 
-To create an indirect buffer of the current buffer, you can use the following function:
+To create an indirect buffer of the current buffer, you can use `M-x clone-indirect-buffer-other-window` or the following function:
 
 ``` emacs-lisp
 (clone-indirect-buffer nil t)
