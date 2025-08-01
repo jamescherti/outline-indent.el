@@ -1,4 +1,4 @@
-# outline-indent.el - Make Emacs Fold Text Using Indentation Levels
+# outline-indent.el - Make Emacs Fold Text Using Indentation Levels (Supersedes legacy packages such as origami.el and yafolding.el)
 ![Build Status](https://github.com/jamescherti/outline-indent.el/actions/workflows/ci.yml/badge.svg)
 [![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
 [![MELPA Stable](https://stable.melpa.org/packages/outline-indent-badge.svg)](https://stable.melpa.org/#/outline-indent)
@@ -32,7 +32,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 ## Table of Contents
 
-- [outline-indent.el - Make Emacs Fold Text Using Indentation Levels](#outline-indentel---make-emacs-fold-text-using-indentation-levels)
+- [outline-indent.el - Make Emacs Fold Text Using Indentation Levels (Supersedes legacy packages such as origami.el and yafolding.el)](#outline-indentel---make-emacs-fold-text-using-indentation-levels-supersedes-legacy-packages-such-as-origamiel-and-yafoldingel)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Activation](#activation)
