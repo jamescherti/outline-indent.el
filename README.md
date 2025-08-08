@@ -81,6 +81,15 @@ To install *outline-indent* from MELPA:
   (outline-indent-ellipsis " ▼"))
 ```
 
+It is also recommended to set `make-window-start-visible` to `t`, which ensures that the beginning of the window is always visible after point movement or redisplay operations:
+```emacs-lisp
+(add-hook 'outline-minor-mode-hook
+          #'(lambda()
+              (setq-local make-window-start-visible t)))
+```
+
+(The above setting prevents Emacs from automatically scrolling the buffer in a way that might obscure the heading or context of the current section.)
+
 ## Activation
 
 ### Manual activation
