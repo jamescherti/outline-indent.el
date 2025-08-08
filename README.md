@@ -39,6 +39,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
     - [Manual activation](#manual-activation)
     - [Automatic activation using hooks](#automatic-activation-using-hooks)
     - [Adjusting the shift width and default offset](#adjusting-the-shift-width-and-default-offset)
+    - [Ensuring that window-start is always visible](#ensuring-that-window-start-is-always-visible)
   - [Usage](#usage)
     - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
@@ -80,15 +81,6 @@ To install *outline-indent* from MELPA:
   :custom
   (outline-indent-ellipsis " ▼"))
 ```
-
-It is also recommended to set `make-window-start-visible` to `t`, which ensures that the beginning of the window is always visible after point movement or redisplay operations:
-```emacs-lisp
-(add-hook 'outline-minor-mode-hook
-          #'(lambda()
-              (setq-local make-window-start-visible t)))
-```
-
-(The above setting prevents Emacs from automatically scrolling the buffer in a way that might obscure the heading or context of the current section.)
 
 ## Activation
 
@@ -141,6 +133,18 @@ Explanation:
 3. **Default Behavior**:
    - By default, `outline-indent-default-offset` is set to 1, which works with any indentation level, as even a single space is enough to fold any indented block using *outline-indent*.
    - By default, `outline-indent-default-shift-width` is `nil`, which means it inherits the value of `outline-indent-default-offset`. If you do not explicitly set `outline-indent-shift-width`, the promote and demote operations will use the same value as the offset. This default behavior works well in many cases, but fine-tuning these values can be necessary for languages or formats with specific indentation needs.
+
+### Ensuring that window-start is always visible
+
+In some cases, Emacs may incorrectly consider a heading to be empty and scroll past it, even though it contains hidden or folded content such as child entries or overlays. This can result in a misleading view where the heading appears to be without content, despite actually containing structured data.
+
+To mitigate this issue, it is advisable to set `make-window-start-visible` to `t`, which ensures that the beginning of the window is always visible:
+```emacs-lisp
+;; Ensure that the beginning of the window is always visible
+(add-hook 'outline-minor-mode-hook
+          #'(lambda()
+              (setq-local make-window-start-visible t)))
+```
 
 ## Usage
 
