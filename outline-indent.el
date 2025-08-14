@@ -68,27 +68,6 @@
 ;;   (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 ;;   (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ;;
-;; Adjusting the shift width and default offset
-;; --------------------------------------------
-;; You can adjust the outline-indent-shift-width and
-;; outline-indent-default-offset according to your preferences. While the
-;; default value of 1 is adequate for most modes, setting the appropriate value
-;; ensures that the promote and demote functions correctly adjust the
-;; indentation of blocks.
-;;
-;; For example:
-;;   ;; Python
-;;   (dolist (hook '(python-mode python-ts-mode-hook))
-;;     (add-hook hook #'(lambda()
-;;                        (setq-local outline-indent-default-offset 4)
-;;                        (setq-local outline-indent-shift-width 4))))
-;;
-;;   ;; YAML
-;;   (dolist (hook '(yaml-mode yaml-ts-mode-hook))
-;;     (add-hook hook #'(lambda()
-;;                        (setq-local outline-indent-default-offset 2)
-;;                        (setq-local outline-indent-shift-width 2)))
-;;
 ;; Links:
 ;; ------
 ;; - More information about outline-indent (Frequently asked questions, usage...):
@@ -105,24 +84,20 @@
   :group 'outline-indent
   :prefix "outline-indent-")
 
-(defcustom outline-indent-default-offset 1
+(defcustom outline-indent-default-offset nil
   "Default indentation offset.
-It is used by to determine the outline level based on the current indentation."
-  :type 'integer
+If nil, the offset is automatically determined based on the current mode.
+This value is used to calculate outline levels from the current indentation."
+  :type '(choice (integer :tag "Custom width")
+                 (const :tag "Auto detect" nil))
   :group 'outline-indent)
 
 (defcustom outline-indent-shift-width nil
-  "Default shift width for indentation adjustments in promote and demote.
-When set to nil, this variable defaults to the value of
-`outline-indent-default-offset'.
-
-This setting is used by:
-- `outline-indent-shift-right' (or `outline-demote') to increase the indentation
-  level of the subtree.
-- `outline-indent-shift-left' (or `outline-promote') to decrease the indentation
-  level of the subtree."
-  :type '(choice (const :tag "Use default" nil)
-                 integer)
+  "Shift width used for indentation adjustments during promotion and demotion.
+If nil, this value defaults to `outline-indent-default-offset', which is
+automatically determined according to the current mode."
+  :type '(choice (integer :tag "Custom width")
+                 (const :tag "Auto detect" nil))
   :group 'outline-indent)
 
 (defcustom outline-indent-ellipsis nil
@@ -235,11 +210,134 @@ It is recommended to keep this set to t for improved behavior."
     map)
   "Keymap for `outline-indent-minor-mode'.")
 
+;;; Internal variables
+
+(defconst outline-indent--has-ts-modes
+  (and (boundp 'emacs-version)
+       (version<= "29.1" emacs-version))
+  "Non-nil if Emacs supports tree-sitter modes (Emacs 29.1+).")
+
+(defvar outline-indent--mode-basic-offset-map
+  '((typescript-ts-base-mode typescript-ts-mode-indent-offset)
+    (ada-ts-mode     ada-ts-mode-indent-offset)
+    (sh-mode         sh-basic-offset)
+    (c++-mode        c-basic-offset)
+    (c-mode          c-basic-offset)
+    (cmake-mode      cmake-tab-width)
+    (cperl-mode      cperl-indent-level)
+    (crystal-mode    crystal-indent-level)
+    (css-mode        css-indent-offset)
+    (d-mode          c-basic-offset)
+    (default         standard-indent)
+    (enh-ruby-mode   enh-ruby-indent-level)
+    (erlang-mode     erlang-indent-level)
+    (java-mode       c-basic-offset)
+    (jde-mode        c-basic-offset)
+    (js-mode         js-indent-level)
+    (js2-mode        js2-basic-offset)
+    (js3-mode        js3-indent-level)
+    (json-mode       js-indent-level)
+    (lua-mode        lua-indent-level)
+    (nxml-mode       nxml-child-indent)
+    (objc-mode       c-basic-offset)
+    (pascal-mode     pascal-indent-level)
+    (perl-mode       perl-indent-level)
+    (php-mode        c-basic-offset)
+    (plantuml-mode   plantuml-indent-level)
+    (protobuf-mode   c-basic-offset)
+    (pug-mode        pug-tab-width)
+    (raku-mode       raku-indent-offset)
+    (ruby-mode       ruby-indent-level)
+    (rust-mode       rust-indent-offset)
+    (rustic-mode     rustic-indent-offset)
+    (scala-mode      scala-indent:step)
+    (sgml-mode       sgml-basic-offset)
+    (swift-mode      swift-mode:basic-offset)
+    (typescript-mode typescript-indent-level)
+    (ada-mode        ada-indent)
+    (bash-ts-mode    sh-basic-offset)
+    (js-json-mode    js-indent-level)
+    (c++-ts-mode     c-ts-mode-indent-offset)
+    (c-ts-mode       c-ts-mode-indent-offset)
+    (cmake-ts-mode   cmake-ts-mode-indent-offset)
+    (go-ts-mode      go-ts-mode-indent-offset)
+    (gpr-ts-mode     gpr-ts-mode-indent-offset)
+    (java-ts-mode    java-ts-mode-indent-offset)
+    (js-ts-mode      js-indent-level)
+    (json-ts-mode    json-ts-mode-indent-offset)
+    (rust-ts-mode    rust-ts-mode-indent-offset)
+    (yaml-ts-mode    yaml-indent-offset tab-width)
+    (python-mode     python-indent-offset)
+    (python-ts-mode  python-indent-offset)
+    (ursa-ts-mode    ursa-ts-mode-indent-offset)
+    (vhdl-mode       vhdl-basic-offset)
+    (xquery-mode     xquery-mode-indent-width)
+    (groovy-mode     groovy-indent-offset tab-width)
+    (yaml-mode       yaml-indent-offset tab-width)
+    (web-mode        web-mode-markup-indent-offset
+                     web-mode-code-indent-offset
+                     web-mode-sql-indent-offset
+                     web-mode-css-indent-offset))
+  "A mapping from hook variables to language types.")
+
 ;;; Internal Functions
+
+(defun outline-indent--get-mode-basic-offset-entry (mode)
+  "Return the mapping entry for MODE or its derived-mode-parent.
+Searches `outline-indent--mode-basic-offset-map', falling back to `default'."
+  (when mode
+    (or (assoc mode outline-indent--mode-basic-offset-map)
+        (outline-indent--get-mode-basic-offset-entry
+         (get mode 'derived-mode-parent))
+        (assoc 'default outline-indent--mode-basic-offset-map))))
+
+(defun outline-indent--get-mode-basic-offset (mode)
+  "Return the basic indentation offset for MODE.
+If the mapping entry contains multiple variables, the last bound
+symbol is used. Returns `standard-indent` if no suitable variable
+is found."
+  (when-let* ((entry (outline-indent--get-mode-basic-offset-entry mode)))
+    (let ((list-vars (cdr entry))
+          result)
+      (catch 'done
+        (dolist (var list-vars)
+          (cond
+           ((numberp var)
+            (setq result var)
+            (throw 'done t))
+
+           ((and (symbolp var)
+                 (boundp var))
+            (setq result (symbol-value var))
+            (throw 'done t)))))
+
+      (or result
+          standard-indent))))
+
+(defun outline-indent--setup-basic-offset ()
+  "Initialize `outline-indent-default-offset' and `outline-indent-shift-width'.
+
+If either variable is not already set, determine the default value for the
+current major-mode using `outline-indent--get-mode-basic-offset', and set the
+variables locally. This ensures that outline levels and indentation shifts
+follow the mode-specific coding style automatically."
+  (unless (or outline-indent-default-offset
+              outline-indent-shift-width)
+    (let ((major-mode-offset (outline-indent--get-mode-basic-offset
+                              major-mode)))
+      (unless outline-indent-default-offset
+        (setq-local outline-indent-default-offset major-mode-offset))
+
+      (unless outline-indent-shift-width
+        (setq-local outline-indent-shift-width major-mode-offset)))))
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (+ 1 (/ (current-indentation) (max outline-indent-default-offset 1))))
+  (+ 1 (/ (current-indentation)
+          (max (if outline-indent-default-offset
+                   outline-indent-default-offset
+                 1)
+               1))))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
@@ -666,6 +764,7 @@ This mode sets up outline to work based on indentation."
                                        (zero-or-more (any " \t"))
                                        (not (any " \t\n"))))
         (outline-indent--update-ellipsis)
+        (outline-indent--setup-basic-offset)
         (outline-minor-mode 1))
     ;; Disable minor mode
     (outline-minor-mode -1)

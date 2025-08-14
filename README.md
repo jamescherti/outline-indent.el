@@ -17,6 +17,7 @@ In addition to code folding, *outline-indent* allows:
 - Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
 - Selecting the indented block with `(outline-indent-select)`.
 - Toggle the visibility of the indentation level under the cursor: `(outline-indent-toggle-level-at-point)`
+- The `outline-indent-minor-mode` mode automatically detects the current major mode's indentation settings to determine the *basic offset*, which sets the indentation for each outline level, and the *shift width* used for promoting or demoting blocks. This ensures consistent outline indentation without manual configuration.
 - and other features.
 
 The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
@@ -38,7 +39,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
   - [Activation](#activation)
     - [Manual activation](#manual-activation)
     - [Automatic activation using hooks](#automatic-activation-using-hooks)
-    - [Adjusting the shift width and default offset](#adjusting-the-shift-width-and-default-offset)
+    - [Adjusting the shift width and default offset (unnecessary)](#adjusting-the-shift-width-and-default-offset-unnecessary)
     - [Ensuring that window-start is always visible](#ensuring-that-window-start-is-always-visible)
   - [Usage](#usage)
     - [How to check if it is working?](#how-to-check-if-it-is-working)
@@ -103,36 +104,17 @@ The minor mode can also be automatically activated for a certain modes. For exam
 (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
+### Adjusting the shift width and default offset (unnecessary)
 
-### Adjusting the shift width and default offset
+**IMPORTANT: By default, manual adjustment of the shift width is unnecessary. The basic offset is automatically determined by `outline-indent`.**
 
-You can adjust the `outline-indent-shift-width` and `outline-indent-default-offset` according to your preferences. While the default value of 1 is adequate for most modes, setting the appropriate value ensures that the promote and demote functions correctly adjust the indentation of blocks. For example:
-``` emacs-lisp
-;; Python
-(dolist (hook '(python-mode python-ts-mode-hook))
-  (add-hook hook #'(lambda()
-                     (setq-local outline-indent-default-offset 4)
-                     (setq-local outline-indent-shift-width 4))))
+If you wish to customize the indentation, you can modify `outline-indent-default-offset` and `outline-indent-shift-width` to suit your preferences:
+* **`outline-indent-default-offset`**: Specifies the base indentation for each outline level. This determines how much each successive outline level is indented, shaping the visual structure of the outline.
+* **`outline-indent-shift-width`**: Specifies the number of spaces to adjust the indentation when promoting or demoting a block using `(outline-indent-shift-right)` or `(outline-indent-shift-left)`.
 
-;; YAML
-(dolist (hook '(yaml-mode yaml-ts-mode-hook))
-  (add-hook hook #'(lambda()
-                     (setq-local outline-indent-default-offset 2)
-                     (setq-local outline-indent-shift-width 2)))
-```
+---
 
-Explanation:
-1. **Outline Indentation Parameters**:
-   - **`outline-indent-default-offset`**: This variable determines the base indentation level for each outline level. It specifies the amount by which each successive outline level should be indented, effectively controlling the visual structure of the outline.
-   - **`outline-indent-shift-width`**: This variable determines the number of spaces by which to adjust the indentation when promoting or demoting an indented block with `(outline-indent-shift-right)` and `(outline-indent-shift-left)`.
-
-2. **Why Customize These Values?**:
-   - **Language-specific Indentation**: Different programming languages and file formats have different indentation standards. Python typically uses 4 spaces per indentation level, while YAML often uses 2 spaces. Customizing these values for different modes ensures that your outline structure is consistent with the language's indentation practices.
-   - **Shift right and shift left**: When you use `outline-indent-shift-left` and `outline-indent-shift-right` functions, these settings control how much the outline level is adjusted. For instance, in Python mode, promoting a block of code (moving it to a higher outline level) will decrease its indentation by 4 spaces, and demoting it will increase its indentation by 4 spaces.
-
-3. **Default Behavior**:
-   - By default, `outline-indent-default-offset` is set to 1, which works with any indentation level, as even a single space is enough to fold any indented block using *outline-indent*.
-   - By default, `outline-indent-default-shift-width` is `nil`, which means it inherits the value of `outline-indent-default-offset`. If you do not explicitly set `outline-indent-shift-width`, the promote and demote operations will use the same value as the offset. This default behavior works well in many cases, but fine-tuning these values can be necessary for languages or formats with specific indentation needs.
+It is concise, consistent, and maintains a formal tone.
 
 ### Ensuring that window-start is always visible
 
