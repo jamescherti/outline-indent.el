@@ -22,6 +22,8 @@ In addition to code folding, *outline-indent* allows:
 
 The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
 
+If this package enhances your workflow, please consider **starring outline-indent** on GitHub.
+
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.images/screenshot.png)
 *(The Emacs theme in the screenshot above is the [tomorrow-night-deepblue-theme](https://github.com/jamescherti/tomorrow-night-deepblue-theme.el))*
 
@@ -54,6 +56,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
     - [Evil mode](#evil-mode)
   - [Frequently asked questions](#frequently-asked-questions)
     - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
+  - [Automatically Folding All Folds on Mode Activation](#automatically-folding-all-folds-on-mode-activation)
     - [How to Prevent Emacs from Searching Folded Sections](#how-to-prevent-emacs-from-searching-folded-sections)
     - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
     - [Why not use folding.el?](#why-not-use-foldingel)
@@ -314,6 +317,31 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 
 ``` emacs-lisp
 (setq outline-blank-line t)
+```
+
+## Automatically Folding All Folds on Mode Activation
+
+The `outline-indent-minor-mode` mode can be configured to automatically collapse all foldable sections upon activation. This behavior may be applied selectively to specific modes (e.g., Python or YAML), or globally across all modes.
+
+The following example ensures that all foldable sections are collapsed only when entering Python or YAML buffers:
+```elisp
+(add-hook 'outline-indent-minor-mode-hook
+          #'(lambda()
+              (when (or
+                     ;; Python
+                     (derived-mode-p 'python-mode)
+                     (derived-mode-p 'python-ts-mode)
+                     ;; Yaml
+                     (derived-mode-p 'yaml-ts-mode)
+                     (derived-mode-p 'yaml-mode))
+                (outline-indent-close-folds))))
+```
+
+To collapse all foldable sections whenever `outline-indent-minor-mode` is enabled, regardless of the major mode:
+```elisp
+(add-hook 'outline-indent-minor-mode-hook
+          #'(lambda()
+              (outline-indent-close-folds)))
 ```
 
 ### How to Prevent Emacs from Searching Folded Sections
