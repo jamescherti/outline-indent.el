@@ -735,8 +735,8 @@ Show the heading too, if it is currently invisible."
              (outline-invisible-p (point)))
       (save-excursion
         (outline-back-to-heading)
-        (outline-indent--legacy-outline-show-entry)
-        (outline-show-children)))
+        (outline-show-children)
+        (outline-indent--legacy-outline-show-entry)))
 
     ;; Previous version of `outline-show-entry'
     (outline-indent--legacy-outline-show-entry)))
