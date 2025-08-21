@@ -153,6 +153,10 @@ When ADVISE is set to t, advise the `outline' functions."
       (progn
         (advice-add 'outline-promote :around
                     #'outline-indent--advice-promote)
+        (advice-add 'show-entry :around
+                    #'outline-indent--advice-show-entry)
+        (advice-add 'outline-show-entry :around
+                    #'outline-indent--advice-show-entry)
         (advice-add 'outline-demote :around
                     #'outline-indent--advice-demote)
         (advice-add 'outline-insert-heading :around
@@ -168,6 +172,10 @@ When ADVISE is set to t, advise the `outline' functions."
     ;; Disable
     (advice-remove 'outline-promote
                    #'outline-indent--advice-promote)
+    (advice-remove 'show-entry
+                   #'outline-indent--advice-show-entry)
+    (advice-remove 'outline-show-entry
+                   #'outline-indent--advice-show-entry)
     (advice-remove 'outline-demote
                    #'outline-indent--advice-demote)
     (advice-remove 'outline-insert-heading
@@ -488,6 +496,15 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
       (outline-indent-shift-left)
     (apply orig-fun args)))
 
+(defun outline-indent--advice-show-entry (orig-fun &rest args)
+  "Advice function for `outline-show-entry'.
+If `outline-indent-minor-mode' is active, use `outline-indent-open-fold'.
+Otherwise, call the original function with the given arguments.
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      (outline-indent-open-fold)
+    (apply orig-fun args)))
+
 (defun outline-indent--advice-demote (orig-fun &rest args)
   "Advice function for `outline-indent-shift-right'.
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
@@ -693,12 +710,36 @@ Stop at the first and last indented blocks of a superior indentation."
   (interactive)
   (outline-show-all))
 
+(defun outline-indent--legacy-outline-show-entry ()
+  "Show the body directly following this heading. (Emacs version.)
+Show the heading too, if it is currently invisible."
+  (interactive)
+  (save-excursion
+    (outline-back-to-heading t)
+    (outline-flag-region (1- (point))
+                         (progn
+                           (outline-next-preface)
+                           (if (= 1 (- (point-max) (point)))
+                               (point-max)
+                             (point)))
+                         nil)))
+
 (defun outline-indent-open-fold ()
   "Open fold at point."
   (interactive)
-  (with-no-warnings
-    (outline-show-entry)
-    (outline-show-children)))
+  ;; Ignore errors such as `outline-before-first-heading' thrown by
+  ;; `outline-back-to-heading' or 'show-children'.
+  (save-excursion
+    (while (save-excursion
+             (end-of-line)
+             (outline-invisible-p (point)))
+      (save-excursion
+        (outline-back-to-heading)
+        (outline-indent--legacy-outline-show-entry)
+        (outline-show-children)))
+
+    ;; Previous version of `outline-show-entry'
+    (outline-indent--legacy-outline-show-entry)))
 
 (defun outline-indent-close-fold ()
   "Close fold at point."

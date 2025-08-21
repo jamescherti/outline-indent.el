@@ -31,12 +31,10 @@ If this package enhances your workflow, please consider **starring outline-inden
 
 The *outline-indent* Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
 
-## Table of Contents
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 ## Table of Contents
 
 - [outline-indent.el - Indentation-Based Code Folding for Emacs, a Modern Replacement for origami.el and yafolding.el](#outline-indentel---indentation-based-code-folding-for-emacs-a-modern-replacement-for-origamiel-and-yafoldingel)
-  - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Activation](#activation)
     - [Manual activation](#manual-activation)
@@ -46,6 +44,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
   - [Usage](#usage)
     - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
+    - [Collapsing Sections Above a Specified Outline Level](#collapsing-sections-above-a-specified-outline-level)
       - [Managing folds](#managing-folds)
       - [Selecting indented text](#selecting-indented-text)
       - [outline-indent-backward-same-level and outline-indent-forward-same-level](#outline-indent-backward-same-level-and-outline-indent-forward-same-level)
@@ -142,6 +141,24 @@ Run the following function to fold all indented blocks:
 ```
 
 ### Functions specific to outline-indent-minor-mode
+
+### Collapsing Sections Above a Specified Outline Level
+
+Emacs allows collapsing all sections above a given outline level. For instance:
+
+```elisp
+(outline-indent-close-level 2)
+```
+
+To apply this behavior automatically whenever `outline-indent-minor-mode` is activated:
+
+```elisp
+(add-hook 'outline-indent-minor-mode-hook
+          (lambda ()
+            (outline-indent-close-level 2)))
+```
+
+This ensures that sections exceeding the specified level are initially collapsed.
 
 #### Managing folds
 
