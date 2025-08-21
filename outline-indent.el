@@ -312,7 +312,7 @@ is found."
             (throw 'done t)))))
 
       (or result
-          standard-indent))))
+          1))))
 
 (defun outline-indent--setup-basic-offset ()
   "Initialize `outline-indent-default-offset' and `outline-indent-shift-width'.
