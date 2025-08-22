@@ -757,6 +757,7 @@ Show the heading too, if it is currently invisible."
 (defun outline-indent-folded-p ()
   "Return non-nil when the current heading is folded."
   (save-excursion
+    (outline-back-to-heading)
     (outline-end-of-heading)
     (outline-invisible-p (point))))
 
