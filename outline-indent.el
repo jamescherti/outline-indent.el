@@ -727,18 +727,16 @@ Show the heading too, if it is currently invisible."
 (defun outline-indent-open-fold ()
   "Open fold at point."
   (interactive)
-  ;; Ignore errors such as `outline-before-first-heading' thrown by
-  ;; `outline-back-to-heading' or 'show-children'.
   (save-excursion
-    (while (save-excursion
-             (end-of-line)
-             (outline-invisible-p (point)))
+    (while (outline-indent-folded-p)
+      ;; Repeatedly reveal children and body until the entry is no longer folded
       (save-excursion
         (outline-back-to-heading)
         (outline-show-children)
         (outline-indent--legacy-outline-show-entry)))
 
-    ;; Previous version of `outline-show-entry'
+    ;; Final pass to guarantee the heading under the cursor and its body are
+    ;; visible
     (outline-indent--legacy-outline-show-entry)))
 
 (defun outline-indent-close-fold ()
@@ -758,10 +756,9 @@ Show the heading too, if it is currently invisible."
 
 (defun outline-indent-folded-p ()
   "Return non-nil when the current heading is folded."
-  (when (outline-on-heading-p)
-    (save-excursion
-      (outline-end-of-heading)
-      (outline-invisible-p (point)))))
+  (save-excursion
+    (outline-end-of-heading)
+    (outline-invisible-p (point))))
 
 (defun outline-indent-close-level (level)
   "Close the folds at the level: LEVEL."
@@ -777,7 +774,8 @@ Show the heading too, if it is currently invisible."
                    (if (< next-level current-level)
                        (+ 1 current-level)
                      next-level))))
-      (if (outline-indent-folded-p)
+      (if (and (outline-on-heading-p)
+               (outline-indent-folded-p))
           (outline-hide-sublevels level)
         (outline-hide-sublevels (- level 1))))))
 
