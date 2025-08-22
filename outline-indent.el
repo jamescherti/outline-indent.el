@@ -733,11 +733,7 @@ Show the heading too, if it is currently invisible."
       (save-excursion
         (outline-back-to-heading)
         (outline-show-children)
-        (outline-indent--legacy-outline-show-entry)))
-
-    ;; Final pass to guarantee the heading under the cursor and its body are
-    ;; visible
-    (outline-indent--legacy-outline-show-entry)))
+        (outline-indent--legacy-outline-show-entry)))))
 
 (defun outline-indent-close-fold ()
   "Close fold at point."
