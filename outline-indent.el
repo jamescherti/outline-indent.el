@@ -155,6 +155,10 @@ When ADVISE is set to t, advise the `outline' functions."
                     #'outline-indent--advice-promote)
         (advice-add 'show-entry :around
                     #'outline-indent--advice-show-entry)
+        (advice-add 'hide-subtree :around
+                    #'outline-indent--advice-outline-hide-subtree)
+        (advice-add 'outline-hide-subtree :around
+                    #'outline-indent--advice-outline-hide-subtree)
         (advice-add 'outline-show-entry :around
                     #'outline-indent--advice-show-entry)
         (advice-add 'outline-demote :around
@@ -174,6 +178,10 @@ When ADVISE is set to t, advise the `outline' functions."
                    #'outline-indent--advice-promote)
     (advice-remove 'show-entry
                    #'outline-indent--advice-show-entry)
+    (advice-remove 'hide-subtree
+                   #'outline-indent--advice-outline-hide-subtree)
+    (advice-remove 'outline-hide-subtree
+                   #'outline-indent--advice-outline-hide-subtree)
     (advice-remove 'outline-show-entry
                    #'outline-indent--advice-show-entry)
     (advice-remove 'outline-demote
@@ -505,6 +513,15 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
       (outline-indent-open-fold)
     (apply orig-fun args)))
 
+(defun outline-indent--advice-outline-hide-subtree (orig-fun &rest args)
+  "Advice function for `outline-hide-subtre'.
+If `outline-indent-minor-mode' is active, use `outline-indent-close-fold'.
+Otherwise, call the original function with the given arguments. ORIG-FUN is the
+original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      (outline-indent-close-fold)
+    (apply orig-fun args)))
+
 (defun outline-indent--advice-demote (orig-fun &rest args)
   "Advice function for `outline-indent-shift-right'.
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
@@ -710,6 +727,7 @@ Stop at the first and last indented blocks of a superior indentation."
   (interactive)
   (outline-show-all))
 
+;; TODO: Use the original one
 (defun outline-indent--legacy-outline-show-entry ()
   "Show the body directly following this heading. (Emacs version.)
 Show the heading too, if it is currently invisible."
@@ -735,10 +753,32 @@ Show the heading too, if it is currently invisible."
         (outline-show-children)
         (outline-indent--legacy-outline-show-entry)))))
 
+;; TODO: Use the original one
+(defun outline-indent--legacy-outline-hide-subtree (&optional event)
+  "Hide everything after this heading at deeper levels.
+If non-nil, EVENT should be a mouse event."
+  (interactive (list last-nonmenu-event))
+  (save-excursion
+    (when (mouse-event-p event)
+      (mouse-set-point event))
+    (outline-flag-subtree t)))
+
 (defun outline-indent-close-fold ()
   "Close fold at point."
   (interactive)
-  (outline-hide-subtree))
+  (save-excursion
+    (outline-back-to-heading)
+    (if (or (outline-indent-folded-p)  ; Folded?
+            ;; Fold without any content
+            (let ((start (save-excursion (end-of-line) (point)))
+                  (end (save-excursion (outline-end-of-subtree) (point))))
+              (= start end)))
+        (progn
+          (when (eq (ignore-errors (outline-up-heading 1 t) :success)
+                    :success)
+            (when (outline-on-heading-p)
+              (outline-indent--legacy-outline-hide-subtree))))
+      (outline-indent--legacy-outline-hide-subtree))))
 
 (defun outline-indent-open-fold-rec ()
   "Open fold at point recursively."
