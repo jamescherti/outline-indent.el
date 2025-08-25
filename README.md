@@ -64,6 +64,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
       - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
       - [Detecting indentation](#detecting-indentation)
     - [How to view different outline-indent folds in separate windows?](#how-to-view-different-outline-indent-folds-in-separate-windows)
+  - [Comments from users](#comments-from-users)
   - [License](#license)
   - [Links](#links)
 
@@ -443,6 +444,10 @@ To create an indirect buffer of the current buffer, you can use `M-x clone-indir
 ``` emacs-lisp
 (clone-indirect-buffer nil t)
 ```
+
+## Comments from users
+
+- [Brandon Schneider (skarekrow)](https://github.com/jamescherti/outline-indent.el/issues/12): Thanks again for all the great work!
 
 ## License
 
