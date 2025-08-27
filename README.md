@@ -9,6 +9,8 @@ The **outline-indent** Emacs package provides a minor mode that enables indentat
 
 The **outline-indent** package is a modern replacement for legacy packages such as **origami.el** and **yafolding.el**. (*Both **origami.el** and **yafolding.el** are unmaintained, suffer from performance issues, and contain known bugs that undermine their reliability.*)
 
+(If this package enhances your productivity, please show your support by **⭐ starring outline-indent on GitHub** to help more users discover its benefits.)
+
 In addition to code folding, *outline-indent* allows:
 - moving indented blocks up and down with `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`,
 - indenting/unindenting to adjust indentation levels with `(outline-indent-shift-right)` and `(outline-indent-shift-left)`,
