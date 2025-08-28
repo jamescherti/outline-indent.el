@@ -80,7 +80,6 @@ To install *outline-indent* from MELPA:
 ``` emacs-lisp
 (use-package outline-indent
   :ensure t
-  :defer t
   :commands outline-indent-minor-mode
   :custom
   (outline-indent-ellipsis " ▼"))
