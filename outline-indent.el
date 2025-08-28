@@ -282,7 +282,7 @@ It is recommended to keep this set to t for improved behavior."
     (js-ts-mode      js-indent-level)
     (json-ts-mode    json-ts-mode-indent-offset)
     (rust-ts-mode    rust-ts-mode-indent-offset)
-    (yaml-ts-mode    yaml-indent-offset tab-width)
+    (yaml-ts-mode    yaml-indent-offset 2)
     (python-mode     python-indent-offset)
     (python-ts-mode  python-indent-offset)
     (ursa-ts-mode    ursa-ts-mode-indent-offset)
