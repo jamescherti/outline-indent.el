@@ -745,13 +745,22 @@ Show the heading too, if it is currently invisible."
 (defun outline-indent-open-fold ()
   "Open fold at point."
   (interactive)
-  (save-excursion
-    (while (outline-indent-folded-p)
-      ;; Repeatedly reveal children and body until the entry is no longer folded
-      (save-excursion
-        (outline-back-to-heading)
-        (outline-show-children)
-        (outline-indent--legacy-outline-show-entry)))))
+  (let ((header-visible (save-excursion
+                          (outline-back-to-heading t)
+                          (not (outline-invisible-p)))))
+    (save-excursion
+      (while (outline-indent-folded-p)
+        ;; Repeatedly reveal children and body until the entry is no longer folded
+        (save-excursion
+          (outline-back-to-heading)
+          (outline-show-children)
+          (outline-indent--legacy-outline-show-entry))))
+
+    ;; If the header was previously hidden, hide the subtree to collapse it.
+    ;; Otherwise, leave the fold open. This allows the user to decide whether to
+    ;; expand the content under the cursor.
+    (unless header-visible
+      (outline-indent--legacy-outline-hide-subtree))))
 
 ;; TODO: Use the original one
 (defun outline-indent--legacy-outline-hide-subtree (&optional event)
