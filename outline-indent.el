@@ -745,22 +745,27 @@ Show the heading too, if it is currently invisible."
 (defun outline-indent-open-fold ()
   "Open fold at point."
   (interactive)
-  (let ((header-visible (save-excursion
-                          (outline-back-to-heading t)
-                          (not (outline-invisible-p)))))
-    (save-excursion
-      (while (outline-indent-folded-p)
-        ;; Repeatedly reveal children and body until the entry is no longer folded
+  (condition-case nil
+      (let ((header-visible (save-excursion
+                              (outline-back-to-heading t)
+                              (not (outline-invisible-p)))))
         (save-excursion
-          (outline-back-to-heading)
-          (outline-show-children)
-          (outline-indent--legacy-outline-show-entry))))
+          (while (outline-indent-folded-p)
+            ;; Repeatedly reveal children and body until the entry is no
+            ;; longer folded
+            (save-excursion
+              (outline-back-to-heading)
+              (outline-show-children)
+              (outline-indent--legacy-outline-show-entry))))
 
-    ;; If the header was previously hidden, hide the subtree to collapse it.
-    ;; Otherwise, leave the fold open. This allows the user to decide whether to
-    ;; expand the content under the cursor.
-    (unless header-visible
-      (outline-indent--legacy-outline-hide-subtree))))
+        ;; If the header was previously hidden, hide the subtree to collapse
+        ;; it. Otherwise, leave the fold open. This allows the user to decide
+        ;; whether to expand the content under the cursor.
+        (unless header-visible
+          (outline-indent--legacy-outline-hide-subtree)))
+    ;; Ignore `outline-before-first-heading'
+    (outline-before-first-heading
+     nil)))
 
 ;; TODO: Use the original one
 (defun outline-indent--legacy-outline-hide-subtree (&optional event)
@@ -775,24 +780,32 @@ If non-nil, EVENT should be a mouse event."
 (defun outline-indent-close-fold ()
   "Close fold at point."
   (interactive)
-  (save-excursion
-    (outline-back-to-heading)
-    (if (or (outline-indent-folded-p)  ; Folded?
-            ;; Fold without any content
-            (let ((start (save-excursion (end-of-line) (point)))
-                  (end (save-excursion (outline-end-of-subtree) (point))))
-              (= start end)))
-        (progn
-          (when (eq (ignore-errors (outline-up-heading 1 t) :success)
-                    :success)
-            (when (outline-on-heading-p)
-              (outline-indent--legacy-outline-hide-subtree))))
-      (outline-indent--legacy-outline-hide-subtree))))
+  (condition-case nil
+      (save-excursion
+        (outline-back-to-heading)
+        (if (or (outline-indent-folded-p)  ; Folded?
+                ;; Fold without any content
+                (let ((start (save-excursion (end-of-line) (point)))
+                      (end (save-excursion (outline-end-of-subtree) (point))))
+                  (= start end)))
+            (progn
+              (when (eq (ignore-errors (outline-up-heading 1 t) :success)
+                        :success)
+                (when (outline-on-heading-p)
+                  (outline-indent--legacy-outline-hide-subtree))))
+          (outline-indent--legacy-outline-hide-subtree)))
+    ;; Ignore `outline-before-first-heading'
+    (outline-before-first-heading
+     nil)))
 
 (defun outline-indent-open-fold-rec ()
   "Open fold at point recursively."
   (interactive)
-  (outline-show-subtree))
+  (condition-case nil
+      (outline-show-subtree)
+    ;; Ignore `outline-before-first-heading'
+    (outline-before-first-heading
+     nil)))
 
 (defun outline-indent-toggle-fold ()
   "Open or close a fold under point."
