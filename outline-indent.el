@@ -151,6 +151,8 @@ When ADVISE is set to t, advise the `outline' functions."
       ;; functions will work exactly as before and will only exhibit
       ;; different behavior when `outline-indent-minor-mode' is active.
       (progn
+        (advice-add 'outline-show-entry :around
+                    #'outline-indent--advice-outline-show-entry)
         (advice-add 'outline-promote :around
                     #'outline-indent--advice-promote)
         (advice-add 'show-entry :around
@@ -174,6 +176,8 @@ When ADVISE is set to t, advise the `outline' functions."
         (advice-add 'outline-move-subtree-down :around
                     #'outline-indent--advice-move-subtree-down))
     ;; Disable
+    (advice-remove 'outline-show-entry
+                   #'outline-indent--advice-outline-show-entry)
     (advice-remove 'outline-promote
                    #'outline-indent--advice-promote)
     (advice-remove 'show-entry
@@ -678,6 +682,15 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
     ;; Apply the original function without modification
     (apply orig-fun args)))
 
+(defun outline-indent--advice-outline-show-entry (orig-fun &rest args)
+  "Advice for `outline-show-entry'.
+It only changes the behavior when `outline-indent-minor-mode' is active.
+ORIG-FUN is the original function being advised, and ARGS are its arguments."
+  (if (bound-and-true-p outline-indent-minor-mode)
+      (outline-indent-open-fold)
+    ;; Apply the original function without modification
+    (apply orig-fun args)))
+
 ;;; Functions
 
 (defun outline-indent-backward-same-level (&optional arg)
@@ -746,9 +759,8 @@ Show the heading too, if it is currently invisible."
   "Open fold at point."
   (interactive)
   (condition-case nil
-      (let ((header-visible (save-excursion
-                              (outline-back-to-heading t)
-                              (not (outline-invisible-p)))))
+      (let ((on-visible-heading (when (outline-on-heading-p t)
+                                  (outline-invisible-p))))
         (save-excursion
           (while (outline-indent-folded-p)
             ;; Repeatedly reveal children and body until the entry is no
@@ -758,10 +770,7 @@ Show the heading too, if it is currently invisible."
               (outline-show-children)
               (outline-indent--legacy-outline-show-entry))))
 
-        ;; If the header was previously hidden, hide the subtree to collapse
-        ;; it. Otherwise, leave the fold open. This allows the user to decide
-        ;; whether to expand the content under the cursor.
-        (unless header-visible
+        (when on-visible-heading
           (outline-indent--legacy-outline-hide-subtree)))
     ;; Ignore `outline-before-first-heading'
     (outline-before-first-heading
