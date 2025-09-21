@@ -3,7 +3,7 @@
 [![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
 [![MELPA Stable](https://stable.melpa.org/packages/outline-indent-badge.svg)](https://stable.melpa.org/#/outline-indent)
 ![License](https://img.shields.io/github/license/jamescherti/outline-indent.el)
-![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.images/made-for-gnu-emacs.svg)
+![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
 The **outline-indent** Emacs package provides a minor mode that enables indentation-based code folding. It is highly efficient and leverages built-in Emacs functionality to perform folding operations.
 
