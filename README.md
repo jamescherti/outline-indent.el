@@ -19,7 +19,7 @@ In addition to code folding, *outline-indent* allows:
 - Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
 - Selecting the indented block with `(outline-indent-select)`.
 - Toggle the visibility of the indentation level under the cursor: `(outline-indent-toggle-level-at-point)`
-- The `outline-indent-minor-mode` mode automatically detects the current major mode's indentation settings to determine the *basic offset*, which sets the indentation for each outline level, and the *shift width* used for promoting or demoting blocks. This ensures consistent outline indentation without manual configuration.
+- Automatically detect the current major mode's indentation settings to determine the *basic offset*, which sets the indentation for each outline level, and the *shift width* used for promoting or demoting blocks. This ensures consistent outline indentation without manual configuration.
 - and other features.
 
 The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
