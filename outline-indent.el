@@ -3,7 +3,7 @@
 ;; Copyright (C) 2024-2025 James Cherti | https://www.jamescherti.com/contact/
 
 ;; Author: James Cherti
-;; Version: 1.1.2
+;; Version: 1.1.3
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
 ;; Package-Requires: ((emacs "26.1"))
@@ -129,7 +129,7 @@ suitable for representing folded content."
 (define-obsolete-variable-alias
   'outline-indent-make-window-start-visible
   'make-window-start-visible
-  "1.1.2"
+  "1.1.3"
   "Obsolete. Use `make-window-start-visible' instead.")
 
 (defcustom outline-indent-insert-heading-add-blank-line nil
