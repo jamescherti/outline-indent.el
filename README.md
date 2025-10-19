@@ -55,10 +55,11 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
         - [Evil mode](#evil-mode)
     - [Frequently asked questions](#frequently-asked-questions)
         - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
-    - [Automatically Folding All Folds on Mode Activation](#automatically-folding-all-folds-on-mode-activation)
+        - [Automatically Folding All Folds on Mode Activation](#automatically-folding-all-folds-on-mode-activation)
         - [How to Prevent Emacs from Searching Folded Sections](#how-to-prevent-emacs-from-searching-folded-sections)
         - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
         - [Why not use folding.el?](#why-not-use-foldingel)
+        - [How does this compare to the built-in hideshow package?](#how-does-this-compare-to-the-built-in-hideshow-package)
         - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
         - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
             - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
@@ -340,7 +341,7 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 (setq outline-blank-line t)
 ```
 
-## Automatically Folding All Folds on Mode Activation
+### Automatically Folding All Folds on Mode Activation
 
 The `outline-indent-minor-mode` mode can be configured to automatically collapse all foldable sections upon activation. This behavior may be applied selectively to specific modes (e.g., Python or YAML), or globally across all modes.
 
@@ -390,6 +391,22 @@ On the other hand, `outline-indent` leverages the built-in `outline-minor-mode`,
 The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support using indentation levels to determine foldable sections.
 
 In contrast, `outline-indent` uses indentation levels to determine foldable sections.
+
+### How does this compare to the built-in hideshow package?
+
+The *outline-indent.el* and *hs-minor-mode* (Hideshow) packages in Emacs are both designed for code folding, but they operate differently.
+
+Outline Indent:
+
+* Relies on indentation levels to determine foldable regions, making it effective for indentation-sensitive languages such as Python or YAML. Additional features include moving indented blocks, adjusting indentation, inserting consistent headings, customizing ellipses for folded sections, and selecting or toggling visibility of blocks.
+* Supports an unlimited number of folding levels. For example, it allows folding a function as well as nested blocks within that function, such as *if* statements inside *while* loops if they are properly indented. This makes it highly effective for working with deeply nested code structures.
+
+Hideshow:
+
+* *hs-minor-mode* uses syntax-based folding, identifying foldable regions through regular expressions that match language constructs like functions or classes. Its functionality is simpler, offering basic hiding, showing, and toggling of code sections, and struggles with indentation-sensitive languages.
+* It generally folds a single level at a time, such as entire functions, without providing convenient access to nested blocks. This makes it less practical for languages that require deep folding, such as YAML, where multiple nested levels are common. Even in languages like Python, Hideshow can be impractical, because it allows folding classes but does not provide convenient folding for the functions within those classes for example.
+
+Choosing between the two depends on workflow and language preference: *outline-indent.el* is ideal for indentation-driven code, while *hs-minor-mode* is better suited for code with well-defined syntactic structures and where folding a single level is sufficient.
 
 ### How to make Emacs indent new lines based on previous non-blank line?
 
