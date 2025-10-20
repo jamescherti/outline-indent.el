@@ -446,14 +446,31 @@ The following code snippet configures Emacs to indent based on the indentation o
 
 #### Displaying vertical indentation guide bars
 
-Choose one of these packages that are available on MELPA:
-- indent-bars
-- highlight-indentation
-- highlight-indent-guides
+The *indent-bars* package enhances code readability by providing visual indentation guides, optimized for speed and customization.
+
+It supports both space and tab-based indentation and offers optional tree-sitter integration, which includes features like scope focus. The appearance of the guide bars is highly customizable, allowing you to adjust their color, blending, width, position, and even apply a zigzag pattern.
+
+To install it, add the following to your Emacs init file:
+```elisp
+(lightemacs-use-package indent-bars
+  :ensure t
+  :commands indent-bars-mode
+  :custom
+  ;; Setting this to nil is not reliable enough
+  ;; https://github.com/jdtsmith/indent-bars?tab=readme-ov-file#stipples
+  (indent-bars-prefer-character t)
+
+  ;; When `indent-bars-prefer-character' is set to t, displaying indent bars on
+  ;; blank lines causes cursor movement issues when moving downward, resulting
+  ;; in abrupt shifts of the window start or cursor position.
+  (indent-bars-display-on-blank-lines nil))
+```
 
 #### Detecting indentation
 
-The *dtrt-indent* package automatically detects the indentation offset used in source code files and adjusts Emacs settings to match, simplifying the editing of files with varying indentation styles. To install it, add the following to your Emacs init file:
+The *dtrt-indent* package automatically detects the indentation offset used in source code files and adjusts Emacs settings to match, simplifying the editing of files with varying indentation styles.
+
+To install it, add the following to your Emacs init file:
 ```emacs-lisp
 (use-package dtrt-indent
   :ensure t
