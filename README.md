@@ -60,7 +60,6 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
         - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
         - [Why not use folding.el?](#why-not-use-foldingel)
         - [How does this compare to the built-in hideshow package?](#how-does-this-compare-to-the-built-in-hideshow-package)
-        - [Compatibility with Emacs Lisp and Other Languages](#compatibility-with-emacs-lisp-and-other-languages)
         - [Does `outline-indent-minor-mode` work with Emacs Lisp or other programming languages, and how does it differ from the built-in `outline-minor-mode`?](#does-outline-indent-minor-mode-work-with-emacs-lisp-or-other-programming-languages-and-how-does-it-differ-from-the-built-in-outline-minor-mode)
         - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
         - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
@@ -409,8 +408,6 @@ Hideshow:
 * It generally folds a single level at a time, such as entire functions, without providing convenient access to nested blocks. This makes it less practical for languages that require deep folding, such as YAML, where multiple nested levels are common. Even in languages like Python, Hideshow can be impractical, because it allows folding classes but does not provide convenient folding for the functions within those classes for example.
 
 Choosing between the two depends on workflow and language preference: *outline-indent.el* is ideal for indentation-driven code, while *hs-minor-mode* is better suited for code with well-defined syntactic structures and where folding a single level is sufficient.
-
-### Compatibility with Emacs Lisp and Other Languages
 
 ### Does `outline-indent-minor-mode` work with Emacs Lisp or other programming languages, and how does it differ from the built-in `outline-minor-mode`?
 
