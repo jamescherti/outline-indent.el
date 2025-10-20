@@ -466,6 +466,12 @@ To install it, add the following to your Emacs init file:
   (indent-bars-display-on-blank-lines nil))
 ```
 
+It can be activated using `M-x indent-bars-mode` or by adding the following to the Emacs configuration:
+
+```elisp
+(add-hook 'prog-mode-hook #'indent-bars-mode)
+```
+
 #### Detecting indentation
 
 The *dtrt-indent* package automatically detects the indentation offset used in source code files and adjusts Emacs settings to match, simplifying the editing of files with varying indentation styles.
