@@ -231,6 +231,12 @@ It is recommended to keep this set to t for improved behavior."
     map)
   "Keymap for `outline-indent-minor-mode'.")
 
+(defvar outline-indent-conflicting-modes
+  '(hs-minor-mode origami-mode yafolding-mode)
+  "List of minor modes that may conflict with `outline-indent-minor-mode'.
+These modes will be automatically disabled when `outline-indent-minor-mode' is
+enabled.")
+
 ;;; Internal variables
 
 (defconst outline-indent--has-ts-modes
@@ -866,7 +872,7 @@ This mode sets up outline to work based on indentation."
   (if outline-indent-minor-mode
       (progn
         ;; Disable conflicting modes
-        (dolist (mode '(hs-minor-mode origami-mode yafolding-mode))
+        (dolist (mode outline-indent-conflicting-modes)
           (when (and (symbol-value mode)
                      (fboundp mode))
             (save-excursion
