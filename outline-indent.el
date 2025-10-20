@@ -126,7 +126,6 @@ suitable for representing folded content."
   :type '(choice string (const nil))
   :group 'outline-indent)
 
-
 (define-obsolete-variable-alias
   'outline-indent-make-window-start-visible
   'make-window-start-visible
@@ -753,7 +752,6 @@ Stop at the first and last indented blocks of a superior indentation."
   (interactive)
   (outline-show-all))
 
-;; TODO: Use the original one
 (defun outline-indent--legacy-outline-show-entry ()
   "Show the body directly following this heading. (Emacs version.)
 Show the heading too, if it is currently invisible."
@@ -789,7 +787,6 @@ Show the heading too, if it is currently invisible."
     (outline-before-first-heading
      nil)))
 
-;; TODO: Use the original one
 (defun outline-indent--legacy-outline-hide-subtree (&optional event)
   "Hide everything after this heading at deeper levels.
 If non-nil, EVENT should be a mouse event."
@@ -880,6 +877,7 @@ This mode sets up outline to work based on indentation."
               (funcall mode -1))))
 
         (outline-indent--advise-func outline-indent-advise-outline-functions)
+
         ;; Enable minor mode
         (when (boundp 'outline-minor-mode-highlight)
           (setq-local outline-minor-mode-highlight nil))
