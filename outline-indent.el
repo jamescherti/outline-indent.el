@@ -438,7 +438,11 @@ to insert content at the same indentation level after the current fold."
       (when outline-indent-insert-heading-add-blank-line
         (newline)
         (forward-line -1))
-      (indent-to initial-indentation))))
+      (indent-to initial-indentation)))
+
+  (when (and (bound-and-true-p evil-mode)
+             (fboundp 'evil-insert-state))
+    (funcall 'evil-insert-state)))
 
 (defun outline-indent-move-subtree-up (&optional arg)
   "Move the current subtree up past ARG headlines of the same level.

@@ -108,6 +108,9 @@ The following is an example of default keybindings that can be added to your con
 ;; Shift left or right
 (define-key outline-indent-minor-mode-map (kbd "C-c o <right>") 'outline-indent-shift-right)
 (define-key outline-indent-minor-mode-map (kbd "C-c o <left>") 'outline-indent-shift-left)
+
+;; Insert heading
+(define-key outline-indent-minor-mode-map (kbd "C-c o i") 'outline-indent-insert-heading)
 ```
 
 ## Activation
