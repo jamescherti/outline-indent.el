@@ -39,7 +39,6 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
     - [Activation](#activation)
         - [Manual activation](#manual-activation)
         - [Automatic activation using hooks](#automatic-activation-using-hooks)
-        - [Adjusting the shift width and default offset (unnecessary)](#adjusting-the-shift-width-and-default-offset-unnecessary)
         - [Ensuring that window-start is always visible](#ensuring-that-window-start-is-always-visible)
     - [Usage](#usage)
         - [How to check if it is working?](#how-to-check-if-it-is-working)
@@ -132,17 +131,6 @@ The minor mode can also be automatically activated for a certain modes. For exam
 (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 ```
-### Adjusting the shift width and default offset (unnecessary)
-
-**IMPORTANT: By default, manual adjustment of the shift width is unnecessary. The basic offset is automatically determined by `outline-indent`.**
-
-If you wish to customize the indentation, you can modify `outline-indent-default-offset` and `outline-indent-shift-width` to suit your preferences:
-* **`outline-indent-default-offset`**: Specifies the base indentation for each outline level. This determines how much each successive outline level is indented, shaping the visual structure of the outline.
-* **`outline-indent-shift-width`**: Specifies the number of spaces to adjust the indentation when promoting or demoting a block using `(outline-indent-shift-right)` or `(outline-indent-shift-left)`.
-
----
-
-It is concise, consistent, and maintains a formal tone.
 
 ### Ensuring that window-start is always visible
 
