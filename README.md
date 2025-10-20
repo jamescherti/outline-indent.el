@@ -444,6 +444,8 @@ The following code snippet configures Emacs to indent based on the indentation o
 
 ### What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?
 
+Here are some of the packages that were recommended in the article [Emacs: Maintaining proper indentation in indentation-sensitive programming languages](https://www.jamescherti.com/elisp-code-and-emacs-packages-for-maintaining-proper-indentation-in-indentation-sensitive-languages-such-as-python-or-yaml/):
+
 #### Displaying vertical indentation guide bars
 
 The *indent-bars* package enhances code readability by providing visual indentation guides, optimized for speed and customization.
