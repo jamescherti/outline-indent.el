@@ -865,7 +865,7 @@ This mode sets up outline to work based on indentation."
   :group 'outline-indent
   (if outline-indent-minor-mode
       (progn
-        ;; Disable `hs-minor-mode'
+        ;; Disable conflicting modes
         (dolist (mode '(hs-minor-mode origami-mode yafolding-mode))
           (when (and (symbol-value mode)
                      (fboundp mode))
