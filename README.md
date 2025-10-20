@@ -57,14 +57,15 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
         - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
         - [Automatically Folding All Folds on Mode Activation](#automatically-folding-all-folds-on-mode-activation)
         - [How to Prevent Emacs from Searching Folded Sections](#how-to-prevent-emacs-from-searching-folded-sections)
-        - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
-        - [Why not use folding.el?](#why-not-use-foldingel)
-        - [How does this compare to the built-in hideshow package?](#how-does-this-compare-to-the-built-in-hideshow-package)
+        - [What programming languages are supported?](#what-programming-languages-are-supported)
         - [Does `outline-indent-minor-mode` work with Emacs Lisp or other programming languages, and how does it differ from the built-in `outline-minor-mode`?](#does-outline-indent-minor-mode-work-with-emacs-lisp-or-other-programming-languages-and-how-does-it-differ-from-the-built-in-outline-minor-mode)
         - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
         - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
             - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
             - [Detecting indentation](#detecting-indentation)
+        - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
+        - [Why not use folding.el?](#why-not-use-foldingel)
+        - [How does this compare to the built-in hideshow package?](#how-does-this-compare-to-the-built-in-hideshow-package)
         - [How to view different outline-indent folds in separate windows?](#how-to-view-different-outline-indent-folds-in-separate-windows)
     - [Comments from users](#comments-from-users)
     - [License](#license)
@@ -376,38 +377,13 @@ To prevent Emacs from searching within folded sections, set `search-invisible` t
 
 This setting ensures that Emacs skips invisible or folded text during searches, so hidden sections are not included in the search results.
 
-### Why not use origami.el or yafolding?
+### What programming languages are supported?
 
-The `origami.el` and `yafolding.el` package are not reliable method for folding indented code because they are:
-- No longer maintained (abandoned),
-- Slow,
-- Known to have bugs that affect their reliability and performance.
+The *outline-indent* package functions correctly with any programming language whose code is properly indented.
 
-On the other hand, `outline-indent` leverages the built-in `outline-minor-mode`, which is:
-- Fast,
-- Actively maintained by the Emacs developers.
+The author uses it daily across numerous languages, including Python, Bash, YAML, Elisp, Lua, and others.
 
-### Why not use folding.el?
-
-The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support using indentation levels to determine foldable sections.
-
-In contrast, `outline-indent` uses indentation levels to determine foldable sections.
-
-### How does this compare to the built-in hideshow package?
-
-The *outline-indent.el* and *hs-minor-mode* (Hideshow) packages in Emacs are both designed for code folding, but they operate differently.
-
-Outline Indent:
-
-* Relies on indentation levels to determine foldable regions, making it effective for indentation-sensitive languages such as Python or YAML. Additional features include moving indented blocks, adjusting indentation, inserting consistent headings, customizing ellipses for folded sections, and selecting or toggling visibility of blocks.
-* Supports an unlimited number of folding levels. For example, it allows folding a function as well as nested blocks within that function, such as *if* statements inside *while* loops if they are properly indented. This makes it highly effective for working with deeply nested code structures.
-
-Hideshow:
-
-* *hs-minor-mode* uses syntax-based folding, identifying foldable regions through regular expressions that match language constructs like functions or classes. Its functionality is simpler, offering basic hiding, showing, and toggling of code sections, and struggles with indentation-sensitive languages.
-* It generally folds a single level at a time, such as entire functions, without providing convenient access to nested blocks. This makes it less practical for languages that require deep folding, such as YAML, where multiple nested levels are common. Even in languages like Python, Hideshow can be impractical, because it allows folding classes but does not provide convenient folding for the functions within those classes for example.
-
-Choosing between the two depends on workflow and language preference: *outline-indent.el* is ideal for indentation-driven code, while *hs-minor-mode* is better suited for code with well-defined syntactic structures and where folding a single level is sufficient.
+The *outline-indent* provides a mapping between Emacs major modes and their corresponding indentation variables, enabling `outline-indent` to determine the correct indentation for a wide range of languages. Supported languages include scripting languages such as Python, Bash, Perl, Ruby, Lua, and Raku; compiled languages including C, C++, Java, Ada, Rust, Crystal, Go, Scala, Swift, Pascal, and Objective-C; web and markup languages like HTML, XML, CSS, Web templates, Pug, and PlantUML; as well as JavaScript and TypeScript in multiple variants. This ensures consistent outline and folding behavior across most commonly used programming and markup modes in Emacs.
 
 ### Does `outline-indent-minor-mode` work with Emacs Lisp or other programming languages, and how does it differ from the built-in `outline-minor-mode`?
 
@@ -443,10 +419,9 @@ The following code snippet configures Emacs to indent based on the indentation o
 #### Displaying vertical indentation guide bars
 
 Choose one of these packages that are available on MELPA:
+- indent-bars
 - highlight-indentation
 - highlight-indent-guides
-
-(There is also indent-bars, but it is not yet available on MELPA.)
 
 #### Detecting indentation
 
@@ -463,6 +438,39 @@ The *dtrt-indent* package automatically detects the indentation offset used in s
   :config
   (dtrt-indent-global-mode))
 ```
+
+### Why not use origami.el or yafolding?
+
+The `origami.el` and `yafolding.el` package are not reliable method for folding indented code because they are:
+- No longer maintained (abandoned),
+- Slow,
+- Known to have bugs that affect their reliability and performance.
+
+On the other hand, `outline-indent` leverages the built-in `outline-minor-mode`, which is:
+- Fast,
+- Actively maintained by the Emacs developers.
+
+### Why not use folding.el?
+
+The `folding.el` package is no longer maintained (abandoned) and uses markers in the buffer to annotate folds. It does not support using indentation levels to determine foldable sections.
+
+In contrast, `outline-indent` uses indentation levels to determine foldable sections.
+
+### How does this compare to the built-in hideshow package?
+
+The *outline-indent.el* and *hs-minor-mode* (Hideshow) packages in Emacs are both designed for code folding, but they operate differently.
+
+Outline Indent:
+
+* Relies on indentation levels to determine foldable regions, making it effective for indentation-sensitive languages such as Python or YAML. Additional features include moving indented blocks, adjusting indentation, inserting consistent headings, customizing ellipses for folded sections, and selecting or toggling visibility of blocks.
+* Supports an unlimited number of folding levels. For example, it allows folding a function as well as nested blocks within that function, such as *if* statements inside *while* loops if they are properly indented. This makes it highly effective for working with deeply nested code structures.
+
+Hideshow:
+
+* *hs-minor-mode* uses syntax-based folding, identifying foldable regions through regular expressions that match language constructs like functions or classes. Its functionality is simpler, offering basic hiding, showing, and toggling of code sections, and struggles with indentation-sensitive languages.
+* It generally folds a single level at a time, such as entire functions, without providing convenient access to nested blocks. This makes it less practical for languages that require deep folding, such as YAML, where multiple nested levels are common. Even in languages like Python, Hideshow can be impractical, because it allows folding classes but does not provide convenient folding for the functions within those classes for example.
+
+Choosing between the two depends on workflow and language preference: *outline-indent.el* is ideal for indentation-driven code, while *hs-minor-mode* is better suited for code with well-defined syntactic structures and where folding a single level is sufficient.
 
 ### How to view different outline-indent folds in separate windows?
 
