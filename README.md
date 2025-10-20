@@ -415,6 +415,8 @@ Yes, `outline-indent-minor-mode` functions correctly with Emacs Lisp and any oth
 
 Emacs Lisp (Elisp) is also supported by the built-in `outline-minor-mode`, which allows collapsing and expanding specific code sections based on heading levels defined by comments, `def`, `defvar`...
 
+The main difference between the two is that `outline-indent-minor-mode` supports multiple nested blocks based on indentation levels, whereas `outline-minor-mode` relies solely on explicit outline headings. For example, `outline-minor-mode` can fold an entire function but cannot fold inner constructs such as `if` expressions or `while` loops.
+
 ### How to make Emacs indent new lines based on previous non-blank line?
 
 The following code snippet configures Emacs to indent based on the indentation of the previous non-blank line:
