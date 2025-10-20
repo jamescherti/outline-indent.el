@@ -88,6 +88,29 @@ To install *outline-indent* from MELPA:
   (outline-indent-ellipsis " ▼"))
 ```
 
+The following is an example of default keybindings that can be added to your configuration:
+```elisp
+;; Fold management
+(define-key outline-indent-minor-mode-map (kbd "C-c o o") 'outline-indent-open-fold)     ; Open fold at point
+(define-key outline-indent-minor-mode-map (kbd "C-c o c") 'outline-indent-close-fold)    ; Close fold at point
+(define-key outline-indent-minor-mode-map (kbd "C-c o m") 'outline-indent-close-folds)   ; Close all folds
+(define-key outline-indent-minor-mode-map (kbd "C-c o r") 'outline-indent-open-folds)    ; Open all folds
+(define-key outline-indent-minor-mode-map (kbd "C-c o O") 'outline-indent-open-fold-rec) ; Open fold recursively
+(define-key outline-indent-minor-mode-map (kbd "C-c o TAB") 'outline-indent-toggle-fold) ; Toggle fold at point
+(define-key outline-indent-minor-mode-map (kbd "C-c o t") 'outline-indent-toggle-level-at-point) ; Toggle level at point
+
+;; Selection
+(define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select current indented block
+
+;; Navigation at same indentation level
+(define-key outline-indent-minor-mode-map (kbd "C-c o n") 'outline-indent-forward-same-level) ; Next heading at same level
+(define-key outline-indent-minor-mode-map (kbd "C-c o p") 'outline-indent-backward-same-level) ; Previous heading at same level
+
+;; Shift left or right
+(define-key outline-indent-minor-mode-map (kbd "C-c o <right>") 'outline-indent-shift-right)
+(define-key outline-indent-minor-mode-map (kbd "C-c o <left>") 'outline-indent-shift-left)
+```
+
 ## Activation
 
 ### Manual activation
@@ -158,29 +181,6 @@ The following *outline-indent* functions manage the opening and closing of folds
 - `(outline-indent-backward-same-level)`: Move the cursor to the previous heading that is at the same indentation level.
 - `(outline-indent-shift-right)`: Increase the indentation level of the current indented block.
 - `(outline-indent-shift-left)`: Decrease the indentation level of the current indented block.
-
-The following is an example of default keybindings that can be added to your configuration:
-```elisp
-;; Fold management
-(define-key outline-indent-minor-mode-map (kbd "C-c o o") 'outline-indent-open-fold)     ; Open fold at point
-(define-key outline-indent-minor-mode-map (kbd "C-c o c") 'outline-indent-close-fold)    ; Close fold at point
-(define-key outline-indent-minor-mode-map (kbd "C-c o m") 'outline-indent-close-folds)   ; Close all folds
-(define-key outline-indent-minor-mode-map (kbd "C-c o r") 'outline-indent-open-folds)    ; Open all folds
-(define-key outline-indent-minor-mode-map (kbd "C-c o O") 'outline-indent-open-fold-rec) ; Open fold recursively
-(define-key outline-indent-minor-mode-map (kbd "C-c o TAB") 'outline-indent-toggle-fold) ; Toggle fold at point
-(define-key outline-indent-minor-mode-map (kbd "C-c o t") 'outline-indent-toggle-level-at-point) ; Toggle level at point
-
-;; Selection
-(define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select current indented block
-
-;; Navigation at same indentation level
-(define-key outline-indent-minor-mode-map (kbd "C-c o n") 'outline-indent-forward-same-level) ; Next heading at same level
-(define-key outline-indent-minor-mode-map (kbd "C-c o p") 'outline-indent-backward-same-level) ; Previous heading at same level
-
-;; Shift left or right
-(define-key outline-indent-minor-mode-map (kbd "C-c o <right>") 'outline-indent-shift-right)
-(define-key outline-indent-minor-mode-map (kbd "C-c o <left>") 'outline-indent-shift-left)
-```
 
 As an alternative, you can also use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your indented file:
 - `(hide-sublevels 1)`: Fold all folds.
