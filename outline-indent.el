@@ -873,7 +873,8 @@ This mode sets up outline to work based on indentation."
       (progn
         ;; Disable conflicting modes
         (dolist (mode outline-indent-conflicting-modes)
-          (when (and (symbol-value mode)
+          (when (and (boundp mode)
+                     (symbol-value mode)
                      (fboundp mode))
             (save-excursion
               (funcall mode -1))))
