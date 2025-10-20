@@ -456,61 +456,6 @@ addressing the issue where the cursor might be reset after the operation."
     (goto-char (region-beginning))
     (deactivate-mark)))
 
-(defun outline-indent-shift-right (&optional _which arg)
-  "Increasing the indentation level.
-The global variable `outline-indent-shift-width' or
-`outline-indent-default-offset' is used to determine the number of spaces to
-indent the subtree.
-WHICH is ignored (backward compatibility with `outline-demote').
-If ARG is positive, indent the outline. If ARG is negative, unindent the
-outline. Defaults to 1 if ARG is nil."
-  (interactive)
-  (unless arg
-    (setq arg 1))
-  (outline-indent--deactivate-region)
-  (let ((shift-right (>= arg 0))
-        (column (current-column))
-        (shift-width
-         (cond (outline-indent-shift-width
-                (max outline-indent-shift-width 1))
-
-               (t
-                (max outline-indent-default-offset 1)))))
-    (let ((folded (save-match-data
-                    (outline-end-of-heading)
-                    (outline-invisible-p))))
-      (save-excursion
-        (outline-back-to-heading)
-        (let ((start (point))
-              (end (save-excursion
-                     (outline-end-of-subtree)
-                     (point))))
-          (indent-rigidly start end (if shift-right
-                                        shift-width
-                                      (* -1 shift-width)))))
-      (if shift-right
-          (move-to-column (+ column shift-width))
-        (move-to-column (max (- column shift-width) 0)))
-      (if folded
-          (outline-hide-subtree)))))
-
-(defun outline-indent-shift-left (&optional _which)
-  "Decreasing the indentation level. Equivalent to `outline-promote'.
-The global variable `outline-indent-shift-width' or
-`outline-indent-default-offset' is used to determine the number of spaces to
-unindent the subtree.
-WHICH is ignored (backward compatibility with `outline-promote')."
-  (interactive)
-  (outline-indent-shift-right nil -1))
-
-(defalias 'outline-indent-demote #'outline-indent-shift-right
-  "Deprecated alias for `outline-indent-shift-right'.")
-(make-obsolete 'outline-indent-demote 'outline-indent-shift-right "1.1.1")
-
-(defalias 'outline-indent-promote #'outline-indent-shift-left
-  "Deprecated alias for `outline-indent-shift-left'.")
-(make-obsolete 'outline-indent-promote 'outline-indent-shift-left "1.1.1")
-
 (defun outline-indent--advice-promote (orig-fun &rest args)
   "Advice function for `outline-indent-shift-left'.
 If `outline-indent-minor-mode' is active, use `outline-indent-insert-heading'.
@@ -705,52 +650,21 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 
 ;;; Functions
 
-(defun outline-indent-backward-same-level (&optional arg)
-  "Move backward to the ARG'th subheading at same indentation level as this one.
-Stop at the first and last indented blocks of a superior indentation."
-  (interactive "p")
-  (unless arg
-    (setq arg 1))
-  (if (advice-member-p 'outline-indent--advice-backward-same-level
-                       'outline-backward-same-level)
-      (outline-backward-same-level arg)
-    (outline-indent--advice-backward-same-level 'outline-backward-same-level
-                                                arg)))
+(defun outline-indent-folded-p ()
+  "Return non-nil when the current heading is folded."
+  (save-excursion
+    (outline-back-to-heading)
+    (outline-end-of-heading)
+    (outline-invisible-p (point))))
 
-(defun outline-indent-forward-same-level (&optional arg)
-  "Move forward to the ARG'th subheading at same indentation level as this one.
-Stop at the first and last indented blocks of a superior indentation."
-  (interactive "p")
-  (unless arg
-    (setq arg 1))
-  (if (advice-member-p 'outline-indent--advice-forward-same-level
-                       'outline-forward-same-level)
-      (outline-forward-same-level arg)
-    (outline-indent--advice-forward-same-level 'outline-forward-same-level
-                                               arg)))
-
-(defun outline-indent-select ()
-  "Select the indented block at point."
-  (interactive)
-  (outline-indent--deactivate-region)
-  (let ((begin (save-excursion
-                 (outline-back-to-heading)
-                 (point)))
-        (end (outline-indent--next-lower-or-equal-indentation)))
-    (goto-char (+ end 1))
-    (push-mark)
-    (goto-char begin)
-    (activate-mark)))
-
-(defun outline-indent-close-folds ()
-  "Close all folds."
-  (interactive)
-  (with-no-warnings (outline-hide-sublevels 1)))
-
-(defun outline-indent-open-folds ()
-  "Open all folds."
-  (interactive)
-  (outline-show-all))
+(defun outline-indent--legacy-outline-hide-subtree (&optional event)
+  "Hide everything after this heading at deeper levels.
+If non-nil, EVENT should be a mouse event."
+  (interactive (list last-nonmenu-event))
+  (save-excursion
+    (when (mouse-event-p event)
+      (mouse-set-point event))
+    (outline-flag-subtree t)))
 
 (defun outline-indent--legacy-outline-show-entry ()
   "Show the body directly following this heading. (Emacs version.)
@@ -766,6 +680,69 @@ Show the heading too, if it is currently invisible."
                              (point)))
                          nil)))
 
+(defun outline-indent-close-level (level)
+  "Close the folds at the level: LEVEL."
+  (outline-hide-sublevels level))
+
+;;; Interactive functions
+
+;;;###autoload
+(defun outline-indent-backward-same-level (&optional arg)
+  "Move the cursor to the previous heading that is at the same indentation level.
+Move backward to the ARG'th subheading at same indentation level as this one.
+Stop at the first and last indented blocks of a superior indentation."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-backward-same-level
+                       'outline-backward-same-level)
+      (outline-backward-same-level arg)
+    (outline-indent--advice-backward-same-level 'outline-backward-same-level
+                                                arg)))
+
+;;;###autoload
+(defun outline-indent-forward-same-level (&optional arg)
+  "Move the cursor to the next heading that is at the same indentation level.
+Move forward to the ARG'th subheading at same indentation level as this one.
+Stop at the first and last indented blocks of a superior indentation."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-forward-same-level
+                       'outline-forward-same-level)
+      (outline-forward-same-level arg)
+    (outline-indent--advice-forward-same-level 'outline-forward-same-level
+                                               arg)))
+
+;;;###autoload
+(defun outline-indent-select ()
+  "Select the indented block at point.
+Selects the entire indented block at point, activating a visual region that
+spans the heading and all of its associated indented content."
+  (interactive)
+  (outline-indent--deactivate-region)
+  (let ((begin (save-excursion
+                 (outline-back-to-heading)
+                 (point)))
+        (end (outline-indent--next-lower-or-equal-indentation)))
+    (goto-char (+ end 1))
+    (push-mark)
+    (goto-char begin)
+    (activate-mark)))
+
+;;;###autoload
+(defun outline-indent-close-folds ()
+  "Close all folds."
+  (interactive)
+  (with-no-warnings (outline-hide-sublevels 1)))
+
+;;;###autoload
+(defun outline-indent-open-folds ()
+  "Open all folds."
+  (interactive)
+  (outline-show-all))
+
+;;;###autoload
 (defun outline-indent-open-fold ()
   "Open fold at point."
   (interactive)
@@ -787,15 +764,7 @@ Show the heading too, if it is currently invisible."
     (outline-before-first-heading
      nil)))
 
-(defun outline-indent--legacy-outline-hide-subtree (&optional event)
-  "Hide everything after this heading at deeper levels.
-If non-nil, EVENT should be a mouse event."
-  (interactive (list last-nonmenu-event))
-  (save-excursion
-    (when (mouse-event-p event)
-      (mouse-set-point event))
-    (outline-flag-subtree t)))
-
+;;;###autoload
 (defun outline-indent-close-fold ()
   "Close fold at point."
   (interactive)
@@ -817,6 +786,7 @@ If non-nil, EVENT should be a mouse event."
     (outline-before-first-heading
      nil)))
 
+;;;###autoload
 (defun outline-indent-open-fold-rec ()
   "Open fold at point recursively."
   (interactive)
@@ -826,22 +796,13 @@ If non-nil, EVENT should be a mouse event."
     (outline-before-first-heading
      nil)))
 
+;;;###autoload
 (defun outline-indent-toggle-fold ()
   "Open or close a fold under point."
   (interactive)
   (outline-toggle-children))
 
-(defun outline-indent-folded-p ()
-  "Return non-nil when the current heading is folded."
-  (save-excursion
-    (outline-back-to-heading)
-    (outline-end-of-heading)
-    (outline-invisible-p (point))))
-
-(defun outline-indent-close-level (level)
-  "Close the folds at the level: LEVEL."
-  (outline-hide-sublevels level))
-
+;;;###autoload
 (defun outline-indent-toggle-level-at-point ()
   "Toggle the visibility of the indentation level under the cursor."
   (interactive)
@@ -856,6 +817,63 @@ If non-nil, EVENT should be a mouse event."
                (outline-indent-folded-p))
           (outline-hide-sublevels level)
         (outline-hide-sublevels (- level 1))))))
+
+;;;###autoload
+(defun outline-indent-shift-right (&optional _which arg)
+  "Increase the indentation level of the current indented block.
+The global variable `outline-indent-shift-width' or
+`outline-indent-default-offset' is used to determine the number of spaces to
+indent the subtree.
+WHICH is ignored (backward compatibility with `outline-demote').
+If ARG is positive, indent the outline. If ARG is negative, unindent the
+outline. Defaults to 1 if ARG is nil."
+  (interactive)
+  (unless arg
+    (setq arg 1))
+  (outline-indent--deactivate-region)
+  (let ((shift-right (>= arg 0))
+        (column (current-column))
+        (shift-width
+         (cond (outline-indent-shift-width
+                (max outline-indent-shift-width 1))
+
+               (t
+                (max outline-indent-default-offset 1)))))
+    (let ((folded (save-match-data
+                    (outline-end-of-heading)
+                    (outline-invisible-p))))
+      (save-excursion
+        (outline-back-to-heading)
+        (let ((start (point))
+              (end (save-excursion
+                     (outline-end-of-subtree)
+                     (point))))
+          (indent-rigidly start end (if shift-right
+                                        shift-width
+                                      (* -1 shift-width)))))
+      (if shift-right
+          (move-to-column (+ column shift-width))
+        (move-to-column (max (- column shift-width) 0)))
+      (if folded
+          (outline-hide-subtree)))))
+
+;;;###autoload
+(defun outline-indent-shift-left (&optional _which)
+  "Decrease the indentation level of the current indented block.
+The global variable `outline-indent-shift-width' or
+`outline-indent-default-offset' is used to determine the number of spaces to
+unindent the subtree.
+WHICH is ignored (backward compatibility with `outline-promote')."
+  (interactive)
+  (outline-indent-shift-right nil -1))
+
+(defalias 'outline-indent-demote #'outline-indent-shift-right
+  "Deprecated alias for `outline-indent-shift-right'.")
+(make-obsolete 'outline-indent-demote 'outline-indent-shift-right "1.1.1")
+
+(defalias 'outline-indent-promote #'outline-indent-shift-left
+  "Deprecated alias for `outline-indent-shift-left'.")
+(make-obsolete 'outline-indent-promote 'outline-indent-shift-left "1.1.1")
 
 ;;; Mode
 

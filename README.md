@@ -43,6 +43,8 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
         - [Ensuring that window-start is always visible](#ensuring-that-window-start-is-always-visible)
     - [Usage](#usage)
         - [How to check if it is working?](#how-to-check-if-it-is-working)
+        - [Vanilla Emacs](#vanilla-emacs)
+        - [Evil mode](#evil-mode)
         - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
         - [Collapsing Sections Above a Specified Outline Level](#collapsing-sections-above-a-specified-outline-level)
             - [Managing folds](#managing-folds)
@@ -51,8 +53,6 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
             - [outline-indent-shift-left and outline-indent-shift-right](#outline-indent-shift-left-and-outline-indent-shift-right)
             - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
             - [outline-indent-insert-heading](#outline-indent-insert-heading)
-        - [Vanilla Emacs](#vanilla-emacs)
-        - [Evil mode](#evil-mode)
     - [Frequently asked questions](#frequently-asked-questions)
         - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
         - [Automatically Folding All Folds on Mode Activation](#automatically-folding-all-folds-on-mode-activation)
@@ -141,6 +141,123 @@ Run the following function to fold all indented blocks:
 
 ``` emacs-lisp
 (outline-indent-close-folds)
+```
+
+### Vanilla Emacs
+
+The following *outline-indent* functions manage the opening and closing of folds:
+- `(outline-indent-open-fold)`: Open fold at point.
+- `(outline-indent-close-fold)`: Close fold at point.
+- `(outline-indent-close-folds)`: Close all folds.
+- `(outline-indent-open-folds)`: Open all folds.
+- `(outline-indent-open-fold-rec)`: Open fold at point recursively.
+- `(outline-indent-toggle-fold)`: Open or close a fold under point.
+- `(outline-indent-toggle-level-at-point)`: Toggle the visibility of the indentation level under the cursor.
+- `(outline-indent-select)`: Select the entire indented block at point, activating a visual region spans the heading and all of its associated indented content.
+- `(outline-indent-forward-same-level)`: Move the cursor to the next heading that is at the same indentation level.
+- `(outline-indent-backward-same-level)`: Move the cursor to the previous heading that is at the same indentation level.
+- `(outline-indent-shift-right)`: Increase the indentation level of the current indented block.
+- `(outline-indent-shift-left)`: Decrease the indentation level of the current indented block.
+
+The following is an example of default keybindings that can be added to your configuration:
+```elisp
+;; Fold management
+(define-key outline-indent-minor-mode-map (kbd "C-c o o") 'outline-indent-open-fold)     ; Open fold at point
+(define-key outline-indent-minor-mode-map (kbd "C-c o c") 'outline-indent-close-fold)    ; Close fold at point
+(define-key outline-indent-minor-mode-map (kbd "C-c o m") 'outline-indent-close-folds)   ; Close all folds
+(define-key outline-indent-minor-mode-map (kbd "C-c o r") 'outline-indent-open-folds)    ; Open all folds
+(define-key outline-indent-minor-mode-map (kbd "C-c o O") 'outline-indent-open-fold-rec) ; Open fold recursively
+(define-key outline-indent-minor-mode-map (kbd "C-c o TAB") 'outline-indent-toggle-fold) ; Toggle fold at point
+(define-key outline-indent-minor-mode-map (kbd "C-c o t") 'outline-indent-toggle-level-at-point) ; Toggle level at point
+
+;; Selection
+(define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select current indented block
+
+;; Navigation at same indentation level
+(define-key outline-indent-minor-mode-map (kbd "C-c o n") 'outline-indent-forward-same-level) ; Next heading at same level
+(define-key outline-indent-minor-mode-map (kbd "C-c o p") 'outline-indent-backward-same-level) ; Previous heading at same level
+
+;; Shift left or right
+(define-key outline-indent-minor-mode-map (kbd "C-c o <right>") 'outline-indent-shift-right)
+(define-key outline-indent-minor-mode-map (kbd "C-c o <left>") 'outline-indent-shift-left)
+```
+
+As an alternative, you can also use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your indented file:
+- `(hide-sublevels 1)`: Fold all folds.
+- `(outline-hide-body)`: Hide all body lines in buffer, leaving all headings visible.
+- `(outline-hide-other)`: Hide everything except current body and parent and top-level headings.
+- `(outline-hide-entry)`: Hide the body directly following this heading.
+- `(outline-hide-leaves)`: Hide the body after this heading and at deeper levels.
+- `(outline-hide-subtree)`: Hide everything after this heading at deeper levels.
+- `(outline-show-children)`: Show all direct subheadings of this heading.
+- `(outline-hide-sublevels)`: Hide everything but the top LEVELS levels of headers, in whole buffer.
+- `(outline-show-all)`: Show all of the text in the buffer.
+- `(outline-show-entry)`: Show the body directly following this heading.
+- `(outline-show-subtree)`: Show everything after this heading at deeper levels.
+- `(outline-show-branches)`: Show all subheadings of this heading, but not their bodies.
+- `(outline-show-children)`: Show all direct subheadings of this heading.
+
+You can also indent/unindent and move subtree up and down using:
+
+- `(outline-backward-same-level)` and `(outline-forward-same-level)`: Move backward/forward to the indentation level of the current line.
+- `(outline-indent-shift-right)` and `(outline-indent-shift-left)`: Indent or unindent the entire subtree.
+- `(outline-indent-move-subtree-down)` and `(outline-indent-move-subtree-up)` to move the current subtree up or down.
+- `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.
+
+Move to the next and previous visible fold:
+- `outline-previous-visible-heading`
+- `outline-next-visible-heading`
+
+Move forward or backward to the same indentation level:
+- `outline-forward-same-level`: Move forward to the same indentation level as the one under the cursor.
+- `outline-backward-same-level`: Move backward to the the same indentation level as as the one under the cursor.
+
+### Evil mode
+
+In Evil mode, *outline-indent* works out of the box if you install `evil-collection`, and you can use the Evil and evil-collection keyboard mappings:
+- Open fold(s): `zo`, `zO`, `zr`
+- Close fold(s): `zc`, `zC`, `zM`
+- Toggle folds: `za`
+- Next visible fold/heading: `]]` and `[[`
+- Move forward/backward to the same indentation level: `gj` and `gk`
+
+You may want to set a few additional key mappings:
+```emacs-lisp
+(with-eval-after-load "evil"
+  (defun my-evil-define-key-outline-indent-minor-mode ()
+    ;; Open and close folds
+    (evil-define-key 'normal 'local (kbd "zo") #'outline-indent-open-fold)
+    (evil-define-key 'normal 'local (kbd "zc") #'outline-indent-close-fold)
+
+    ;; Set `M-h` and `M-l` to decrease and increase the indentation level of
+    ;; indented blocks
+    (evil-define-key 'normal 'local (kbd "M-h") #'outline-indent-shift-left)
+    (evil-define-key 'normal 'local (kbd "M-l") #'outline-indent-shift-right)
+
+    ;; Set `M-k` and `M-j` to move indented blocks up and down
+    (evil-define-key 'normal 'local (kbd "M-k") #'outline-indent-move-subtree-up)
+    (evil-define-key 'normal 'local (kbd "M-j") #'outline-indent-move-subtree-down)
+
+    (unless (derived-mode-p 'prog-mode)
+      ;; In prog-mode, [[, ]], gj, and gk provide navigation to the previous
+      ;; and next function, so there is no need to override them.
+      (evil-define-key 'normal 'local (kbd "]]") #'outline-indent-forward-same-level)
+      (evil-define-key 'normal 'local (kbd "[[") #'outline-indent-backward-same-level)
+      (evil-define-key 'normal 'local (kbd "gj") #'outline-indent-forward-same-level)
+      (evil-define-key 'normal 'local (kbd "gk") #'outline-indent-backward-same-level))
+
+    (evil-define-key 'normal 'local (kbd "gV") #'outline-indent-select)
+
+    ;; Set C-<return> to insert a new line with the same indentation
+    ;; level/depth as the current line just before the next heading
+    (evil-define-key '(normal insert) 'local (kbd "C-<return>")
+      (defun my-evil-outline-indent-insert-heading ()
+        (interactive)
+        (outline-indent-insert-heading)
+        (evil-insert-state))))
+
+  (add-hook 'outline-indent-minor-mode-hook
+            #'my-evil-define-key-outline-indent-minor-mode))
 ```
 
 ### Functions specific to outline-indent-minor-mode
@@ -251,86 +368,6 @@ In `outline-indent-minor-mode`, where most lines are treated as headings, this f
 Example usage:
 ``` emacs-lisp
 (outline-indent-insert-heading)
-```
-
-### Vanilla Emacs
-
-Use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your indented file:
-- `(hide-sublevels 1)`: Fold all folds.
-- `(outline-hide-body)`: Hide all body lines in buffer, leaving all headings visible.
-- `(outline-hide-other)`: Hide everything except current body and parent and top-level headings.
-- `(outline-hide-entry)`: Hide the body directly following this heading.
-- `(outline-hide-leaves)`: Hide the body after this heading and at deeper levels.
-- `(outline-hide-subtree)`: Hide everything after this heading at deeper levels.
-- `(outline-show-children)`: Show all direct subheadings of this heading.
-- `(outline-hide-sublevels)`: Hide everything but the top LEVELS levels of headers, in whole buffer.
-- `(outline-show-all)`: Show all of the text in the buffer.
-- `(outline-show-entry)`: Show the body directly following this heading.
-- `(outline-show-subtree)`: Show everything after this heading at deeper levels.
-- `(outline-show-branches)`: Show all subheadings of this heading, but not their bodies.
-- `(outline-show-children)`: Show all direct subheadings of this heading.
-
-You can also indent/unindent and move subtree up and down using:
-
-- `(outline-backward-same-level)` and `(outline-forward-same-level)`: Move backward/forward to the indentation level of the current line.
-- `(outline-indent-shift-right)` and `(outline-indent-shift-left)`: Indent or unindent the entire subtree.
-- `(outline-indent-move-subtree-down)` and `(outline-indent-move-subtree-up)` to move the current subtree up or down.
-- `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.
-
-Move to the next and previous visible fold:
-- `outline-previous-visible-heading`
-- `outline-next-visible-heading`
-
-Move forward or backward to the same indentation level:
-- `outline-forward-same-level`: Move forward to the same indentation level as the one under the cursor.
-- `outline-backward-same-level`: Move backward to the the same indentation level as as the one under the cursor.
-
-### Evil mode
-
-In Evil mode, *outline-indent* works out of the box if you install `evil-collection`, and you can use the Evil and evil-collection keyboard mappings:
-- Open fold(s): `zo`, `zO`, `zr`
-- Close fold(s): `zc`, `zC`, `zM`
-- Toggle folds: `za`
-- Next visible fold/heading: `]]` and `[[`
-- Move forward/backward to the same indentation level: `gj` and `gk`
-
-You may want to set a few additional key mappings:
-```emacs-lisp
-(with-eval-after-load "evil"
-  (defun my-evil-define-key-outline-indent-minor-mode ()
-    ;; Open and close folds
-    (evil-define-key 'normal 'local (kbd "zo") #'outline-indent-open-fold)
-    (evil-define-key 'normal 'local (kbd "zc") #'outline-indent-close-fold)
-
-    ;; Set `M-h` and `M-l` to decrease and increase the indentation level of
-    ;; indented blocks
-    (evil-define-key 'normal 'local (kbd "M-h") #'outline-indent-shift-left)
-    (evil-define-key 'normal 'local (kbd "M-l") #'outline-indent-shift-right)
-
-    ;; Set `M-k` and `M-j` to move indented blocks up and down
-    (evil-define-key 'normal 'local (kbd "M-k") #'outline-indent-move-subtree-up)
-    (evil-define-key 'normal 'local (kbd "M-j") #'outline-indent-move-subtree-down)
-
-    (unless (derived-mode-p 'prog-mode)
-      ;; In prog-mode, [[, ]], gj, and gk provide navigation to the previous
-      ;; and next function, so there is no need to override them.
-      (evil-define-key 'normal 'local (kbd "]]") #'outline-indent-forward-same-level)
-      (evil-define-key 'normal 'local (kbd "[[") #'outline-indent-backward-same-level)
-      (evil-define-key 'normal 'local (kbd "gj") #'outline-indent-forward-same-level)
-      (evil-define-key 'normal 'local (kbd "gk") #'outline-indent-backward-same-level))
-
-    (evil-define-key 'normal 'local (kbd "gV") #'outline-indent-select)
-
-    ;; Set C-<return> to insert a new line with the same indentation
-    ;; level/depth as the current line just before the next heading
-    (evil-define-key '(normal insert) 'local (kbd "C-<return>")
-      (defun my-evil-outline-indent-insert-heading ()
-        (interactive)
-        (outline-indent-insert-heading)
-        (evil-insert-state))))
-
-  (add-hook 'outline-indent-minor-mode-hook
-            #'my-evil-define-key-outline-indent-minor-mode))
 ```
 
 ## Frequently asked questions
