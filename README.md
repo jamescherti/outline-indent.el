@@ -62,6 +62,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
         - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
             - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
             - [Detecting indentation](#detecting-indentation)
+        - [What are the main differences compared to treesit-fold?](#what-are-the-main-differences-compared-to-treesit-fold)
         - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
         - [Why not use folding.el?](#why-not-use-foldingel)
         - [How does this compare to the built-in hideshow package?](#how-does-this-compare-to-the-built-in-hideshow-package)
@@ -491,6 +492,14 @@ To install it, add the following to your Emacs init file:
   :config
   (dtrt-indent-global-mode))
 ```
+
+### What are the main differences compared to treesit-fold?
+
+The *outline-indent* package manages code or text folding based on indentation levels. It determines how deeply nested sections are represented and folded, depending on indentation. It is purely text-structural and does not rely on syntactic analysis; it simply interprets indentation to define hierarchical relationships between lines or sections.
+
+The *treesit-fold* package, on the other hand, is built on Emacs' Tree-sitter integration, which provides a syntactic parse tree of the buffer's content. Folding through *treesit-fold* relies on the program's actual syntax tree rather than indentation. This allows it to fold language constructs such as functions, classes, loops, or conditional blocks with semantic accuracy.
+
+In essence, *treesit-fold* offers a syntax-aware folding mechanism, whereas *outline-indent* operates solely on indentation.
 
 ### Why not use origami.el or yafolding?
 
