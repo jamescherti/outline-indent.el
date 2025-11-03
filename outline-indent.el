@@ -883,8 +883,7 @@ WHICH is ignored (backward compatibility with `outline-promote')."
 
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
-  "Toggle `outline-indent-minor-mode'.
-This mode sets up outline to work based on indentation."
+  "Minor mode for folding text according to indentation levels."
   :lighter " OutlInd"
   :keymap outline-indent-minor-mode-map
   :group 'outline-indent
