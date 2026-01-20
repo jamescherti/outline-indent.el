@@ -739,7 +739,22 @@ spans the heading and all of its associated indented content."
   "Close all folds and ensure the first heading remains visible."
   (interactive)
   (with-no-warnings
-    (outline-hide-sublevels 1)))
+    (outline-hide-sublevels 1))
+
+  (when (fboundp 'outline-back-to-heading)
+    (let ((heading-point (save-excursion
+                           (condition-case nil
+                               (progn
+                                 (outline-back-to-heading)
+                                 (point))
+                             (error
+                              nil)))))
+      ;; Ensure folded headings remain visible after hiding subtrees. Fixes a
+      ;; bug in outline and Evil where headings could scroll out of view when
+      ;; their subtrees were folded. TODO Send a patch to Emacs and/or Evil
+      (when (and heading-point
+                 (< heading-point (window-start)))
+        (set-window-start (selected-window) heading-point t)))))
 
 ;;;###autoload
 (defun outline-indent-open-folds ()
