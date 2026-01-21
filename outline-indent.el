@@ -745,8 +745,10 @@ spans the heading and all of its associated indented content."
     (let ((heading-point (save-excursion
                            (condition-case nil
                                (progn
-                                 (outline-back-to-heading)
-                                 (point))
+                                 (goto-char (window-start))
+                                 (beginning-of-visual-line)
+                                 (when (outline-on-heading-p)
+                                   (point)))
                              (error
                               nil)))))
       ;; Ensure folded headings remain visible after hiding subtrees. Fixes a
