@@ -818,8 +818,8 @@ visible in the window after hiding."
           (when (outline-on-heading-p)
             (outline-indent--legacy-outline-hide-subtree))
 
-          ;; Ensure folded headings remain visible after hiding subtrees.
-          ;; Fixes a bug in outline and Evil where headings could scroll out of view
+          ;; Ensure folded headings remain visible after hiding subtrees. Fixes
+          ;; a bug in outline and Evil where headings could scroll out of view
           ;; when their subtrees were folded.
           ;; TODO Send a patch to Emacs and/or Evil
           (when (and heading-point
