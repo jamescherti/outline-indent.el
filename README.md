@@ -39,7 +39,6 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
   - [Activation](#activation)
     - [Manual activation](#manual-activation)
     - [Automatic activation using hooks](#automatic-activation-using-hooks)
-    - [Ensuring that window-start is always visible](#ensuring-that-window-start-is-always-visible)
   - [Usage](#usage)
     - [How to check if it is working?](#how-to-check-if-it-is-working)
     - [Vanilla Emacs](#vanilla-emacs)
@@ -134,18 +133,6 @@ The minor mode can also be automatically activated for a certain modes. For exam
 ;; YAML
 (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
-```
-
-### Ensuring that window-start is always visible
-
-In some cases, Emacs may incorrectly consider a heading to be empty and scroll past it, even though it contains hidden or folded content such as child entries or overlays. This can result in a misleading view where the heading appears to be without content, despite actually containing structured data.
-
-To mitigate this issue, it is advisable to set `make-window-start-visible` to `t`, which ensures that the beginning of the window is always visible:
-```emacs-lisp
-;; Ensure that the beginning of the window is always visible
-(add-hook 'outline-minor-mode-hook
-          #'(lambda()
-              (setq-local make-window-start-visible t)))
 ```
 
 ## Usage
