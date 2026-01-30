@@ -60,7 +60,6 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
     - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
     - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
       - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
-      - [Detecting indentation](#detecting-indentation)
     - [What are the main differences compared to treesit-fold?](#what-are-the-main-differences-compared-to-treesit-fold)
     - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
     - [Why not use folding.el?](#why-not-use-foldingel)
@@ -460,24 +459,6 @@ It can be activated using `M-x indent-bars-mode` or by adding the following to t
 
 ```elisp
 (add-hook 'prog-mode-hook #'indent-bars-mode)
-```
-
-#### Detecting indentation
-
-The *dtrt-indent* package automatically detects the indentation offset used in source code files and adjusts Emacs settings to match, simplifying the editing of files with varying indentation styles.
-
-To install it, add the following to your Emacs init file:
-```emacs-lisp
-(use-package dtrt-indent
-  :ensure t
-  :commands (dtrt-indent-global-mode
-             dtrt-indent-mode
-             dtrt-indent-adapt
-             dtrt-indent-undo
-             dtrt-indent-diagnosis
-             dtrt-indent-highlight)
-  :config
-  (dtrt-indent-global-mode))
 ```
 
 ### What are the main differences compared to treesit-fold?
