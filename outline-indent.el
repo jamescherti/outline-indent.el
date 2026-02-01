@@ -89,17 +89,23 @@
   "Default indentation offset.
 If nil, the offset is automatically determined based on the current mode.
 This value is used to calculate outline levels from the current indentation."
-  :type '(choice (integer :tag "Custom width")
-                 (const :tag "Auto detect" nil))
+  :type '(choice (natnum :tag "Custom width")
+                 (natnum :tag "Auto detect" nil))
   :group 'outline-indent)
 
 (defcustom outline-indent-shift-width nil
   "Shift width used for indentation adjustments during promotion and demotion.
 If nil, this value defaults to `outline-indent-default-offset', which is
 automatically determined according to the current mode."
-  :type '(choice (integer :tag "Custom width")
+  :type '(choice (natnum :tag "Custom width")
                  (const :tag "Auto detect" nil))
   :group 'outline-indent)
+
+(defcustom outline-indent-maximum-level nil
+  "Maximum allowed depth for outline indentation.
+If nil, there is no maximum."
+  :type '(choice (natnum :tag "Maximum level")
+                 (const :tag "No limit" nil)))
 
 (defcustom outline-indent-ellipsis nil
   "String used as the ellipsis character in `outline-indent-mode'.
@@ -363,13 +369,33 @@ follow the mode-specific coding style automatically."
       (unless outline-indent-shift-width
         (setq-local outline-indent-shift-width major-mode-offset)))))
 
+(defun outline-indent-level-ignore-empty-lines ()
+  "Determine the outline level based on the current indentation."
+  (let* ((indentation (current-indentation))
+         (depth (if (and (= indentation 0)
+                         (save-excursion
+                           (beginning-of-line)
+                           (looking-at-p "^\\s-*$")))
+                    0
+                  (+ 1 (/ indentation
+                          (max (if outline-indent-default-offset
+                                   outline-indent-default-offset
+                                 1)
+                               1))))))
+    (if outline-indent-maximum-level
+        (min depth (1+ outline-indent-maximum-level))
+      depth)))
+
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (+ 1 (/ (current-indentation)
-          (max (if outline-indent-default-offset
-                   outline-indent-default-offset
-                 1)
-               1))))
+  (let* ((indentation (current-indentation))
+         (depth (1+ (/ indentation
+                       (max (or outline-indent-default-offset
+                                1)
+                            1)))))
+    (if outline-indent-maximum-level
+        (min depth (1+ outline-indent-maximum-level))
+      depth)))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
