@@ -481,7 +481,10 @@ addressing the issue where the cursor might be reset after the operation."
   (outline-indent-move-subtree-down (- arg)))
 
 (defun outline-indent--deactivate-region ()
-  "Deactivate the current region and move point to the start of the region."
+  "Deactivate the current region and relocate point to the start.
+If a region is currently active, moves the point to the beginning of the region
+and disables the mark. This ensures a consistent starting state for subsequent
+selection operations."
   (when (use-region-p)
     (goto-char (region-beginning))
     (deactivate-mark)))
@@ -747,18 +750,16 @@ Stop at the first and last indented blocks of a superior indentation."
 ;;;###autoload
 (defun outline-indent-select ()
   "Select the indented block at point.
-Selects the entire indented block at point, activating a visual region that
-spans the heading and all of its associated indented content."
+Identifies the heading and all associated indented content, then activates a
+visual region spanning from the heading start to the end of the block."
   (interactive)
   (outline-indent--deactivate-region)
   (let ((begin (save-excursion
                  (outline-back-to-heading)
                  (point)))
         (end (outline-indent--next-lower-or-equal-indentation)))
-    (goto-char (+ end 1))
-    (push-mark)
-    (goto-char begin)
-    (activate-mark)))
+    (push-mark (1+ end) nil t)
+    (goto-char begin)))
 
 ;;;###autoload
 (defun outline-indent-close-folds ()
@@ -795,19 +796,24 @@ spans the heading and all of its associated indented content."
   "Open fold at point."
   (interactive)
   (condition-case nil
-      (let ((on-visible-heading (when (outline-on-heading-p t)
-                                  (outline-invisible-p))))
-        (save-excursion
-          (while (outline-indent-folded-p)
-            ;; Repeatedly reveal children and body until the entry is no
-            ;; longer folded
-            (save-excursion
-              (outline-back-to-heading)
-              (outline-show-children)
-              (outline-indent--legacy-outline-show-entry))))
+      (progn
+        (let* ((on-invisible-heading (save-excursion
+                                       (when (outline-on-heading-p t)
+                                         (outline-invisible-p)))))
+          (when (use-region-p)
+            (outline-indent-select))
 
-        (when on-visible-heading
-          (outline-indent--legacy-outline-hide-subtree)))
+          (save-excursion
+            (while (outline-indent-folded-p)
+              ;; Repeatedly reveal children and body until the entry is no
+              ;; longer folded
+              (save-excursion
+                (outline-back-to-heading)
+                (outline-show-children)
+                (outline-indent--legacy-outline-show-entry))))
+
+          (when on-invisible-heading
+            (outline-indent--legacy-outline-hide-subtree))))
     ;; Ignore `outline-before-first-heading'
     (outline-before-first-heading
      nil)))
