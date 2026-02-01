@@ -797,9 +797,11 @@ visual region spanning from the heading start to the end of the block."
   (interactive)
   (condition-case nil
       (progn
-        (let* ((on-invisible-heading (save-excursion
-                                       (when (outline-on-heading-p t)
-                                         (outline-invisible-p)))))
+        (let* ((on-invisible-heading (when (outline-on-heading-p t)
+                                       (outline-invisible-p)))
+               (on-visible-heading (save-excursion
+                                     (beginning-of-line)
+                                     (outline-on-heading-p))))
           (when (use-region-p)
             (outline-indent-select))
 
@@ -812,7 +814,10 @@ visual region spanning from the heading start to the end of the block."
                 (outline-show-children)
                 (outline-indent--legacy-outline-show-entry))))
 
-          (when on-invisible-heading
+          ;; If the header was previously hidden, hide the subtree to collapse
+          ;; it. Otherwise, leave the fold open. This allows the user to decide
+          ;; whether to expand the content under the cursor.
+          (when (and on-invisible-heading (not on-visible-heading))
             (outline-indent--legacy-outline-hide-subtree))))
     ;; Ignore `outline-before-first-heading'
     (outline-before-first-heading
