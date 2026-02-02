@@ -371,13 +371,16 @@ follow the mode-specific coding style automatically."
 
 (defun outline-indent-level-ignore-empty-lines ()
   "Determine the outline level based on the current indentation."
-  (let* ((indentation (current-indentation))
-         (depth (if (and (= indentation 0)
+  (let* ((indentation-string (match-string 1))
+         (indentation-width (if indentation-string
+                                (string-width indentation-string)
+                              0))
+         (depth (if (and (= indentation-width 0)
                          (save-excursion
                            (beginning-of-line)
                            (looking-at-p "^\\s-*$")))
                     0
-                  (+ 1 (/ indentation
+                  (+ 1 (/ indentation-width
                           (max (if outline-indent-default-offset
                                    outline-indent-default-offset
                                  1)
@@ -388,8 +391,11 @@ follow the mode-specific coding style automatically."
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (let* ((indentation (current-indentation))
-         (depth (1+ (/ indentation
+  (let* ((indentation-string (match-string 1))
+         (indentation-width (if indentation-string
+                                (string-width indentation-string)
+                              0))
+         (depth (1+ (/ indentation-width
                        (max (or outline-indent-default-offset
                                 1)
                             1)))))
@@ -957,6 +963,13 @@ WHICH is ignored (backward compatibility with `outline-promote')."
 
 ;;; Mode
 
+;; (defun outline-indent--heading-regexp ()
+;;   "Compute heading regexp based on leading indentation."
+;;   (rx-to-string
+;;    `(and line-start
+;;          (group (zero-or-more (any " \t")))
+;;          (not (any " \t\n")))))
+
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
   "Minor mode for folding text according to indentation levels."
@@ -983,8 +996,9 @@ WHICH is ignored (backward compatibility with `outline-promote')."
         (setq-local outline-heading-alist nil)
         (setq-local outline-level #'outline-indent-level)
         (setq-local outline-heading-end-regexp "\n")
-        (setq-local outline-regexp (rx bol
-                                       (zero-or-more (any " \t"))
+        ;; (setq-local outline-regexp (outline-indent--heading-regexp))
+        (setq-local outline-regexp (rx line-start
+                                       (group (zero-or-more (any " \t")))
                                        (not (any " \t\n"))))
         (outline-indent--update-ellipsis)
         (outline-indent--setup-basic-offset)
