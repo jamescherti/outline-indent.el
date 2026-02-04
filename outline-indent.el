@@ -767,7 +767,8 @@ visual region spanning from the heading start to the end of the block."
                  (point)))
         (end (outline-indent--next-lower-or-equal-indentation)))
     (push-mark (1+ end) nil t)
-    (goto-char begin)))
+    (goto-char begin)
+    (activate-mark)))
 
 ;;;###autoload
 (defun outline-indent-close-folds ()
