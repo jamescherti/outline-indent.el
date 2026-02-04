@@ -391,14 +391,16 @@ follow the mode-specific coding style automatically."
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (let* ((indentation-string (match-string 1))
-         (indentation-width (if indentation-string
-                                (string-width indentation-string)
-                              0))
-         (depth (1+ (/ indentation-width
-                       (max (or outline-indent-default-offset
-                                1)
-                            1)))))
+  (let* ((indentation-width (current-indentation))
+         ;; TODO fix this
+         ;; (indentation-string (match-string 1))
+         ;; (indentation-width (if indentation-string
+         ;;                        (string-width indentation-string)
+         ;;                      0))
+         (depth (/ indentation-width
+                   (max (or outline-indent-default-offset
+                            1)
+                        1))))
     (if outline-indent-maximum-level
         (min depth (1+ outline-indent-maximum-level))
       depth)))
@@ -967,7 +969,7 @@ WHICH is ignored (backward compatibility with `outline-promote')."
 ;;   "Compute heading regexp based on leading indentation."
 ;;   (rx-to-string
 ;;    `(and line-start
-;;          (group (zero-or-more (any " \t")))
+;;          (group (one-or-more (any " \t")))
 ;;          (not (any " \t\n")))))
 
 ;;;###autoload
@@ -998,7 +1000,7 @@ WHICH is ignored (backward compatibility with `outline-promote')."
         (setq-local outline-heading-end-regexp "\n")
         ;; (setq-local outline-regexp (outline-indent--heading-regexp))
         (setq-local outline-regexp (rx line-start
-                                       (group (zero-or-more (any " \t")))
+                                       (group (one-or-more (any " \t")))
                                        (not (any " \t\n"))))
         (outline-indent--update-ellipsis)
         (outline-indent--setup-basic-offset)
