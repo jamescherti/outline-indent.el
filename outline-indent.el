@@ -804,6 +804,22 @@ visual region spanning from the heading start to the end of the block."
 (defun outline-indent-open-fold ()
   "Open fold at point."
   (interactive)
+  ;; Workaround for an outline-mode limitation: when jumping via imenu or
+  ;; search, sibling headings above the current one and at the same level
+  ;; often remain hidden. This ensures all sub-items at the current level are
+  ;; revealed, preventing the 'isolated item' effect.
+  (save-excursion
+    ;; Climbing as long as a parent heading exists
+    (catch 'done
+      (while (not (bobp))
+        (condition-case nil
+            (progn (outline-up-heading 1 t))
+          (error
+           (throw 'done t)))
+
+        (outline-show-children))))
+
+  ;; Repeatedly reveal children and body until the entry is no longer folded
   (condition-case nil
       (progn
         (let* ((on-invisible-heading (when (outline-on-heading-p t)
