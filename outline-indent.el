@@ -397,10 +397,10 @@ follow the mode-specific coding style automatically."
          ;; (indentation-width (if indentation-string
          ;;                        (string-width indentation-string)
          ;;                      0))
-         (depth (/ indentation-width
-                   (max (or outline-indent-default-offset
-                            1)
-                        1))))
+         (depth (1+ (/ indentation-width
+                       (max (or outline-indent-default-offset
+                                1)
+                            1)))))
     (if outline-indent-maximum-level
         (min depth (1+ outline-indent-maximum-level))
       depth)))
