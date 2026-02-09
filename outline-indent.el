@@ -3,7 +3,7 @@
 ;; Copyright (C) 2024-2026 James Cherti | https://www.jamescherti.com/contact/
 
 ;; Author: James Cherti
-;; Version: 1.1.6
+;; Version: 1.1.7
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
 ;; Package-Requires: ((emacs "26.1"))
@@ -986,7 +986,7 @@ WHICH is ignored (backward compatibility with `outline-promote')."
 ;;   "Compute heading regexp based on leading indentation."
 ;;   (rx-to-string
 ;;    `(and line-start
-;;          (group (one-or-more (any " \t")))
+;;          (group (zero-or-more (any " \t")))
 ;;          (not (any " \t\n")))))
 
 ;;;###autoload
@@ -1017,7 +1017,7 @@ WHICH is ignored (backward compatibility with `outline-promote')."
         (setq-local outline-heading-end-regexp "\n")
         ;; (setq-local outline-regexp (outline-indent--heading-regexp))
         (setq-local outline-regexp (rx line-start
-                                       (group (one-or-more (any " \t")))
+                                       (group (zero-or-more (any " \t")))
                                        (not (any " \t\n"))))
         (outline-indent--update-ellipsis)
         (outline-indent--setup-basic-offset)
