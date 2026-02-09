@@ -1,4 +1,4 @@
-# outline-indent.el - Indentation-Based Code Folding for Emacs, a Modern Replacement for origami.el and yafolding.el
+# outline-indent.el - A modern indentation-based folding mode
 ![Build Status](https://github.com/jamescherti/outline-indent.el/actions/workflows/ci.yml/badge.svg)
 [![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
 [![MELPA Stable](https://stable.melpa.org/packages/outline-indent-badge.svg)](https://stable.melpa.org/#/outline-indent)
@@ -34,7 +34,7 @@ The *outline-indent* Emacs package offers a similar functionality to Vim's `set 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 ## Table of Contents
 
-- [outline-indent.el - Indentation-Based Code Folding for Emacs, a Modern Replacement for origami.el and yafolding.el](#outline-indentel---indentation-based-code-folding-for-emacs-a-modern-replacement-for-origamiel-and-yafoldingel)
+- [outline-indent.el - A modern indentation-based folding mode](#outline-indentel---a-modern-indentation-based-folding-mode)
   - [Installation](#installation)
   - [Activation](#activation)
     - [Manual activation](#manual-activation)
