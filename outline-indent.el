@@ -3,7 +3,7 @@
 ;; Copyright (C) 2024-2026 James Cherti | https://www.jamescherti.com/contact/
 
 ;; Author: James Cherti
-;; Version: 1.1.5
+;; Version: 1.1.6
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
 ;; Package-Requires: ((emacs "26.1"))
