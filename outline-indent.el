@@ -548,9 +548,10 @@ addressing the issue where the cursor might be reset after the operation."
           (outline-back-to-heading)
           (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
                             'outline-get-last-sibling))
-                 ;; Find the end of the subtree to be moved as well as the point
-                 ;; to move it to, adding a newline if necessary, to ensure
-                 ;; these points are at bol on the line below the subtree.
+                 ;; Find the end of the subtree to be moved as well as the
+                 ;; point to move it to, adding a newline if necessary, to
+                 ;; ensure these points are at bol on the line below the
+                 ;; subtree.
                  (add-new-line nil)
                  (end-point-func (lambda (respect-outline-blank-line)
                                    (let ((outline-blank-line
@@ -693,10 +694,11 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 
 (defun outline-indent-folded-p ()
   "Return non-nil when the current heading is folded."
-  (save-excursion
-    (outline-back-to-heading)
-    (outline-end-of-heading)
-    (outline-invisible-p (point))))
+  (save-match-data
+    (save-excursion
+      (outline-back-to-heading)
+      (outline-end-of-heading)
+      (outline-invisible-p (point)))))
 
 (defun outline-indent--legacy-outline-hide-subtree (&optional event)
   "Hide everything after this heading at deeper levels.
@@ -724,6 +726,34 @@ Show the heading too, if it is currently invisible."
 (defun outline-indent-close-level (level)
   "Close the folds at the level: LEVEL."
   (outline-hide-sublevels level))
+
+(defun outline-indent--ensure-window-start-heading-visible ()
+  "Adjust the window to ensure the current heading remains visible.
+
+This function checks if the heading governing the text at the top of the window
+is currently scrolled off-screen. If so, it resets the window start to the
+heading's position.
+
+This fixes an issue in `outline-mode' where folding a subtree that is partially
+scrolled off-screen causes the heading to disappear."
+  (interactive)
+  (save-match-data
+    ;; TODO replace this with kirigami
+    (let ((heading-point (save-excursion
+                           (condition-case nil
+                               (progn
+                                 (goto-char (window-start))
+                                 (when (outline-invisible-p (point))
+                                   (outline-back-to-heading)
+                                   (point)))
+                             (error
+                              nil)))))
+      ;; Ensure folded headings remain visible after hiding subtrees. Fixes a
+      ;; bug in outline and Evil where headings could scroll out of view when
+      ;; their subtrees were folded. TODO Send a patch to Emacs and/or Evil
+      (when (and heading-point
+                 (< heading-point (window-start)))
+        (set-window-start (selected-window) heading-point t)))))
 
 ;;; Interactive functions
 
@@ -774,31 +804,18 @@ visual region spanning from the heading start to the end of the block."
 (defun outline-indent-close-folds ()
   "Close all folds and ensure the first heading remains visible."
   (interactive)
-  (with-no-warnings
-    (outline-hide-sublevels 1))
-
-  (let ((heading-point (save-excursion
-                         (condition-case nil
-                             (progn
-                               (goto-char (window-start))
-                               (beginning-of-visual-line)
-                               (if (outline-on-heading-p)
-                                   (point)
-                                 (outline-back-to-heading t)))
-                           (error
-                            nil)))))
-    ;; Ensure folded headings remain visible after hiding subtrees. Fixes a
-    ;; bug in outline and Evil where headings could scroll out of view when
-    ;; their subtrees were folded. TODO Send a patch to Emacs and/or Evil
-    (when (and heading-point
-               (< heading-point (window-start)))
-      (set-window-start (selected-window) heading-point t))))
+  (unwind-protect
+      (with-no-warnings
+        (outline-hide-sublevels 1))
+    (outline-indent--ensure-window-start-heading-visible)))
 
 ;;;###autoload
 (defun outline-indent-open-folds ()
   "Open all folds."
   (interactive)
-  (outline-show-all))
+  (unwind-protect
+      (outline-show-all)
+    (outline-indent--ensure-window-start-heading-visible)))
 
 ;;;###autoload
 (defun outline-indent-open-fold ()
@@ -820,33 +837,35 @@ visual region spanning from the heading start to the end of the block."
         (outline-show-children))))
 
   ;; Repeatedly reveal children and body until the entry is no longer folded
-  (condition-case nil
-      (progn
-        (let* ((on-invisible-heading (when (outline-on-heading-p t)
-                                       (outline-invisible-p)))
-               (on-visible-heading (save-excursion
-                                     (beginning-of-line)
-                                     (outline-on-heading-p))))
-          (when (use-region-p)
-            (outline-indent-select))
+  (unwind-protect
+      (condition-case nil
+          (progn
+            (let* ((on-invisible-heading (when (outline-on-heading-p t)
+                                           (outline-invisible-p)))
+                   (on-visible-heading (save-excursion
+                                         (beginning-of-line)
+                                         (outline-on-heading-p))))
+              (when (use-region-p)
+                (outline-indent-select))
 
-          (save-excursion
-            (while (outline-indent-folded-p)
-              ;; Repeatedly reveal children and body until the entry is no
-              ;; longer folded
               (save-excursion
-                (outline-back-to-heading)
-                (outline-show-children)
-                (outline-indent--legacy-outline-show-entry))))
+                (while (outline-indent-folded-p)
+                  ;; Repeatedly reveal children and body until the entry is no
+                  ;; longer folded
+                  (save-excursion
+                    (outline-back-to-heading)
+                    (outline-show-children)
+                    (outline-indent--legacy-outline-show-entry))))
 
-          ;; If the header was previously hidden, hide the subtree to collapse
-          ;; it. Otherwise, leave the fold open. This allows the user to decide
-          ;; whether to expand the content under the cursor.
-          (when (and on-invisible-heading (not on-visible-heading))
-            (outline-indent--legacy-outline-hide-subtree))))
-    ;; Ignore `outline-before-first-heading'
-    (outline-before-first-heading
-     nil)))
+              ;; If the header was previously hidden, hide the subtree to
+              ;; collapse it. Otherwise, leave the fold open. This allows the
+              ;; user to decide whether to expand the content under the cursor.
+              (when (and on-invisible-heading (not on-visible-heading))
+                (outline-indent--legacy-outline-hide-subtree))))
+        ;; Ignore `outline-before-first-heading'
+        (outline-before-first-heading
+         nil))
+    (outline-indent--ensure-window-start-heading-visible)))
 
 ;;;###autoload
 (defun outline-indent-close-fold ()
@@ -858,70 +877,80 @@ heading with a higher level and close its subtree.
 Otherwise, close the current subtree. Ensures that folded headings remain
 visible in the window after hiding."
   (interactive)
-  (condition-case nil
-      (save-excursion
-        ;; Move to the current heading; error if before the first heading
-        (outline-back-to-heading)
+  (unwind-protect
+      (condition-case nil
+          (save-excursion
+            ;; Move to the current heading; error if before the first heading
+            (outline-back-to-heading)
 
-        (let ((heading-point (point)))
-          ;; If the current heading is folded, or if it contains no content,
-          ;; move to the previous higher-level heading.
-          (when (or (outline-indent-folded-p)  ; Folded?
-                    ;; Fold without any content
-                    (let ((start (save-excursion (end-of-line)
-                                                 (point)))
-                          (end (save-excursion (outline-end-of-subtree)
-                                               (point))))
-                      (= start end)))
-            ;; Try to move up to previous higher-level heading
-            (outline-up-heading 1 t)
-            (setq heading-point (point)))
+            (let ((heading-point (point)))
+              ;; If the current heading is folded, or if it contains no
+              ;; content, move to the previous higher-level heading.
+              (when (or (outline-indent-folded-p)  ; Folded?
+                        ;; Fold without any content
+                        (let ((start (save-excursion (end-of-line)
+                                                     (point)))
+                              (end (save-excursion (outline-end-of-subtree)
+                                                   (point))))
+                          (= start end)))
+                ;; Try to move up to previous higher-level heading
+                (outline-up-heading 1 t)
+                (setq heading-point (point)))
 
-          (when (outline-on-heading-p)
-            (outline-indent--legacy-outline-hide-subtree))
+              (when (outline-on-heading-p)
+                (outline-indent--legacy-outline-hide-subtree))
 
-          ;; Ensure folded headings remain visible after hiding subtrees. Fixes
-          ;; a bug in outline and Evil where headings could scroll out of view
-          ;; when their subtrees were folded.
-          ;; TODO Send a patch to Emacs and/or Evil
-          (when (and heading-point
-                     (< heading-point (window-start)))
-            (set-window-start (selected-window) heading-point t))))
-    ;; Ignore `outline-before-first-heading'
-    (outline-before-first-heading
-     nil)))
+              ;; Ensure folded headings remain visible after hiding subtrees.
+              ;; Fixes a bug in outline and Evil where headings could scroll
+              ;; out of view when their subtrees were folded.
+              ;; TODO Send a patch to Emacs and/or Evil
+              (when (and heading-point
+                         (< heading-point (window-start)))
+                (set-window-start (selected-window) heading-point t))))
+        ;; Ignore `outline-before-first-heading'
+        (outline-before-first-heading
+         nil))
+
+    (outline-indent--ensure-window-start-heading-visible)))
 
 ;;;###autoload
 (defun outline-indent-open-fold-rec ()
   "Open fold at point recursively."
   (interactive)
-  (condition-case nil
-      (outline-show-subtree)
-    ;; Ignore `outline-before-first-heading'
-    (outline-before-first-heading
-     nil)))
+  (unwind-protect
+      (condition-case nil
+          (outline-show-subtree)
+        ;; Ignore `outline-before-first-heading'
+        (outline-before-first-heading
+         nil))
+    (outline-indent--ensure-window-start-heading-visible)))
 
 ;;;###autoload
 (defun outline-indent-toggle-fold ()
   "Open or close a fold under point."
   (interactive)
-  (outline-toggle-children))
+  (unwind-protect
+      (outline-toggle-children)
+    (outline-indent--ensure-window-start-heading-visible)))
 
 ;;;###autoload
 (defun outline-indent-toggle-level-at-point ()
   "Toggle the visibility of the indentation level under the cursor."
   (interactive)
-  (when (outline-on-heading-p)
-    (let ((level (let ((current-level (outline-indent-level))
-                       (next-level (save-excursion (outline-next-heading)
-                                                   (outline-indent-level))))
-                   (if (< next-level current-level)
-                       (+ 1 current-level)
-                     next-level))))
-      (if (and (outline-on-heading-p)
-               (outline-indent-folded-p))
-          (outline-hide-sublevels level)
-        (outline-hide-sublevels (- level 1))))))
+  (unwind-protect
+      (when (outline-on-heading-p)
+        (let ((level (let ((current-level (outline-indent-level))
+                           (next-level (save-excursion
+                                         (outline-next-heading)
+                                         (outline-indent-level))))
+                       (if (< next-level current-level)
+                           (+ 1 current-level)
+                         next-level))))
+          (if (and (outline-on-heading-p)
+                   (outline-indent-folded-p))
+              (outline-hide-sublevels level)
+            (outline-hide-sublevels (- level 1)))))
+    (outline-indent--ensure-window-start-heading-visible)))
 
 ;;;###autoload
 (defun outline-indent-shift-right (&optional _which arg)
