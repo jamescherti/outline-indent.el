@@ -108,7 +108,7 @@ If nil, there is no maximum."
                  (const :tag "No limit" nil)))
 
 (defcustom outline-indent-ellipsis nil
-  "String used as the ellipsis character in `outline-indent-mode'.
+  "String used as the ellipsis character in `outline-indent-minor-mode'.
 
 When non-nil, this string will be used as the display text for outline folding
 ellipses, replacing the default `outline-ellipsis` (which is typically \"...\"
