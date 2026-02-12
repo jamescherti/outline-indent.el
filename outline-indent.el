@@ -737,23 +737,26 @@ heading's position.
 This fixes an issue in `outline-mode' where folding a subtree that is partially
 scrolled off-screen causes the heading to disappear."
   (interactive)
-  (save-match-data
-    ;; TODO replace this with kirigami
-    (let ((heading-point (save-excursion
-                           (condition-case nil
-                               (progn
-                                 (goto-char (window-start))
-                                 (when (outline-invisible-p (point))
-                                   (outline-back-to-heading)
-                                   (point)))
-                             (error
-                              nil)))))
-      ;; Ensure folded headings remain visible after hiding subtrees. Fixes a
-      ;; bug in outline and Evil where headings could scroll out of view when
-      ;; their subtrees were folded. TODO Send a patch to Emacs and/or Evil
-      (when (and heading-point
-                 (< heading-point (window-start)))
-        (set-window-start (selected-window) heading-point t)))))
+  (let ((window (selected-window)))
+    (when (and (window-live-p window)
+               (eq (current-buffer) (window-buffer window)))
+      (save-match-data
+        ;; TODO replace this with kirigami
+        (let ((heading-point (save-excursion
+                               (condition-case nil
+                                   (progn
+                                     (goto-char (window-start))
+                                     (when (outline-invisible-p (point))
+                                       (outline-back-to-heading)
+                                       (point)))
+                                 (error
+                                  nil)))))
+          ;; Ensure folded headings remain visible after hiding subtrees. Fixes a
+          ;; bug in outline and Evil where headings could scroll out of view when
+          ;; their subtrees were folded. TODO Send a patch to Emacs and/or Evil
+          (when (and heading-point
+                     (< heading-point (window-start)))
+            (set-window-start (selected-window) heading-point t)))))))
 
 ;;; Interactive functions
 
@@ -904,9 +907,12 @@ visible in the window after hiding."
               ;; Fixes a bug in outline and Evil where headings could scroll
               ;; out of view when their subtrees were folded.
               ;; TODO Send a patch to Emacs and/or Evil
-              (when (and heading-point
-                         (< heading-point (window-start)))
-                (set-window-start (selected-window) heading-point t))))
+              (let ((window (selected-window)))
+                (when (and (window-live-p window)
+                           (eq (current-buffer) (window-buffer window)))
+                  (when (and heading-point
+                             (< heading-point (window-start)))
+                    (set-window-start (selected-window) heading-point t))))))
         ;; Ignore `outline-before-first-heading'
         (outline-before-first-heading
          nil))
