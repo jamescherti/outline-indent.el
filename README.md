@@ -468,9 +468,10 @@ The author uses three code folding packages:
 
 1. **Indentation-based folding** (Python, YAML, Haskell, etc.): [outline-indent](https://github.com/jamescherti/outline-indent.el)
 2. **Tree-sitter-based folding:** [treesit-fold](https://github.com/emacs-tree-sitter/treesit-fold) (The integration of Tree-sitter allows Emacs to operate on the Abstract Syntax Tree, making folding structurally accurate rather than heuristic.)
+3. The built-in `outline-minor-mode` for `emacs-lisp-mode`, `markdown-mode`, and `conf-mode`/`conf-unix-mode`.
 3. **For all code folding modes:** The [kirigami](https://github.com/jamescherti/kirigami.el) package, which provides a unified interface for opening and closing folds. Code folding in Emacs has historically suffered from reliability issues; even built-in modes like `outline-mode` and `outline-minor-mode` contain bugs not yet addressed in upstream Emacs, which Kirigami fixes. Once configured, the same keys and functions enable consistent behavior across a diverse set of major and minor modes, including `outline-mode`, `outline-minor-mode`, `outline-indent-minor-mode`, `org-mode`, `markdown-mode`, `gfm-mode`, `vdiff-mode`, `vdiff-3way-mode`, `hs-minor-mode`, `hide-ifdef-mode`, `vimish-fold-mode`, `origami-mode`, `yafolding-mode`, `folding-mode`, `ts-fold-mode`, `treesit-fold-mode`...
 
-The author prefers using `outline-indent` for languages like Python, despite having `treesit-fold` installed. The advantage of `outline-indent` is that it allows for infinite folding depth; it enables the folding of classes, functions within them, and even nested structures like `while` loops and `if` statements.
+NOTE: The author prefers using `outline-indent` for languages like Python, despite having `treesit-fold` installed. The advantage of `outline-indent` is that it allows for infinite folding depth; it enables the folding of classes, functions within them, and even nested structures like `while` loops and `if` statements.
 
 ### What are the main differences compared to treesit-fold?
 
