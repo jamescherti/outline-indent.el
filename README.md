@@ -5,24 +5,23 @@
 ![License](https://img.shields.io/github/license/jamescherti/outline-indent.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
-The **outline-indent** Emacs package provides a minor mode that enables indentation-based code folding. It is highly efficient and leverages built-in Emacs functionality to perform folding operations.
+The **outline-indent** Emacs package provides a minor mode for indentation-based code folding. It is fast and built directly on top of native Emacs functions.
 
-The **outline-indent** package is a modern replacement for legacy packages such as **origami.el** and **yafolding.el**. (*Both **origami.el** and **yafolding.el** are unmaintained, suffer from performance issues, and contain known bugs that undermine their reliability.*)
+Beyond basic folding, *outline-indent* includes commands to:
+* Move indented blocks up and down using `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`.
+* Adjust block indentation levels with `(outline-indent-shift-right)` and `(outline-indent-shift-left)`.
+* Insert a new line matching the current indentation level via `(outline-indent-insert-heading)`.
+* Navigate backward and forward to the same indentation level with `(outline-indent-backward-same-level)` and `(outline-indent-forward-same-level)`.
+* Customize the folding ellipsis (e.g., replacing the default "..." with "▼").
+* Select an entire indented block using `(outline-indent-select)`.
+* Toggle visibility for the specific level under the cursor with `(outline-indent-toggle-level-at-point)`.
+* Automatically detect the major mode's basic offset and shift width, ensuring consistent indentation rules without requiring manual configuration.
 
-(If this package enhances your productivity, please show your support by **⭐ starring outline-indent on GitHub** to help more users discover its benefits.)
+If this package enhances your workflow, please show your support by **⭐ starring outline-indent on GitHub** to help more users discover its benefits.
 
-In addition to code folding, *outline-indent* allows:
-- moving indented blocks up and down with `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`,
-- indenting/unindenting to adjust indentation levels with `(outline-indent-shift-right)` and `(outline-indent-shift-left)`,
-- inserting a new line with the same indentation level as the current line with `(outline-indent-insert-heading)`,
-- Move backward/forward to the indentation level of the current line with `(outline-indent-backward-same-level)` and `(outline-indent-forward-same-level)`.
-- Customizing the ellipsis to replace the default "..." with something more visually appealing, such as "▼".
-- Selecting the indented block with `(outline-indent-select)`.
-- Toggle the visibility of the indentation level under the cursor: `(outline-indent-toggle-level-at-point)`
-- Automatically detect the current major mode's indentation settings to determine the *basic offset*, which sets the indentation for each outline level, and the *shift width* used for promoting or demoting blocks. This ensures consistent outline indentation without manual configuration.
-- and other features.
+The **outline-indent** package is a modern replacement for legacy packages such as *origami.el* and *yafolding.el*. (*Both **origami.el** and **yafolding.el** are unmaintained, suffer from performance issues, and contain known bugs that undermine their reliability.*)
 
-The *outline-indent* package uses the built-in *outline-minor-mode*, which is *maintained by the Emacs developers* and is less likely to be abandoned like *origami.el* or *yafolding.el*. Since *outline-indent* is based on *outline-minor-mode*, it's also much **much faster** than *origami.el* and *yafolding.el*.
+Because *outline-indent* relies on the built-in *outline-minor-mode*, it benefits from active maintenance by Emacs core developers. This foundation also makes it significantly faster than alternative folding packages.
 
 ![](https://raw.githubusercontent.com/jamescherti/outline-indent.el/main/.images/screenshot.png)
 *(The Emacs theme in the screenshot above is the [tomorrow-night-deepblue-theme](https://github.com/jamescherti/tomorrow-night-deepblue-theme.el))*
