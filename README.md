@@ -82,7 +82,6 @@ To install *outline-indent* from MELPA:
 2. Add the following code to your Emacs init file to install *outline-indent* from MELPA:
 ``` emacs-lisp
 (use-package outline-indent
-  :ensure t
   :commands outline-indent-minor-mode
   :custom
   (outline-indent-ellipsis " ▼"))
@@ -468,7 +467,6 @@ It supports both space and tab-based indentation and offers optional tree-sitter
 To install it, add the following to your Emacs init file:
 ```elisp
 (lightemacs-use-package indent-bars
-  :ensure t
   :commands indent-bars-mode
   :custom
   ;; Setting this to nil is not reliable enough
