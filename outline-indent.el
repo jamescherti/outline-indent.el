@@ -826,51 +826,52 @@ visual region spanning from the heading start to the end of the block."
 (defun outline-indent-open-fold ()
   "Open fold at point."
   (interactive)
-  ;; Workaround for an outline-mode limitation: when jumping via imenu or
-  ;; search, sibling headings above the current one and at the same level
-  ;; often remain hidden. This ensures all sub-items at the current level are
-  ;; revealed, preventing the 'isolated item' effect.
-  (save-excursion
-    ;; Climbing as long as a parent heading exists
-    (catch 'done
-      (while (not (bobp))
+  (save-match-data
+    ;; Workaround for an outline-mode limitation: when jumping via imenu or
+    ;; search, sibling headings above the current one and at the same level
+    ;; often remain hidden. This ensures all sub-items at the current level are
+    ;; revealed, preventing the 'isolated item' effect.
+    (save-excursion
+      ;; Climbing as long as a parent heading exists
+      (catch 'done
+        (while (not (bobp))
+          (condition-case nil
+              (progn (outline-up-heading 1 t))
+            (error
+             (throw 'done t)))
+
+          (outline-show-children))))
+
+    ;; Repeatedly reveal children and body until the entry is no longer folded
+    (unwind-protect
         (condition-case nil
-            (progn (outline-up-heading 1 t))
-          (error
-           (throw 'done t)))
+            (progn
+              (let* ((on-invisible-heading (when (outline-on-heading-p t)
+                                             (outline-invisible-p)))
+                     (on-visible-heading (save-excursion
+                                           (beginning-of-line)
+                                           (outline-on-heading-p))))
+                (when (use-region-p)
+                  (outline-indent-select))
 
-        (outline-show-children))))
+                (save-excursion
+                  (while (outline-indent-folded-p)
+                    ;; Repeatedly reveal children and body until the entry is no
+                    ;; longer folded
+                    (save-excursion
+                      (outline-back-to-heading)
+                      (outline-show-children)
+                      (outline-indent--legacy-outline-show-entry))))
 
-  ;; Repeatedly reveal children and body until the entry is no longer folded
-  (unwind-protect
-      (condition-case nil
-          (progn
-            (let* ((on-invisible-heading (when (outline-on-heading-p t)
-                                           (outline-invisible-p)))
-                   (on-visible-heading (save-excursion
-                                         (beginning-of-line)
-                                         (outline-on-heading-p))))
-              (when (use-region-p)
-                (outline-indent-select))
-
-              (save-excursion
-                (while (outline-indent-folded-p)
-                  ;; Repeatedly reveal children and body until the entry is no
-                  ;; longer folded
-                  (save-excursion
-                    (outline-back-to-heading)
-                    (outline-show-children)
-                    (outline-indent--legacy-outline-show-entry))))
-
-              ;; If the header was previously hidden, hide the subtree to
-              ;; collapse it. Otherwise, leave the fold open. This allows the
-              ;; user to decide whether to expand the content under the cursor.
-              (when (and on-invisible-heading (not on-visible-heading))
-                (outline-indent--legacy-outline-hide-subtree))))
-        ;; Ignore `outline-before-first-heading'
-        (outline-before-first-heading
-         nil))
-    (outline-indent--ensure-window-start-heading-visible)))
+                ;; If the header was previously hidden, hide the subtree to
+                ;; collapse it. Otherwise, leave the fold open. This allows the
+                ;; user to decide whether to expand the content under the cursor.
+                (when (and on-invisible-heading (not on-visible-heading))
+                  (outline-indent--legacy-outline-hide-subtree))))
+          ;; Ignore `outline-before-first-heading'
+          (outline-before-first-heading
+           nil))
+      (outline-indent--ensure-window-start-heading-visible))))
 
 ;;;###autoload
 (defun outline-indent-close-fold ()
