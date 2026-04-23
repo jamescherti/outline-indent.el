@@ -133,6 +133,9 @@ The minor mode can also be automatically activated for a certain modes. For exam
 ;; YAML
 (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
+
+;; Haskell
+(add-hook 'haskell-mode-hook #'outline-indent-minor-mode)
 ```
 
 ## Usage
@@ -341,20 +344,6 @@ The `outline-blank-line` variable can be set to `t` (true) to maintain blank lin
 ### Automatically Folding All Folds on Mode Activation
 
 The `outline-indent-minor-mode` mode can be configured to automatically collapse all foldable sections upon activation. This behavior may be applied selectively to specific modes (e.g., Python or YAML), or globally across all modes.
-
-The following example ensures that all foldable sections are collapsed only when entering Python or YAML buffers:
-```elisp
-(add-hook 'outline-indent-minor-mode-hook
-          #'(lambda()
-              (when (or
-                     ;; Python
-                     (derived-mode-p 'python-mode)
-                     (derived-mode-p 'python-ts-mode)
-                     ;; Yaml
-                     (derived-mode-p 'yaml-ts-mode)
-                     (derived-mode-p 'yaml-mode))
-                (outline-indent-close-folds))))
-```
 
 To collapse all foldable sections whenever `outline-indent-minor-mode` is enabled, regardless of the major mode:
 ```elisp
