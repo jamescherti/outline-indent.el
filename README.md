@@ -158,34 +158,13 @@ The following *outline-indent* functions manage the opening and closing of folds
 - `(outline-indent-select)`: Select the entire indented block at point, activating a visual region spans the heading and all of its associated indented content.
 - `(outline-indent-forward-same-level)`: Move the cursor to the next heading that is at the same indentation level.
 - `(outline-indent-backward-same-level)`: Move the cursor to the previous heading that is at the same indentation level.
-- `(outline-indent-shift-right)`: Increase the indentation level of the current indented block.
-- `(outline-indent-shift-left)`: Decrease the indentation level of the current indented block.
-
-As an alternative, you can also use the standard `outline-mode`/`outline-minor-mode` commands to fold and unfold sections of your indented file:
-- `(hide-sublevels 1)`: Fold all folds.
-- `(outline-hide-body)`: Hide all body lines in buffer, leaving all headings visible.
-- `(outline-hide-other)`: Hide everything except current body and parent and top-level headings.
-- `(outline-hide-entry)`: Hide the body directly following this heading.
-- `(outline-hide-leaves)`: Hide the body after this heading and at deeper levels.
-- `(outline-hide-subtree)`: Hide everything after this heading at deeper levels.
-- `(outline-show-children)`: Show all direct subheadings of this heading.
-- `(outline-hide-sublevels)`: Hide everything but the top LEVELS levels of headers, in whole buffer.
-- `(outline-show-all)`: Show all of the text in the buffer.
-- `(outline-show-entry)`: Show the body directly following this heading.
-- `(outline-show-subtree)`: Show everything after this heading at deeper levels.
-- `(outline-show-branches)`: Show all subheadings of this heading, but not their bodies.
-- `(outline-show-children)`: Show all direct subheadings of this heading.
 
 You can also indent/unindent and move subtree up and down using:
 
-- `(outline-backward-same-level)` and `(outline-forward-same-level)`: Move backward/forward to the indentation level of the current line.
-- `(outline-indent-shift-right)` and `(outline-indent-shift-left)`: Indent or unindent the entire subtree.
+- `(outline-indent-shift-right)`: Increase the indentation level of the current indented block.
+- `(outline-indent-shift-left)`: Decrease the indentation level of the current indented block.
 - `(outline-indent-move-subtree-down)` and `(outline-indent-move-subtree-up)` to move the current subtree up or down.
 - `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.
-
-Move to the next and previous visible fold:
-- `outline-previous-visible-heading`
-- `outline-next-visible-heading`
 
 Move forward or backward to the same indentation level:
 - `outline-forward-same-level`: Move forward to the same indentation level as the one under the cursor.
