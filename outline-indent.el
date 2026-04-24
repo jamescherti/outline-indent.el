@@ -375,10 +375,13 @@ follow the mode-specific coding style automatically."
          ;; (indentation-width (if indentation-string
          ;;                        (string-width indentation-string)
          ;;                      0))
-         (depth (1+ (/ indentation-width
-                       (max (or outline-indent-default-offset
-                                1)
-                            1)))))
+         (depth (if (and (= indentation-width 0)
+                         (eolp))
+                    0
+                  (1+ (/ indentation-width
+                         (max (or outline-indent-default-offset
+                                  1)
+                              1))))))
     (if outline-indent-maximum-level
         (min depth (1+ outline-indent-maximum-level))
       depth)))
@@ -675,8 +678,9 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (save-match-data
     (save-excursion
       (outline-back-to-heading)
-      (outline-end-of-heading)
-      (outline-invisible-p (point)))))
+      (outline-invisible-p (save-excursion
+                             (outline-end-of-heading)
+                             (point))))))
 
 (defun outline-indent--legacy-outline-hide-subtree (&optional event)
   "Hide everything after this heading at deeper levels.
@@ -735,6 +739,23 @@ scrolled off-screen causes the heading to disappear."
           (when (and heading-point
                      (< heading-point (window-start)))
             (set-window-start (selected-window) heading-point t)))))))
+
+(defun outline-indent--empty-subtree-p ()
+  "Return non-nil if the current outline heading has no content or subtrees."
+  (save-match-data
+    (save-excursion
+      (outline-back-to-heading)
+      (let* ((start (progn
+                      (outline-end-of-heading)
+                      (when (eolp)
+                        (forward-char -1))
+                      (point)))
+             (end (progn
+                    (outline-end-of-subtree)
+                    (when (eolp)
+                      (forward-char -1))
+                    (point))))
+        (= start end)))))
 
 ;;; Interactive functions
 
@@ -799,10 +820,11 @@ visual region spanning from the heading start to the end of the block."
                   (outline-on-heading-p))
         (let ((current-point (point)))
           ;; Hide the subtree
-          (condition-case nil
-              (outline-indent--legacy-outline-hide-subtree)
-            (error
-             nil))
+          (unless (outline-indent--empty-subtree-p)
+            (condition-case nil
+                (outline-indent--legacy-outline-hide-subtree)
+              (error
+               nil)))
 
           ;; Try to move to the next visible heading.
           (progn
@@ -894,11 +916,7 @@ visible in the window after hiding."
               ;; content, move to the previous higher-level heading.
               (when (or (outline-indent-folded-p)  ; Folded?
                         ;; Fold without any content
-                        (let ((start (save-excursion (end-of-line)
-                                                     (point)))
-                              (end (save-excursion (outline-end-of-subtree)
-                                                   (point))))
-                          (= start end)))
+                        (outline-indent--empty-subtree-p))
                 ;; Try to move up to previous higher-level heading
                 (outline-up-heading 1 t)
                 (setq heading-point (point)))
