@@ -393,18 +393,12 @@ follow the mode-specific coding style automatically."
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
   (let* ((indentation-width (current-indentation))
-         ;; TODO fix this
-         ;; (indentation-string (match-string 1))
-         ;; (indentation-width (if indentation-string
-         ;;                        (string-width indentation-string)
-         ;;                      0))
-         (depth (if (and (= indentation-width 0)
-                         (eolp))
+         (depth (if (save-excursion
+                      (forward-line 0)
+                      (looking-at-p "^[ \t]*$"))
                     0
                   (1+ (/ indentation-width
-                         (max (or outline-indent-default-offset
-                                  1)
-                              1))))))
+                         (max (or outline-indent-default-offset 1) 1))))))
     (if outline-indent-maximum-level
         (min depth (1+ outline-indent-maximum-level))
       depth)))
@@ -1130,19 +1124,69 @@ WHICH is ignored (backward compatibility with `outline-promote')."
 ;;          (group (zero-or-more (any " \t")))
 ;;          (not (any " \t\n")))))
 
+(defun outline-indent--search-function (&optional bound move backward
+                                                  looking-at)
+  "Search for the next or previous outline heading.
+This replaces `outline-regexp' to provide a reliable structural search
+that strictly finds lines containing at least one non-whitespace character.
+BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
+`outline-search-function'."
+  ;; Using a dedicated search function provides distinct advantages over relying
+  ;; solely on `outline-regexp':
+  ;; 1. Avoids Regex Concatenation Bugs: The `outline.el' core frequently
+  ;;    concatenates `outline-regexp' into larger expressions. This blind
+  ;;    concatenation can break capture group indices, causing downstream
+  ;;    packages that rely on `(match-string 1)' to fail.
+  ;; 2. Cross-Platform Consistency: The regex explicitly excludes carriage
+  ;;    returns (\r). This prevents empty lines in files with DOS line endings
+  ;;    from being falsely evaluated as structural headings.
+  ;; 3. Context-Aware Potential: Unlike a static string, a function provides a
+  ;;    foundation to ignore matches inside strings or comment blocks using
+  ;;    `syntax-ppss' in the future.
+  (let ((regexp outline-regexp))
+    (if looking-at
+        (looking-at regexp)
+      (let ((regexp outline-regexp))
+        (if looking-at
+            (looking-at regexp)
+          ;; Why (if move 'move t)?
+          ;;
+          ;; This is the NOERROR argument.
+          ;; If NOERROR is t, search failure just returns nil (and does not
+          ;; move point).
+          ;; If NOERROR is neither nil nor t, then <...> on failure, point
+          ;; is bound to BOUND.
+          ;;
+          ;; (When the engine searches for the next heading and does not
+          ;; find one, it expects your custom search function to simply
+          ;; return nil so it knows it has reached the end of the section.
+          ;; Using (if move 'move nil) breaks that expectation. Instead of
+          ;; returning nil, the search function crashes the script with a
+          ;; search-failed error, which breaks the folding behavior. Using
+          ;; t ensures the failure is handled quietly.)
+          ;;
+          ;; The search function will never throw an error. It fails
+          ;; gracefully under all conditions:
+          (if backward
+              (re-search-backward regexp bound (if move 'move t))
+            (re-search-forward regexp bound (if move 'move t))))))))
+
 (defun outline-indent--setup-outline ()
   "Enforce outline variables for `outline-indent-minor-mode'."
   (when (boundp 'outline-minor-mode-highlight)
     (setq-local outline-minor-mode-highlight nil))
-  (when (boundp 'outline-search-function)
-    (setq-local outline-search-function nil))
   (setq-local outline-heading-alist nil)
   (setq-local outline-level #'outline-indent-level)
-  (setq-local outline-heading-end-regexp "\n")
-  ;; (setq-local outline-regexp (outline-indent--heading-regexp))
+
+  (if (boundp 'outline-search-function)
+      ;; Use the custom search function for Emacs 29+
+      (setq-local outline-search-function #'outline-indent--search-function))
+
+  ;; Fallback for Emacs 28 and older
   (setq-local outline-regexp (rx line-start
                                  (group (zero-or-more (any " \t")))
-                                 (not (any " \t\n")))))
+                                 (not (any " \t\r\n"))))
+  (setq-local outline-heading-end-regexp "\n"))
 
 ;;;###autoload
 (define-minor-mode outline-indent-minor-mode
@@ -1174,12 +1218,12 @@ WHICH is ignored (backward compatibility with `outline-promote')."
 
             ;; Enable minor mode
             (outline-indent--setup-outline))
-
           (outline-minor-mode 1)))
     ;; Disable minor mode
     (outline-minor-mode -1)
     (kill-local-variable 'outline-minor-mode-highlight)
     (kill-local-variable 'outline-search-function)
+    (kill-local-variable 'outline-blank-line)
     (kill-local-variable 'outline-heading-alist)
     (kill-local-variable 'outline-level)
     (kill-local-variable 'outline-heading-end-regexp)
