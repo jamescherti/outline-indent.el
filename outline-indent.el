@@ -374,6 +374,22 @@ follow the mode-specific coding style automatically."
       (unless outline-indent-shift-width
         (setq-local outline-indent-shift-width major-mode-offset)))))
 
+;; (defun outline-indent-level ()
+;;   "Determine the outline level based on the current indentation.
+;; Lines consisting entirely of whitespace are assigned a level of 0."
+;;   (let* ((indentation-width (current-indentation))
+;;          (depth (if (or (= indentation-width 0)
+;;                         (save-excursion
+;;                           (save-match-data
+;;                             (forward-line 0)
+;;                             (looking-at-p "^[ \t]*$"))))
+;;                     0
+;;                   (1+ (/ indentation-width
+;;                          (max (or outline-indent-default-offset 1) 1))))))
+;;     (if outline-indent-maximum-level
+;;         (min depth (1+ outline-indent-maximum-level))
+;;       depth)))
+
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
   (let* ((indentation-width (current-indentation))
@@ -524,29 +540,64 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 ;; TODO: Send a patch
 ;; Bug fix:
 ;; To reproduce the issue this fix addresses:
-;; 1. Enable `outline-indent-minor-mode`.
+;; 1. Enable `outline-indent-minor-mode'.
+;; 2. Create a heading followed by one or more empty lines.
+;; 3. Add another heading below those empty lines (or leave them at the end of
+;;    the buffer).
+;; 4. Fold the first heading (e.g., `outline-hide-subtree').
+;; 5. Observe that the empty lines disappear into the fold.
+;;
+;; Alternatively:
+;; 1. Enable `outline-indent-minor-mode'.
 ;; 2. Create a heading or indented block at the very end of the buffer.
 ;; 3. Ensure there is at least one empty line (newline) after that block.
-;; 4. Fold the block (e.g., `outline-hide-subtree`).
+;; 4. Fold the block (e.g., `outline-hide-subtree').
 ;; 5. Observe that the trailing empty line is swallowed by the fold.
 ;;
 ;; With this fix, the empty line remains visible/outside the fold.
+;; (defun outline-indent--advice-end-of-subtree-eob-fix (&rest _args)
+;;   "Ensure trailing newlines and whitespace-only lines are not folded.
+;; This advice only executes when `outline-indent-minor-mode' is active.
+;; Wrapped in `save-match-data' to ensure no interference with global state."
+;;   (when (and (bound-and-true-p outline-indent-minor-mode)
+;;              (bolp))
+;;     (save-match-data
+;;       (when (or (eobp)
+;;                 ;; replaced eolp with:
+;;                 (looking-at-p "^[ \t]*$"))
+;;         (if (fboundp 'outline--end-of-previous)
+;;             (outline--end-of-previous)
+;;           (if (eobp)
+;;               (if (bolp)
+;;                   (forward-char -1))
+;;             ;; Go to end of line before heading
+;;             (forward-char -1)
+;;             (if (and outline-blank-line (bolp))
+;;                 ;; leave blank line before heading
+;;                 (forward-char -1))))))))
+
 (defun outline-indent--advice-end-of-subtree-eob-fix (&rest _args)
-  "Ensure trailing newlines are not folded at the end of the buffer.
-This advice only executes when `outline-indent-minor-mode' is active."
-  (when (and (bound-and-true-p outline-indent-minor-mode)
-             (eobp)
-             (bolp))
-    (if (fboundp 'outline--end-of-previous)
-        (outline--end-of-previous)
-      (if (eobp)
-          (if (bolp)
-              (forward-char -1))
-        ;; Go to end of line before heading
-        (forward-char -1)
-        (if (and outline-blank-line (bolp))
-            ;; leave blank line before heading
-            (forward-char -1))))))
+  "Ensure trailing newlines and whitespace-only lines are not folded.
+This advice only executes when `outline-indent-minor-mode' is active.
+
+To reproduce the issue:
+1. Enable `outline-indent-minor-mode'.
+2. Create a heading followed by several lines containing only spaces.
+3. Place another heading below or leave the spaces at the end of the buffer.
+4. Fold the first heading.
+5. Without this fix, all lines of spaces disappear. With this fix, they remain."
+  (when (bound-and-true-p outline-indent-minor-mode)
+    (save-match-data
+      (let ((moved nil))
+        ;; Loop backwards to skip all lines consisting only of spaces or tabs
+        (while (and (not (bobp))
+                    (save-excursion
+                      (forward-line 0)
+                      (looking-at-p "^[ \t]*$")))
+          (forward-line -1)
+          (setq moved t))
+        (when moved
+          (end-of-line))))))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
@@ -1116,8 +1167,8 @@ WHICH is ignored (backward compatibility with `outline-promote')."
                 (save-excursion
                   (funcall mode -1))))
 
+            (setq-local outline-blank-line t)
             (outline-indent--advise-func outline-indent-advise-outline-functions)
-
             (outline-indent--update-ellipsis)
             (outline-indent--setup-basic-offset)
 
