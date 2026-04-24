@@ -173,7 +173,9 @@ When ADVISE is set to t, advise the `outline' functions."
         (advice-add 'outline-move-subtree-up :around
                     #'outline-indent--advice-move-subtree-up)
         (advice-add 'outline-move-subtree-down :around
-                    #'outline-indent--advice-move-subtree-down))
+                    #'outline-indent--advice-move-subtree-down)
+        (advice-add 'outline-end-of-subtree :after
+                    #'outline-indent--advice-end-of-subtree-eob-fix))
     ;; Disable
     (advice-remove 'outline-show-entry
                    #'outline-indent--advice-outline-show-entry)
@@ -198,14 +200,18 @@ When ADVISE is set to t, advise the `outline' functions."
     (advice-remove 'outline-move-subtree-up
                    #'outline-indent--advice-move-subtree-up)
     (advice-remove 'outline-move-subtree-down
-                   #'outline-indent--advice-move-subtree-down)))
+                   #'outline-indent--advice-move-subtree-down)
+    (advice-remove 'outline-end-of-subtree
+                   #'outline-indent--advice-end-of-subtree-eob-fix)))
 
 (defcustom outline-indent-advise-outline-functions t
   "If non-nil, advises built-in `outline' functions to improve compatibility.
 
+It is highly recommended to set this to t.
+
 When set to t, advises built-in `outline-minor-mode' functions to enhance
-compatibility with `outline-indent-minor-mode'. When set to nil, removes
-the advice.
+compatibility with `outline-indent-minor-mode'. When set to nil, removes the
+advice.
 
 Functions that will be advised include:
 - `outline-promote'
@@ -215,6 +221,7 @@ Functions that will be advised include:
 - `outline-backward-same-level'
 - `outline-move-subtree-up'
 - `outline-move-subtree-down'
+- `outline-end-of-subtree'
 
 It is recommended to keep this set to t for improved behavior."
   :type 'boolean
@@ -513,6 +520,33 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
       (outline-indent-shift-right)
     (apply orig-fun args)))
+
+;; TODO: Send a patch
+;; Bug fix:
+;; To reproduce the issue this fix addresses:
+;; 1. Enable `outline-indent-minor-mode`.
+;; 2. Create a heading or indented block at the very end of the buffer.
+;; 3. Ensure there is at least one empty line (newline) after that block.
+;; 4. Fold the block (e.g., `outline-hide-subtree`).
+;; 5. Observe that the trailing empty line is swallowed by the fold.
+;;
+;; With this fix, the empty line remains visible/outside the fold.
+(defun outline-indent--advice-end-of-subtree-eob-fix (&rest _args)
+  "Ensure trailing newlines are not folded at the end of the buffer.
+This advice only executes when `outline-indent-minor-mode' is active."
+  (when (and (bound-and-true-p outline-indent-minor-mode)
+             (eobp)
+             (bolp))
+    (if (fboundp 'outline--end-of-previous)
+        (outline--end-of-previous)
+      (if (eobp)
+          (if (bolp)
+              (forward-char -1))
+        ;; Go to end of line before heading
+        (forward-char -1)
+        (if (and outline-blank-line (bolp))
+            ;; leave blank line before heading
+            (forward-char -1))))))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
