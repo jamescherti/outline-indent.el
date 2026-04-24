@@ -374,34 +374,19 @@ follow the mode-specific coding style automatically."
       (unless outline-indent-shift-width
         (setq-local outline-indent-shift-width major-mode-offset)))))
 
-;; (defun outline-indent-level ()
-;;   "Determine the outline level based on the current indentation.
-;; Lines consisting entirely of whitespace are assigned a level of 0."
-;;   (let* ((indentation-width (current-indentation))
-;;          (depth (if (or (= indentation-width 0)
-;;                         (save-excursion
-;;                           (save-match-data
-;;                             (forward-line 0)
-;;                             (looking-at-p "^[ \t]*$"))))
-;;                     0
-;;                   (1+ (/ indentation-width
-;;                          (max (or outline-indent-default-offset 1) 1))))))
-;;     (if outline-indent-maximum-level
-;;         (min depth (1+ outline-indent-maximum-level))
-;;       depth)))
-
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (let* ((indentation-width (current-indentation))
-         (depth (if (save-excursion
-                      (forward-line 0)
-                      (looking-at-p "^[ \t]*$"))
-                    0
-                  (1+ (/ indentation-width
-                         (max (or outline-indent-default-offset 1) 1))))))
-    (if outline-indent-maximum-level
-        (min depth (1+ outline-indent-maximum-level))
-      depth)))
+  (if (save-excursion
+        (forward-line 0)
+        (skip-chars-forward " \t")
+        (eolp))
+      0
+    (let* ((offset (max (or outline-indent-default-offset 1) 1))
+           (depth (1+ (/ (current-indentation)
+                         offset))))
+      (if outline-indent-maximum-level
+          (min depth (1+ outline-indent-maximum-level))
+        depth))))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
