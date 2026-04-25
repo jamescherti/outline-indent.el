@@ -242,7 +242,13 @@ It is recommended to keep this set to t for improved behavior."
   "Keymap for `outline-indent-minor-mode'.")
 
 (defvar outline-indent-conflicting-modes
-  '(hs-minor-mode origami-mode yafolding-mode)
+  '(hs-minor-mode
+    origami-mode
+    yafolding-mode
+    treesit-fold-mode
+    ts-fold-mode
+    vimish-fold-mode
+    fold-this-mode)
   "List of minor modes that may conflict with `outline-indent-minor-mode'.
 These modes will be automatically disabled when `outline-indent-minor-mode' is
 enabled.")
