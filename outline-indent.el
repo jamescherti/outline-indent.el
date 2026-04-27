@@ -522,45 +522,6 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
       (outline-indent-shift-right)
     (apply orig-fun args)))
 
-;; TODO: Send a patch
-;; Bug fix:
-;; To reproduce the issue this fix addresses:
-;; 1. Enable `outline-indent-minor-mode'.
-;; 2. Create a heading followed by one or more empty lines.
-;; 3. Add another heading below those empty lines (or leave them at the end of
-;;    the buffer).
-;; 4. Fold the first heading (e.g., `outline-hide-subtree').
-;; 5. Observe that the empty lines disappear into the fold.
-;;
-;; Alternatively:
-;; 1. Enable `outline-indent-minor-mode'.
-;; 2. Create a heading or indented block at the very end of the buffer.
-;; 3. Ensure there is at least one empty line (newline) after that block.
-;; 4. Fold the block (e.g., `outline-hide-subtree').
-;; 5. Observe that the trailing empty line is swallowed by the fold.
-;;
-;; With this fix, the empty line remains visible/outside the fold.
-;; (defun outline-indent--advice-end-of-subtree-eob-fix (&rest _args)
-;;   "Ensure trailing newlines and whitespace-only lines are not folded.
-;; This advice only executes when `outline-indent-minor-mode' is active.
-;; Wrapped in `save-match-data' to ensure no interference with global state."
-;;   (when (and (bound-and-true-p outline-indent-minor-mode)
-;;              (bolp))
-;;     (save-match-data
-;;       (when (or (eobp)
-;;                 ;; replaced eolp with:
-;;                 (looking-at-p "^[ \t]*$"))
-;;         (if (fboundp 'outline--end-of-previous)
-;;             (outline--end-of-previous)
-;;           (if (eobp)
-;;               (if (bolp)
-;;                   (forward-char -1))
-;;             ;; Go to end of line before heading
-;;             (forward-char -1)
-;;             (if (and outline-blank-line (bolp))
-;;                 ;; leave blank line before heading
-;;                 (forward-char -1))))))))
-
 (defun outline-indent--advice-end-of-subtree-eob-fix (&rest _args)
   "Ensure trailing newlines and whitespace-only lines are not folded.
 This advice only executes when `outline-indent-minor-mode' is active.
