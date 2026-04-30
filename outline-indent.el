@@ -382,17 +382,19 @@ follow the mode-specific coding style automatically."
 
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
-  (if (save-excursion
-        (forward-line 0)
-        (skip-chars-forward " \t")
-        (eolp))
-      0
-    (let* ((offset (max (or outline-indent-default-offset 1) 1))
-           (depth (1+ (/ (current-indentation)
-                         offset))))
-      (if outline-indent-maximum-level
-          (min depth (1+ outline-indent-maximum-level))
-        depth))))
+  (let* ((indentation-width (current-indentation))
+         ;; TODO try the following
+         ;; (indentation-string (match-string 1))
+         ;; (indentation-width (if indentation-string
+         ;;                        (string-width indentation-string)
+         ;;                      0))
+         (depth (1+ (/ indentation-width
+                       (max (or outline-indent-default-offset
+                                1)
+                            1)))))
+    (if outline-indent-maximum-level
+        (min depth (1+ outline-indent-maximum-level))
+      depth)))
 
 (defun outline-indent--update-ellipsis ()
   "Update the buffer's outline ellipsis."
