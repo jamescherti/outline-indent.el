@@ -890,7 +890,7 @@ visual region spanning from the heading start to the end of the block."
            (throw 'done t)))
 
         (let ((prev-point nil))
-          (while (> (outline-level) 1)
+          (while (> (funcall outline-level) 1)
             (setq prev-point (point))
             (condition-case nil
                 (outline-up-heading 1 t)
