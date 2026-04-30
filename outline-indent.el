@@ -423,8 +423,8 @@ indentation as the current line."
       (setq initial-indentation (outline-indent-level))
       (while (and (not found-point) (not (eobp)))
         (forward-line 1)
-        (if (and (>= initial-indentation (outline-indent-level))
-                 (not (looking-at-p "^[ \t]*$")))
+        (if (and (not (looking-at-p "^[ \t]*$"))
+                 (>= initial-indentation (outline-indent-level)))
             (setq found-point (point))))
 
       (when (and (not found-point) (eobp))
