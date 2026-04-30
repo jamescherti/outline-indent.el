@@ -1109,30 +1109,29 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
   (let ((regexp outline-regexp))
     (if looking-at
         (looking-at regexp)
-      (let ((regexp outline-regexp))
-        (if looking-at
-            (looking-at regexp)
-          ;; Why (if move 'move t)?
-          ;;
-          ;; This is the NOERROR argument.
-          ;; If NOERROR is t, search failure just returns nil (and does not
-          ;; move point).
-          ;; If NOERROR is neither nil nor t, then <...> on failure, point
-          ;; is bound to BOUND.
-          ;;
-          ;; (When the engine searches for the next heading and does not
-          ;; find one, it expects your custom search function to simply
-          ;; return nil so it knows it has reached the end of the section.
-          ;; Using (if move 'move nil) breaks that expectation. Instead of
-          ;; returning nil, the search function crashes the script with a
-          ;; search-failed error, which breaks the folding behavior. Using
-          ;; t ensures the failure is handled quietly.)
-          ;;
-          ;; The search function will never throw an error. It fails
-          ;; gracefully under all conditions:
-          (if backward
-              (re-search-backward regexp bound (if move 'move t))
-            (re-search-forward regexp bound (if move 'move t))))))))
+      (if looking-at
+          (looking-at regexp)
+        ;; Why (if move 'move t)?
+        ;;
+        ;; This is the NOERROR argument.
+        ;; If NOERROR is t, search failure just returns nil (and does not
+        ;; move point).
+        ;; If NOERROR is neither nil nor t, then <...> on failure, point
+        ;; is bound to BOUND.
+        ;;
+        ;; (When the engine searches for the next heading and does not
+        ;; find one, it expects your custom search function to simply
+        ;; return nil so it knows it has reached the end of the section.
+        ;; Using (if move 'move nil) breaks that expectation. Instead of
+        ;; returning nil, the search function crashes the script with a
+        ;; search-failed error, which breaks the folding behavior. Using
+        ;; t ensures the failure is handled quietly.)
+        ;;
+        ;; The search function will never throw an error. It fails
+        ;; gracefully under all conditions:
+        (if backward
+            (re-search-backward regexp bound (if move 'move t))
+          (re-search-forward regexp bound (if move 'move t)))))))
 
 (defun outline-indent--setup-outline ()
   "Enforce outline variables for `outline-indent-minor-mode'."
