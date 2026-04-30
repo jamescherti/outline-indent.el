@@ -383,11 +383,6 @@ follow the mode-specific coding style automatically."
 (defun outline-indent-level ()
   "Determine the outline level based on the current indentation."
   (let* ((indentation-width (current-indentation))
-         ;; TODO try the following
-         ;; (indentation-string (match-string 1))
-         ;; (indentation-width (if indentation-string
-         ;;                        (string-width indentation-string)
-         ;;                      0))
          (depth (1+ (/ indentation-width
                        (max (or outline-indent-default-offset
                                 1)
