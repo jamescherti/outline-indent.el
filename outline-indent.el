@@ -433,7 +433,7 @@ indentation as the current line."
       (when found-point
         (goto-char found-point)
         (forward-line -1)
-        (end-of-line)
+        (goto-char (line-end-position))
         (point)))))
 
 (defun outline-indent-insert-heading ()
@@ -540,7 +540,7 @@ To reproduce the issue:
           (forward-line -1)
           (setq moved t))
         (when moved
-          (end-of-line))))))
+          (goto-char (line-end-position)))))))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
@@ -561,31 +561,15 @@ addressing the issue where the cursor might be reset after the operation."
                  ;; point to move it to, adding a newline if necessary, to
                  ;; ensure these points are at bol on the line below the
                  ;; subtree.
-                 (add-new-line nil)
                  (end-point-func (lambda ()
-                                   (let ((outline-blank-line nil))
-                                     (outline-end-of-subtree))
-
+                                   (outline-end-of-subtree)
                                    (skip-chars-forward " \t\n\r")
-                                   (beginning-of-line)
 
-                                   (cond
-                                    ((eq (char-after) ?\n)
-                                     (forward-char 1))
+                                   (unless (eobp)
+                                     (beginning-of-line))
 
-                                    ((and (eobp) (not (bolp)))
+                                   (when (and (eobp) (not (bolp)))
                                      (insert "\n"))
-
-                                    ((and (< arg 0) outline-blank-line
-                                          (save-excursion
-                                            ;; Ensure the previous line is not
-                                            ;; empty
-                                            (forward-line -1)
-                                            (not (string-blank-p
-                                                  (string-trim
-                                                   (thing-at-point 'line t)))))
-                                          (eobp) (bolp))
-                                     (setq add-new-line t)))
 
                                    (point)))
                  (beg (point))
@@ -605,22 +589,30 @@ addressing the issue where the cursor might be reset after the operation."
               (setq cnt (1- cnt)))
             (if (> arg 0)
                 ;; Moving forward - still need to move over subtree.
-                (funcall end-point-func)
-              ;; (skip-chars-forward " \t\n\r")
-              )
+                (funcall end-point-func))
             (when (> arg 0)
               (when (and (eobp) (bolp)
                          (save-excursion
                            (forward-line -1)
-                           (not (string-blank-p (thing-at-point 'line t)))))
+                           ;; `thing-at-point' returns nil whenever the
+                           ;; specified thing (in this case, a line)
+                           ;; cannot be found at the current buffer position.
+                           ;;
+                           ;; When it returns nil:
+                           ;; - End of Buffer
+                           ;; - Empty Buffers
+                           ;; - Narrowed Buffers: If you are using
+                           ;; narrow-to-region and the point is outside the
+                           ;; accessible portion, or at the very boundary where
+                           ;; no content exists, it may return nil.
+                           (not (string-blank-p (or (thing-at-point 'line t)
+                                                    "")))))
                 (insert "\n")))
             (move-marker ins-point (point))
             ;; Fix when moving the subtree of the node immediately preceding
             ;; the last one to the position after the last one.
             (let ((data (delete-and-extract-region beg end)))
               (insert data))
-            (when add-new-line
-              (insert "\n"))
             (goto-char ins-point)
             (if folded (outline-hide-subtree))
             (move-marker ins-point nil)))
@@ -915,7 +907,7 @@ visual region spanning from the heading start to the end of the block."
               (let* ((on-invisible-heading (when (outline-on-heading-p t)
                                              (outline-invisible-p)))
                      (on-visible-heading (save-excursion
-                                           (beginning-of-line)
+                                           (goto-char (line-beginning-position))
                                            (outline-on-heading-p))))
                 (when (use-region-p)
                   (outline-indent-select))
