@@ -419,7 +419,7 @@ indentation as the current line."
   (let ((initial-indentation nil)
         (found-point nil))
     (save-excursion
-      (beginning-of-visual-line)
+      (vertical-motion 0)
       (setq initial-indentation (outline-indent-level))
       (while (and (not found-point) (not (eobp)))
         (forward-line 1)
@@ -449,7 +449,7 @@ this function is suitable for maintaining consistent indentation within the
 outline structure. It can be used as an alternative to `outline-insert-heading'
 to insert content at the same indentation level after the current fold."
   (interactive)
-  (let ((initial-indentation (save-excursion (beginning-of-visual-line)
+  (let ((initial-indentation (save-excursion (vertical-motion 0)
                                              (current-indentation)))
         (point (outline-indent--next-lower-or-equal-indentation)))
     (when point
