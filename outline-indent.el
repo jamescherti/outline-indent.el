@@ -562,12 +562,12 @@ addressing the issue where the cursor might be reset after the operation."
                  ;; ensure these points are at bol on the line below the
                  ;; subtree.
                  (add-new-line nil)
-                 (end-point-func (lambda (respect-outline-blank-line)
-                                   (let ((outline-blank-line
-                                          (if respect-outline-blank-line
-                                              outline-blank-line
-                                            nil)))
+                 (end-point-func (lambda ()
+                                   (let ((outline-blank-line nil))
                                      (outline-end-of-subtree))
+
+                                   (skip-chars-forward " \t\n\r")
+                                   (beginning-of-line)
 
                                    (cond
                                     ((eq (char-after) ?\n)
@@ -593,7 +593,7 @@ addressing the issue where the cursor might be reset after the operation."
                            (outline-end-of-heading)
                            (outline-invisible-p)))
                  (end (save-match-data
-                        (funcall end-point-func nil)))
+                        (funcall end-point-func)))
                  (ins-point (make-marker))
                  (cnt (abs arg)))
             ;; Find insertion point, with error handling.
@@ -605,7 +605,9 @@ addressing the issue where the cursor might be reset after the operation."
               (setq cnt (1- cnt)))
             (if (> arg 0)
                 ;; Moving forward - still need to move over subtree.
-                (funcall end-point-func nil))
+                (funcall end-point-func)
+              ;; (skip-chars-forward " \t\n\r")
+              )
             (when (> arg 0)
               (when (and (eobp) (bolp)
                          (save-excursion
