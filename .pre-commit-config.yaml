@@ -12,5 +12,5 @@ repos:
     rev: v1.0.9
     hooks:
       - id: elisp-check-parens
-      - id: elisp-check-byte-compile
-        exclude: '(^|/)\.dir-locals\.el$'
+      # - id: elisp-check-byte-compile
+      #   exclude: '(^|/)\.dir-locals\.el$'

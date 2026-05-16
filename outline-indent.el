@@ -6,7 +6,7 @@
 ;; Version: 1.1.8
 ;; URL: https://github.com/jamescherti/outline-indent.el
 ;; Keywords: outlines
-;; Package-Requires: ((emacs "26.1"))
+;; Package-Requires: ((emacs "26.1") (kirigami "1.0.5"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -76,6 +76,7 @@
 ;;; Code:
 
 (require 'outline)
+(require 'kirigami)
 
 ;;; Customizations
 
@@ -557,10 +558,9 @@ addressing the issue where the cursor might be reset after the operation."
           (outline-back-to-heading)
           (let* ((movfunc (if (> arg 0) 'outline-get-next-sibling
                             'outline-get-last-sibling))
-                 ;; Find the end of the subtree to be moved as well as the
-                 ;; point to move it to, adding a newline if necessary, to
-                 ;; ensure these points are at bol on the line below the
-                 ;; subtree.
+                 ;; Find the end of the subtree to be moved as well as the point
+                 ;; to move it to, adding a newline if necessary, to ensure
+                 ;; these points are at bol on the line below the subtree.
                  (end-point-func (lambda ()
                                    (outline-end-of-subtree)
                                    (skip-chars-forward " \t\n\r")
@@ -595,8 +595,8 @@ addressing the issue where the cursor might be reset after the operation."
                          (save-excursion
                            (forward-line -1)
                            ;; `thing-at-point' returns nil whenever the
-                           ;; specified thing (in this case, a line)
-                           ;; cannot be found at the current buffer position.
+                           ;; specified thing (in this case, a line) cannot be
+                           ;; found at the current buffer position.
                            ;;
                            ;; When it returns nil:
                            ;; - End of Buffer
@@ -695,391 +695,27 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 
 ;;; Functions
 
-(defun outline-indent-folded-p ()
-  "Return non-nil when the current heading is folded."
-  (save-match-data
-    (save-excursion
-      (outline-back-to-heading)
-      (outline-invisible-p (save-excursion
-                             (outline-end-of-heading)
-                             (point))))))
+(defalias 'outline-indent-folded-p #'kirigami--outline-heading-folded-p
+  "Return non-nil when the current heading is folded.")
 
-(defun outline-indent--legacy-outline-hide-subtree (&optional event)
+(defalias 'outline-indent--legacy-outline-hide-subtree
+  #'kirigami--outline-legacy-hide-subtree
   "Hide everything after this heading at deeper levels.
-If non-nil, EVENT should be a mouse event."
-  (interactive (list last-nonmenu-event))
-  (save-excursion
-    (when (mouse-event-p event)
-      (mouse-set-point event))
-    (outline-flag-subtree t)))
+If non-nil, EVENT should be a mouse event.")
 
-(defun outline-indent--legacy-outline-show-entry ()
+(defalias 'outline-indent--legacy-outline-show-entry
+  #'kirigami--outline-legacy-show-entry
   "Show the body directly following this heading. (Emacs version.)
-Show the heading too, if it is currently invisible."
-  (interactive)
-  (save-excursion
-    (outline-back-to-heading t)
-    (outline-flag-region (1- (point))
-                         (progn
-                           (outline-next-preface)
-                           (if (= 1 (- (point-max) (point)))
-                               (point-max)
-                             (point)))
-                         nil)))
+Show the heading too, if it is currently invisible.")
+
+(defalias 'outline-indent--empty-subtree-p #'kirigami--empty-subtree-p
+  "Return non-nil if the current outline heading has no content or subtrees.")
 
 (defun outline-indent-close-level (level)
   "Close the folds at the level: LEVEL."
   (outline-hide-sublevels level))
 
-(defun outline-indent--ensure-window-start-heading-visible ()
-  "Adjust the window to ensure the current heading remains visible.
-
-This function checks if the heading governing the text at the top of the window
-is currently scrolled off-screen. If so, it resets the window start to the
-heading's position.
-
-This fixes an issue in `outline-mode' where folding a subtree that is partially
-scrolled off-screen causes the heading to disappear."
-  (interactive)
-  (let ((window (selected-window)))
-    (when (and (window-live-p window)
-               (eq (current-buffer) (window-buffer window)))
-      (save-match-data
-        ;; TODO replace this with kirigami
-        (let ((heading-point (save-excursion
-                               (condition-case nil
-                                   (progn
-                                     (goto-char (window-start))
-                                     (when (outline-invisible-p (point))
-                                       (outline-back-to-heading)
-                                       (point)))
-                                 (error
-                                  nil)))))
-          ;; Ensure folded headings remain visible after hiding subtrees. Fixes a
-          ;; bug in outline and Evil where headings could scroll out of view when
-          ;; their subtrees were folded. TODO Send a patch to Emacs and/or Evil
-          (when (and heading-point
-                     (< heading-point (window-start)))
-            (set-window-start (selected-window) heading-point t)))))))
-
-(defun outline-indent--empty-subtree-p ()
-  "Return non-nil if the current outline heading has no content or subtrees."
-  (save-match-data
-    (save-excursion
-      (outline-back-to-heading)
-      (let* ((start (progn
-                      (outline-end-of-heading)
-                      (when (eolp)
-                        (forward-char -1))
-                      (point)))
-             (end (progn
-                    (outline-end-of-subtree)
-                    (when (eolp)
-                      (forward-char -1))
-                    (point))))
-        (= start end)))))
-
-;;; Interactive functions
-
-;;;###autoload
-(defun outline-indent-backward-same-level (&optional arg)
-  "Move the cursor to the previous heading that is at the same indentation level.
-Move backward to the ARG'th subheading at same indentation level as this one.
-Stop at the first and last indented blocks of a superior indentation."
-  (interactive "p")
-  (unless arg
-    (setq arg 1))
-  (if (advice-member-p 'outline-indent--advice-backward-same-level
-                       'outline-backward-same-level)
-      (outline-backward-same-level arg)
-    (outline-indent--advice-backward-same-level 'outline-backward-same-level
-                                                arg)))
-
-;;;###autoload
-(defun outline-indent-forward-same-level (&optional arg)
-  "Move the cursor to the next heading that is at the same indentation level.
-Move forward to the ARG'th subheading at same indentation level as this one.
-Stop at the first and last indented blocks of a superior indentation."
-  (interactive "p")
-  (unless arg
-    (setq arg 1))
-  (if (advice-member-p 'outline-indent--advice-forward-same-level
-                       'outline-forward-same-level)
-      (outline-forward-same-level arg)
-    (outline-indent--advice-forward-same-level 'outline-forward-same-level
-                                               arg)))
-
-;;;###autoload
-(defun outline-indent-select ()
-  "Select the indented block at point.
-Identifies the heading and all associated indented content, then activates a
-visual region spanning from the heading start to the end of the block."
-  (interactive)
-  (outline-indent--deactivate-region)
-  (let ((begin (save-excursion
-                 (outline-back-to-heading)
-                 (point)))
-        (end (outline-indent--next-lower-or-equal-indentation)))
-    (push-mark (1+ end) nil t)
-    (goto-char begin)
-    (activate-mark)))
-
-;;;###autoload
-(defun outline-indent-close-folds ()
-  "Close all folds and ensure the first heading remains visible."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-
-    ;; Handle preamble (if the file doesn't start with a heading)
-    (unless (outline-on-heading-p)
-      (outline-next-heading))
-
-    ;; Collapse every top-level heading found
-    (let ((done nil))
-      (while (and (not done)
-                  (not (eobp))
-                  (outline-on-heading-p))
-        (let ((current-point (point)))
-          ;; Hide the subtree
-          (unless (outline-indent--empty-subtree-p)
-            (condition-case nil
-                (outline-indent--legacy-outline-hide-subtree)
-              (error
-               nil)))
-
-          ;; Try to move to the next visible heading.
-          (progn
-            (outline-next-visible-heading 1)
-            ;; SAFETY CHECK: If point did not move forward, we
-            ;; must stop. This catches cases where the function
-            ;; returns successfully but fails to advance (e.g., at
-            ;; the last heading in some modes).
-            (when (<= (point) current-point)
-              (setq done t))))))))
-
-;;;###autoload
-(defun outline-indent-open-folds ()
-  "Open all folds."
-  (interactive)
-  (unwind-protect
-      (outline-show-all)
-    (outline-indent--ensure-window-start-heading-visible)))
-
-;;;###autoload
-(defun outline-indent-open-fold ()
-  "Open fold at point."
-  (interactive)
-  (save-match-data
-    ;; Workaround for an outline-mode limitation: when jumping via imenu or
-    ;; search, sibling headings above the current one and at the same level
-    ;; often remain hidden. This ensures all sub-items at the current level are
-    ;; revealed, preventing the 'isolated item' effect.
-    (save-excursion
-      ;; Climbing as long as a parent heading exists
-      (catch 'done
-        (condition-case nil
-            (outline-back-to-heading t)
-          (error
-           (throw 'done t)))
-
-        (let ((prev-point nil))
-          (while (> (funcall outline-level) 1)
-            (setq prev-point (point))
-            (condition-case nil
-                (outline-up-heading 1 t)
-              (error
-               ;; Handle outline-before-first-heading and "Already at the top
-               ;; of the outline"
-               (throw 'done t)))
-            (when (= prev-point (point))
-              (throw 'done t))
-
-            (condition-case nil
-                (outline-show-children)
-              (error
-               (throw 'done t)))))))
-
-    ;; Repeatedly reveal children and body until the entry is no longer folded
-    (unwind-protect
-        (condition-case nil
-            (progn
-              (let* ((on-invisible-heading (when (outline-on-heading-p t)
-                                             (outline-invisible-p)))
-                     (on-visible-heading (save-excursion
-                                           (goto-char (line-beginning-position))
-                                           (outline-on-heading-p))))
-                (when (use-region-p)
-                  (outline-indent-select))
-
-                (save-excursion
-                  (while (outline-indent-folded-p)
-                    ;; Repeatedly reveal children and body until the entry is no
-                    ;; longer folded
-                    (save-excursion
-                      (outline-back-to-heading)
-                      (outline-show-children)
-                      (outline-indent--legacy-outline-show-entry))))
-
-                ;; If the header was previously hidden, hide the subtree to
-                ;; collapse it. Otherwise, leave the fold open. This allows the
-                ;; user to decide whether to expand the content under the cursor.
-                (when (and on-invisible-heading (not on-visible-heading))
-                  (outline-indent--legacy-outline-hide-subtree))))
-          ;; Ignore `outline-before-first-heading'
-          (outline-before-first-heading
-           nil))
-      (outline-indent--ensure-window-start-heading-visible))))
-
-;;;###autoload
-(defun outline-indent-close-fold ()
-  "Close the current heading's subtree in a robust manner.
-
-If the current heading is folded or contains no content, move to the previous
-heading with a higher level and close its subtree.
-
-Otherwise, close the current subtree. Ensures that folded headings remain
-visible in the window after hiding."
-  (interactive)
-  (unwind-protect
-      (condition-case nil
-          (save-excursion
-            ;; Move to the current heading; error if before the first heading
-            (outline-back-to-heading)
-
-            (let ((heading-point (point)))
-              ;; If the current heading is folded, or if it contains no
-              ;; content, move to the previous higher-level heading.
-              (when (or (outline-indent-folded-p)  ; Folded?
-                        ;; Fold without any content
-                        (outline-indent--empty-subtree-p))
-                ;; Try to move up to previous higher-level heading
-                (outline-up-heading 1 t)
-                (setq heading-point (point)))
-
-              (when (outline-on-heading-p)
-                (outline-indent--legacy-outline-hide-subtree))
-
-              ;; Ensure folded headings remain visible after hiding subtrees.
-              ;; Fixes a bug in outline and Evil where headings could scroll
-              ;; out of view when their subtrees were folded.
-              ;; TODO Send a patch to Emacs and/or Evil
-              (let ((window (selected-window)))
-                (when (and (window-live-p window)
-                           (eq (current-buffer) (window-buffer window)))
-                  (when (and heading-point
-                             (< heading-point (window-start)))
-                    (set-window-start (selected-window) heading-point t))))))
-        ;; Ignore `outline-before-first-heading'
-        (outline-before-first-heading
-         nil))
-
-    (outline-indent--ensure-window-start-heading-visible)))
-
-;;;###autoload
-(defun outline-indent-open-fold-rec ()
-  "Open fold at point recursively."
-  (interactive)
-  (unwind-protect
-      (condition-case nil
-          (outline-show-subtree)
-        ;; Ignore `outline-before-first-heading'
-        (outline-before-first-heading
-         nil))
-    (outline-indent--ensure-window-start-heading-visible)))
-
-;;;###autoload
-(defun outline-indent-toggle-fold ()
-  "Open or close a fold under point."
-  (interactive)
-  (unwind-protect
-      (outline-toggle-children)
-    (outline-indent--ensure-window-start-heading-visible)))
-
-;;;###autoload
-(defun outline-indent-toggle-level-at-point ()
-  "Toggle the visibility of the indentation level under the cursor."
-  (interactive)
-  (unwind-protect
-      (when (outline-on-heading-p)
-        (let ((level (let ((current-level (outline-indent-level))
-                           (next-level (save-excursion
-                                         (outline-next-heading)
-                                         (outline-indent-level))))
-                       (if (< next-level current-level)
-                           (+ 1 current-level)
-                         next-level))))
-          (if (and (outline-on-heading-p)
-                   (outline-indent-folded-p))
-              (outline-hide-sublevels level)
-            (outline-hide-sublevels (- level 1)))))
-    (outline-indent--ensure-window-start-heading-visible)))
-
-;;;###autoload
-(defun outline-indent-shift-right (&optional _which arg)
-  "Increase the indentation level of the current indented block.
-The global variable `outline-indent-shift-width' or
-`outline-indent-default-offset' is used to determine the number of spaces to
-indent the subtree.
-WHICH is ignored (backward compatibility with `outline-demote').
-If ARG is positive, indent the outline. If ARG is negative, unindent the
-outline. Defaults to 1 if ARG is nil."
-  (interactive)
-  (unless arg
-    (setq arg 1))
-  (outline-indent--deactivate-region)
-  (let ((shift-right (>= arg 0))
-        (column (current-column))
-        (shift-width
-         (cond (outline-indent-shift-width
-                (max outline-indent-shift-width 1))
-
-               (t
-                (max outline-indent-default-offset 1)))))
-    (let ((folded (save-match-data
-                    (outline-end-of-heading)
-                    (outline-invisible-p))))
-      (save-excursion
-        (outline-back-to-heading)
-        (let ((start (point))
-              (end (save-excursion
-                     (outline-end-of-subtree)
-                     (point))))
-          (indent-rigidly start end (if shift-right
-                                        shift-width
-                                      (* -1 shift-width)))))
-      (if shift-right
-          (move-to-column (+ column shift-width))
-        (move-to-column (max (- column shift-width) 0)))
-      (if folded
-          (outline-hide-subtree)))))
-
-;;;###autoload
-(defun outline-indent-shift-left (&optional _which)
-  "Decrease the indentation level of the current indented block.
-The global variable `outline-indent-shift-width' or
-`outline-indent-default-offset' is used to determine the number of spaces to
-unindent the subtree.
-WHICH is ignored (backward compatibility with `outline-promote')."
-  (interactive)
-  (outline-indent-shift-right nil -1))
-
-(defalias 'outline-indent-demote #'outline-indent-shift-right
-  "Deprecated alias for `outline-indent-shift-right'.")
-(make-obsolete 'outline-indent-demote 'outline-indent-shift-right "1.1.1")
-
-(defalias 'outline-indent-promote #'outline-indent-shift-left
-  "Deprecated alias for `outline-indent-shift-left'.")
-(make-obsolete 'outline-indent-promote 'outline-indent-shift-left "1.1.1")
-
 ;;; Mode
-
-;; (defun outline-indent--heading-regexp ()
-;;   "Compute heading regexp based on leading indentation."
-;;   (rx-to-string
-;;    `(and line-start
-;;          (group (zero-or-more (any " \t")))
-;;          (not (any " \t\n")))))
 
 (defun outline-indent--search-function (&optional bound move backward
                                                   looking-at)
@@ -1108,21 +744,21 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
         ;; Why (if move 'move t)?
         ;;
         ;; This is the NOERROR argument.
-        ;; If NOERROR is t, search failure just returns nil (and does not
-        ;; move point).
-        ;; If NOERROR is neither nil nor t, then <...> on failure, point
-        ;; is bound to BOUND.
+        ;; If NOERROR is t, search failure just returns nil (and does not move
+        ;; point).
+        ;; If NOERROR is neither nil nor t, then <...> on failure, point is
+        ;; bound to BOUND.
         ;;
-        ;; (When the engine searches for the next heading and does not
-        ;; find one, it expects your custom search function to simply
-        ;; return nil so it knows it has reached the end of the section.
-        ;; Using (if move 'move nil) breaks that expectation. Instead of
-        ;; returning nil, the search function crashes the script with a
-        ;; search-failed error, which breaks the folding behavior. Using
-        ;; t ensures the failure is handled quietly.)
+        ;; (When the engine searches for the next heading and does not find one,
+        ;; it expects your custom search function to simply return nil so it
+        ;; knows it has reached the end of the section. Using (if move 'move
+        ;; nil) breaks that expectation. Instead of returning nil, the search
+        ;; function crashes the script with a search-failed error, which breaks
+        ;; the folding behavior. Using t ensures the failure is handled
+        ;; quietly.)
         ;;
-        ;; The search function will never throw an error. It fails
-        ;; gracefully under all conditions:
+        ;; The search function will never throw an error. It fails gracefully
+        ;; under all conditions:
         (if backward
             (re-search-backward regexp bound (if move 'move t))
           (re-search-forward regexp bound (if move 'move t)))))))
@@ -1184,6 +820,212 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
     (kill-local-variable 'outline-level)
     (kill-local-variable 'outline-heading-end-regexp)
     (kill-local-variable 'outline-regexp)))
+
+;;; Interactive functions
+
+;;;###autoload
+(defun outline-indent-backward-same-level (&optional arg)
+  "Move the cursor to the previous heading that is at the same indentation level.
+Move backward to the ARG'th subheading at same indentation level as this one.
+Stop at the first and last indented blocks of a superior indentation."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-backward-same-level
+                       'outline-backward-same-level)
+      (outline-backward-same-level arg)
+    (outline-indent--advice-backward-same-level 'outline-backward-same-level
+                                                arg)))
+
+;;;###autoload
+(defun outline-indent-forward-same-level (&optional arg)
+  "Move the cursor to the next heading that is at the same indentation level.
+Move forward to the ARG'th subheading at same indentation level as this one.
+Stop at the first and last indented blocks of a superior indentation."
+  (interactive "p")
+  (unless arg
+    (setq arg 1))
+  (if (advice-member-p 'outline-indent--advice-forward-same-level
+                       'outline-forward-same-level)
+      (outline-forward-same-level arg)
+    (outline-indent--advice-forward-same-level 'outline-forward-same-level
+                                               arg)))
+
+;;;###autoload
+(defun outline-indent-select ()
+  "Select the indented block at point.
+Identifies the heading and all associated indented content, then activates a
+visual region spanning from the heading start to the end of the block."
+  (interactive)
+  (outline-indent--deactivate-region)
+  (let ((begin (save-excursion
+                 (outline-back-to-heading)
+                 (point)))
+        (end (outline-indent--next-lower-or-equal-indentation)))
+    (push-mark (1+ end) nil t)
+    (goto-char begin)
+    (activate-mark)))
+
+;;;###autoload
+(defun outline-indent-close-folds ()
+  "Close all folds and ensure the first heading remains visible."
+  (interactive)
+  ;; Handle preamble (if the file doesn't start with a heading)
+  ;; Collapse every top-level heading found
+  ;; Hide the subtree
+  ;; Try to move to the next visible heading.
+  ;; SAFETY CHECK: If point did not move forward, we
+  ;; must stop. This catches cases where the function
+  ;; returns successfully but fails to advance (e.g., at
+  ;; the last heading in some modes).
+  (let ((outline-indent-minor-mode nil)
+        (kirigami-enhance-outline t))
+    (ignore outline-indent-minor-mode)
+    (kirigami-close-folds)))
+
+;;;###autoload
+(defun outline-indent-open-folds ()
+  "Open all folds."
+  (interactive)
+  (let ((outline-indent-minor-mode nil)
+        (kirigami-enhance-outline t))
+    (ignore outline-indent-minor-mode)
+    (kirigami-open-folds)))
+
+;;;###autoload
+(defun outline-indent-open-fold ()
+  "Open fold at point."
+  (interactive)
+  ;; Workaround for an outline-mode limitation: when jumping via imenu or
+  ;; search, sibling headings above the current one and at the same level often
+  ;; remain hidden. This ensures all sub-items at the current level are
+  ;; revealed, preventing the 'isolated item' effect. Climbing as long as a
+  ;; parent heading exists Handle outline-before-first-heading and "Already at
+  ;; the top of the outline"
+  ;; Repeatedly reveal children and body until the entry is no longer folded If
+  ;; the header was previously hidden, hide the subtree to collapse it.
+  ;; Otherwise, leave the fold open. This allows the user to decide whether to
+  ;; expand the content under the cursor. Ignore `outline-before-first-heading'
+  (let ((outline-indent-minor-mode nil)
+        (kirigami-enhance-outline t))
+    (ignore outline-indent-minor-mode)
+    (kirigami-open-fold)))
+
+;;;###autoload
+(defun outline-indent-close-fold ()
+  "Close the current heading's subtree in a robust manner.
+
+If the current heading is folded or contains no content, move to the previous
+heading with a higher level and close its subtree.
+
+Otherwise, close the current subtree. Ensures that folded headings remain
+visible in the window after hiding."
+  (interactive)
+  ;; Move to the current heading; error if before the first heading If the
+  ;; current heading is folded, or if it contains no content, move to the
+  ;; previous higher-level heading. Try to move up to previous higher-level
+  ;; heading Ensure folded headings remain visible after hiding subtrees. Fixes
+  ;; a bug in outline and Evil where headings could scroll out of view when
+  ;; their subtrees were folded.
+  (let ((outline-indent-minor-mode nil)
+        (kirigami-enhance-outline t))
+    (ignore outline-indent-minor-mode)
+    (kirigami-close-fold)))
+
+;;;###autoload
+(defun outline-indent-open-fold-rec ()
+  "Open fold at point recursively."
+  (interactive)
+  ;; Ignore `outline-before-first-heading'
+  (let ((outline-indent-minor-mode nil)
+        (kirigami-enhance-outline t))
+    (ignore outline-indent-minor-mode)
+    (kirigami-open-fold-rec)))
+
+;;;###autoload
+(defun outline-indent-toggle-fold ()
+  "Open or close a fold under point."
+  (interactive)
+  (let ((outline-indent-minor-mode nil)
+        (kirigami-enhance-outline t))
+    (ignore outline-indent-minor-mode)
+    (kirigami-toggle-fold)))
+
+;;;###autoload
+(defun outline-indent-toggle-level-at-point ()
+  "Toggle the visibility of the indentation level under the cursor."
+  (interactive)
+  (unwind-protect
+      (when (outline-on-heading-p)
+        (let ((level (let ((current-level (outline-indent-level))
+                           (next-level (save-excursion
+                                         (outline-next-heading)
+                                         (outline-indent-level))))
+                       (if (< next-level current-level)
+                           (+ 1 current-level)
+                         next-level))))
+          (if (and (outline-on-heading-p)
+                   (kirigami--outline-heading-folded-p))
+              (outline-hide-sublevels level)
+            (outline-hide-sublevels (- level 1)))))
+    (kirigami--outline-ensure-window-start-heading-visible)))
+
+;;;###autoload
+(defun outline-indent-shift-right (&optional _which arg)
+  "Increase the indentation level of the current indented block.
+The global variable `outline-indent-shift-width' or
+`outline-indent-default-offset' is used to determine the number of spaces to
+indent the subtree.
+WHICH is ignored (backward compatibility with `outline-demote').
+If ARG is positive, indent the outline. If ARG is negative, unindent the
+outline. Defaults to 1 if ARG is nil."
+  (interactive)
+  (unless arg
+    (setq arg 1))
+  (outline-indent--deactivate-region)
+  (let ((shift-right (>= arg 0))
+        (column (current-column))
+        (shift-width
+         (cond (outline-indent-shift-width
+                (max outline-indent-shift-width 1))
+
+               (t
+                (max outline-indent-default-offset 1)))))
+    (let ((folded (save-match-data
+                    (outline-end-of-heading)
+                    (outline-invisible-p))))
+      (save-excursion
+        (outline-back-to-heading)
+        (let ((start (point))
+              (end (save-excursion
+                     (outline-end-of-subtree)
+                     (point))))
+          (indent-rigidly start end (if shift-right
+                                        shift-width
+                                      (* -1 shift-width)))))
+      (if shift-right
+          (move-to-column (+ column shift-width))
+        (move-to-column (max (- column shift-width) 0)))
+      (if folded
+          (outline-hide-subtree)))))
+
+;;;###autoload
+(defun outline-indent-shift-left (&optional _which)
+  "Decrease the indentation level of the current indented block.
+The global variable `outline-indent-shift-width' or
+`outline-indent-default-offset' is used to determine the number of spaces to
+unindent the subtree.
+WHICH is ignored (backward compatibility with `outline-promote')."
+  (interactive)
+  (outline-indent-shift-right nil -1))
+
+(defalias 'outline-indent-demote #'outline-indent-shift-right
+  "Deprecated alias for `outline-indent-shift-right'.")
+(make-obsolete 'outline-indent-demote 'outline-indent-shift-right "1.1.1")
+
+(defalias 'outline-indent-promote #'outline-indent-shift-left
+  "Deprecated alias for `outline-indent-shift-left'.")
+(make-obsolete 'outline-indent-promote 'outline-indent-shift-left "1.1.1")
 
 ;;; Provide
 
