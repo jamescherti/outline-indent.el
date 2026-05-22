@@ -824,6 +824,18 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
 ;;; Interactive functions
 
 ;;;###autoload
+(defun outline-indent-narrow ()
+  "Narrow the buffer to the current line and all lines indented under it."
+  (interactive)
+  (save-excursion
+    (when (ignore-errors (outline-back-to-heading) t)
+      (let ((begin (line-beginning-position))
+            (end (outline-indent--next-lower-or-equal-indentation)))
+        (if end
+            (narrow-to-region begin (min (1+ end) (point-max)))
+          (narrow-to-region begin (point-max)))))))
+
+;;;###autoload
 (defun outline-indent-backward-same-level (&optional arg)
   "Move the cursor to the previous heading that is at the same indentation level.
 Move backward to the ARG'th subheading at same indentation level as this one.
@@ -853,7 +865,7 @@ Stop at the first and last indented blocks of a superior indentation."
 
 ;;;###autoload
 (defun outline-indent-select ()
-  "Select the indented block at point.
+  "Select the current line and all lines indented under it.
 Identifies the heading and all associated indented content, then activates a
 visual region spanning from the heading start to the end of the block."
   (interactive)

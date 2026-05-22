@@ -98,12 +98,13 @@ The following is an example of default keybindings that can be added to your con
 (define-key outline-indent-minor-mode-map (kbd "C-c o TAB") 'outline-indent-toggle-fold) ; Toggle fold at point
 (define-key outline-indent-minor-mode-map (kbd "C-c o t") 'outline-indent-toggle-level-at-point) ; Toggle level at point
 
-;; Selection
+;; Select and narrow
 (define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select current indented block
+(define-key outline-indent-minor-mode-map (kbd "C-c o s") 'outline-indent-narrow)
 
 ;; Navigation at same indentation level
-(define-key outline-indent-minor-mode-map (kbd "C-c o n") 'outline-indent-forward-same-level) ; Next heading at same level
-(define-key outline-indent-minor-mode-map (kbd "C-c o p") 'outline-indent-backward-same-level) ; Previous heading at same level
+(define-key outline-indent-minor-mode-map (kbd "C-c o f") 'outline-indent-forward-same-level)  ; Forward same level
+(define-key outline-indent-minor-mode-map (kbd "C-c o b") 'outline-indent-backward-same-level) ; Backward same level
 
 ;; Shift left or right
 (define-key outline-indent-minor-mode-map (kbd "C-c o <right>") 'outline-indent-shift-right)
@@ -158,9 +159,6 @@ The following *outline-indent* functions manage the opening and closing of folds
 - `(outline-indent-open-fold-rec)`: Open fold at point recursively.
 - `(outline-indent-toggle-fold)`: Open or close a fold under point.
 - `(outline-indent-toggle-level-at-point)`: Toggle the visibility of the indentation level under the cursor.
-- `(outline-indent-select)`: Select the entire indented block at point, activating a visual region spans the heading and all of its associated indented content.
-- `(outline-indent-forward-same-level)`: Move the cursor to the next heading that is at the same indentation level.
-- `(outline-indent-backward-same-level)`: Move the cursor to the previous heading that is at the same indentation level.
 
 You can also indent/unindent and move subtree up and down using:
 
@@ -170,8 +168,12 @@ You can also indent/unindent and move subtree up and down using:
 - `(outline-insert-heading)` to insert a new line with the same indentation level/depth as the current line just before the next heading that shares the same or less indentation level.
 
 Move forward or backward to the same indentation level:
-- `outline-forward-same-level`: Move forward to the same indentation level as the one under the cursor.
-- `outline-backward-same-level`: Move backward to the the same indentation level as as the one under the cursor.
+- `(outline-indent-forward-same-level)`: Move the cursor to the next heading that is at the same indentation level.
+- `(outline-indent-backward-same-level)`: Move the cursor to the previous heading that is at the same indentation level.
+
+Select and narrow:
+- `(outline-indent-select)`: Select the current line and all lines indented under it.
+- `(outline-indent-narrow)`: Narrow the buffer to the current line and all lines indented under it.
 
 ### Evil mode
 
