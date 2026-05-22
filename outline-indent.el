@@ -824,6 +824,22 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
 ;;; Interactive functions
 
 ;;;###autoload
+(defun outline-indent-comment ()
+  "Comment the current line and all lines indented under it."
+  (interactive)
+  (when comment-start
+    (save-excursion
+      (when (use-region-p)
+        (deactivate-mark))
+      (when (ignore-errors (outline-back-to-heading) t)
+        (outline-indent-open-fold-rec)
+        (let ((begin (line-beginning-position))
+              (end (outline-indent--next-lower-or-equal-indentation)))
+          (if end
+              (comment-region begin (min (1+ end) (point-max)))
+            (comment-region begin (point-max))))))))
+
+;;;###autoload
 (defun outline-indent-narrow ()
   "Narrow the buffer to the current line and all lines indented under it."
   (interactive)

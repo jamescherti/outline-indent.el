@@ -98,9 +98,10 @@ The following is an example of default keybindings that can be added to your con
 (define-key outline-indent-minor-mode-map (kbd "C-c o TAB") 'outline-indent-toggle-fold) ; Toggle fold at point
 (define-key outline-indent-minor-mode-map (kbd "C-c o t") 'outline-indent-toggle-level-at-point) ; Toggle level at point
 
-;; Select and narrow
-(define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select current indented block
-(define-key outline-indent-minor-mode-map (kbd "C-c o s") 'outline-indent-narrow)
+;; Select, narrow, and comment
+(define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select
+(define-key outline-indent-minor-mode-map (kbd "C-c o s") 'outline-indent-narrow) ; Narrow
+(define-key outline-indent-minor-mode-map (kbd "C-c o ;") 'outline-indent-comment) ; Comment
 
 ;; Navigation at same indentation level
 (define-key outline-indent-minor-mode-map (kbd "C-c o f") 'outline-indent-forward-same-level)  ; Forward same level
@@ -174,6 +175,7 @@ Move forward or backward to the same indentation level:
 Select and narrow:
 - `(outline-indent-select)`: Select the current line and all lines indented under it.
 - `(outline-indent-narrow)`: Narrow the buffer to the current line and all lines indented under it.
+- `(outline-indent-comment)`: Comment the current line and all lines indented under it.
 
 ### Evil mode
 
