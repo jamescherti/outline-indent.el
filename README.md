@@ -527,6 +527,8 @@ To create an indirect buffer of the current buffer, you can use `M-x clone-indir
 
 - [Brandon Schneider (skarekrow)](https://github.com/jamescherti/outline-indent.el/issues/12): Thanks again for all the great work!
 
+- [yep808](https://www.reddit.com/r/emacs/comments/1stnc6q/comment/opoinu8/): "Thanks for the writeup, I never thought I needed code folding in my many years of programming. But I can definitely see it being helpful in super long YAML config files. I just tried your outline-indent.el package and it works very well. Love the OOTB integration with evil-collections too."
+
 ## License
 
 The *outline-indent* Emacs package has been written by [James Cherti](https://www.jamescherti.com/) and is distributed under terms of the GNU General Public License version 3, or, at your choice, any later version.
