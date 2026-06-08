@@ -30,49 +30,6 @@ Because *outline-indent* relies on the built-in *outline-minor-mode*, it benefit
 
 The *outline-indent* Emacs package offers a similar functionality to Vim's `set foldmethod=indent` setting. Just as in Vim, it allows to fold and unfold code sections based on their indentation levels.
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
-## Table of Contents
-
-- [outline-indent.el - A modern indentation-based folding mode for Emacs](#outline-indentel---a-modern-indentation-based-folding-mode-for-emacs)
-  - [Installation](#installation)
-  - [Activation](#activation)
-    - [Manual activation](#manual-activation)
-    - [Automatic activation using hooks](#automatic-activation-using-hooks)
-  - [Usage](#usage)
-    - [How to check if it is working?](#how-to-check-if-it-is-working)
-    - [Vanilla Emacs](#vanilla-emacs)
-    - [Evil mode](#evil-mode)
-    - [Functions specific to outline-indent-minor-mode](#functions-specific-to-outline-indent-minor-mode)
-    - [Collapsing Sections Above a Specified Outline Level](#collapsing-sections-above-a-specified-outline-level)
-      - [Managing folds](#managing-folds)
-      - [Selecting indented text](#selecting-indented-text)
-      - [outline-indent-backward-same-level and outline-indent-forward-same-level](#outline-indent-backward-same-level-and-outline-indent-forward-same-level)
-      - [outline-indent-shift-left and outline-indent-shift-right](#outline-indent-shift-left-and-outline-indent-shift-right)
-      - [outline-indent-move-subtree-up and outline-indent-move-subtree-down](#outline-indent-move-subtree-up-and-outline-indent-move-subtree-down)
-      - [outline-indent-insert-heading](#outline-indent-insert-heading)
-  - [Frequently asked questions](#frequently-asked-questions)
-    - [Maintaining blank lines between folded sections](#maintaining-blank-lines-between-folded-sections)
-    - [Automatically Folding All Folds on Mode Activation](#automatically-folding-all-folds-on-mode-activation)
-    - [How to Prevent Emacs from Searching Folded Sections](#how-to-prevent-emacs-from-searching-folded-sections)
-    - [What programming languages are supported?](#what-programming-languages-are-supported)
-    - [Does `outline-indent-minor-mode` work with Emacs Lisp or other programming languages, and how does it differ from the built-in `outline-minor-mode`?](#does-outline-indent-minor-mode-work-with-emacs-lisp-or-other-programming-languages-and-how-does-it-differ-from-the-built-in-outline-minor-mode)
-    - [How to make Emacs indent new lines based on previous non-blank line?](#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line)
-    - [How to ignore certain major modes](#how-to-ignore-certain-major-modes)
-    - [Customization](#customization)
-    - [What other packages can be used to maintain proper indentation in indentation-sensitive programming languages?](#what-other-packages-can-be-used-to-maintain-proper-indentation-in-indentation-sensitive-programming-languages)
-      - [Displaying vertical indentation guide bars](#displaying-vertical-indentation-guide-bars)
-    - [What code folding packages does the author use?](#what-code-folding-packages-does-the-author-use)
-    - [What are the main differences compared to treesit-fold?](#what-are-the-main-differences-compared-to-treesit-fold)
-    - [Why not use origami.el or yafolding?](#why-not-use-origamiel-or-yafolding)
-    - [Why not use folding.el?](#why-not-use-foldingel)
-    - [How does this compare to the built-in hideshow package?](#how-does-this-compare-to-the-built-in-hideshow-package)
-    - [How to view different outline-indent folds in separate windows?](#how-to-view-different-outline-indent-folds-in-separate-windows)
-  - [Comments from users](#comments-from-users)
-  - [License](#license)
-  - [Links](#links)
-
-<!-- markdown-toc end -->
-
 ## Installation
 
 To install *outline-indent* from MELPA:
