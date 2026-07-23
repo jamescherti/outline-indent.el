@@ -124,7 +124,7 @@ Note: Trailing whitespace after the ellipsis is automatically removed to prevent
 a specific visual and editing issue. When lines are wrapped or truncated, any
 trailing space following the ellipsis may appear on a separate visual line,
 creating the illusion of an additional line. This can mislead the user and cause
-confusion during editing—for example, deleting what appears to be only the
+confusion during editing, for example, deleting what appears to be only the
 whitespace may in fact delete the entire folded line.
 
 Recommended values include \" ▼\", \"↴\", \"…\", \"...\", or any compact string
