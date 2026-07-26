@@ -46,30 +46,31 @@ To install *outline-indent* from MELPA:
 
 The following is an example of default keybindings that can be added to your configuration:
 ```elisp
-;; Fold management
-(define-key outline-indent-minor-mode-map (kbd "C-c o o") 'outline-indent-open-fold)     ; Open fold at point
-(define-key outline-indent-minor-mode-map (kbd "C-c o c") 'outline-indent-close-fold)    ; Close fold at point
-(define-key outline-indent-minor-mode-map (kbd "C-c o m") 'outline-indent-close-folds)   ; Close all folds
-(define-key outline-indent-minor-mode-map (kbd "C-c o r") 'outline-indent-open-folds)    ; Open all folds
-(define-key outline-indent-minor-mode-map (kbd "C-c o O") 'outline-indent-open-fold-rec) ; Open fold recursively
-(define-key outline-indent-minor-mode-map (kbd "C-c o TAB") 'outline-indent-toggle-fold) ; Toggle fold at point
-(define-key outline-indent-minor-mode-map (kbd "C-c o t") 'outline-indent-toggle-level-at-point) ; Toggle level at point
+(with-eval-after-load 'outline-indent
+  ;; Fold management
+  (define-key outline-indent-minor-mode-map (kbd "C-c o o") 'outline-indent-open-fold)     ; Open fold at point
+  (define-key outline-indent-minor-mode-map (kbd "C-c o c") 'outline-indent-close-fold)    ; Close fold at point
+  (define-key outline-indent-minor-mode-map (kbd "C-c o m") 'outline-indent-close-folds)   ; Close all folds
+  (define-key outline-indent-minor-mode-map (kbd "C-c o r") 'outline-indent-open-folds)    ; Open all folds
+  (define-key outline-indent-minor-mode-map (kbd "C-c o O") 'outline-indent-open-fold-rec) ; Open fold recursively
+  (define-key outline-indent-minor-mode-map (kbd "C-c o TAB") 'outline-indent-toggle-fold) ; Toggle fold at point
+  (define-key outline-indent-minor-mode-map (kbd "C-c o t") 'outline-indent-toggle-level-at-point) ; Toggle level at point
 
-;; Select, narrow, and comment
-(define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select
-(define-key outline-indent-minor-mode-map (kbd "C-c o s") 'outline-indent-narrow) ; Narrow
-(define-key outline-indent-minor-mode-map (kbd "C-c o ;") 'outline-indent-comment) ; Comment
+  ;; Select, narrow, and comment
+  (define-key outline-indent-minor-mode-map (kbd "C-c o v") 'outline-indent-select) ; Select
+  (define-key outline-indent-minor-mode-map (kbd "C-c o s") 'outline-indent-narrow) ; Narrow
+  (define-key outline-indent-minor-mode-map (kbd "C-c o ;") 'outline-indent-comment) ; Comment
 
-;; Navigation at same indentation level
-(define-key outline-indent-minor-mode-map (kbd "C-c o f") 'outline-indent-forward-same-level)  ; Forward same level
-(define-key outline-indent-minor-mode-map (kbd "C-c o b") 'outline-indent-backward-same-level) ; Backward same level
+  ;; Navigation at same indentation level
+  (define-key outline-indent-minor-mode-map (kbd "C-c o f") 'outline-indent-forward-same-level)  ; Forward same level
+  (define-key outline-indent-minor-mode-map (kbd "C-c o b") 'outline-indent-backward-same-level) ; Backward same level
 
-;; Shift left or right
-(define-key outline-indent-minor-mode-map (kbd "C-c o <right>") 'outline-indent-shift-right)
-(define-key outline-indent-minor-mode-map (kbd "C-c o <left>") 'outline-indent-shift-left)
+  ;; Shift left or right
+  (define-key outline-indent-minor-mode-map (kbd "C-c o <right>") 'outline-indent-shift-right)
+  (define-key outline-indent-minor-mode-map (kbd "C-c o <left>") 'outline-indent-shift-left)
 
-;; Insert heading
-(define-key outline-indent-minor-mode-map (kbd "C-c o i") 'outline-indent-insert-heading)
+  ;; Insert heading
+  (define-key outline-indent-minor-mode-map (kbd "C-c o i") 'outline-indent-insert-heading))
 ```
 
 ## Activation
