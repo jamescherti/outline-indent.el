@@ -146,7 +146,7 @@ In Evil mode, *outline-indent* works out of the box if you install `evil-collect
 
 You may want to set a few additional key mappings:
 ```emacs-lisp
-(with-eval-after-load "evil"
+(with-eval-after-load 'evil
   (defun my-evil-define-key-outline-indent-minor-mode ()
     ;; Open and close folds
     (evil-define-key 'normal 'local (kbd "zo") #'outline-indent-open-fold)
