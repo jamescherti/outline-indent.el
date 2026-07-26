@@ -79,7 +79,7 @@ The following is an example of default keybindings that can be added to your con
 
 Once installed, the minor mode can be activated using:
 ``` emacs-lisp
-(outline-indent-minor-mode)
+(outline-indent-minor-mode 1)
 ```
 
 ### Automatic activation using hooks
