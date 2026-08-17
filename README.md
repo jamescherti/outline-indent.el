@@ -331,7 +331,7 @@ The author uses it daily across numerous languages, including Python, Bash, YAML
 
 The *outline-indent* provides a mapping between Emacs major modes and their corresponding indentation variables, enabling `outline-indent` to determine the correct indentation for a wide range of languages. Supported languages include scripting languages such as Python, Bash, Perl, Ruby, Lua, and Raku; compiled languages including C, C++, Java, Ada, Rust, Crystal, Go, Scala, Swift, Pascal, and Objective-C; web and markup languages like HTML, XML, CSS, Web templates, Pug, and PlantUML; as well as JavaScript and TypeScript in multiple variants. This ensures consistent outline and folding behavior across most commonly used programming and markup modes in Emacs.
 
-### Does `outline-indent-minor-mode` work with Emacs Lisp or other programming languages, and how does it differ from the built-in `outline-minor-mode`?
+### Does outline-indent-minor-mode work with Emacs Lisp or other programming languages, and how does it differ from the built-in outline-minor-mode?
 
 Yes, `outline-indent-minor-mode` functions correctly with Emacs Lisp and any other language whose code is properly indented.
 
@@ -506,6 +506,7 @@ You should have received a copy of the GNU General Public License along with thi
 - Article: [outline-indent – Indentation based Folding and Outlining in Emacs](https://www.jamescherti.com/fold-outline-indentation-emacs-package/)
 
 Other Emacs packages by the same author:
+
 - [minimal-emacs.d](https://github.com/jamescherti/minimal-emacs.d): This repository hosts a minimal Emacs configuration designed to serve as a foundation for your vanilla Emacs setup and provide a solid base for an enhanced Emacs experience.
 - [compile-angel.el](https://github.com/jamescherti/compile-angel.el): **Speed up Emacs!** This package guarantees that all .el files are both byte-compiled and native-compiled, which significantly speeds up Emacs.
 - [easysession.el](https://github.com/jamescherti/easysession.el): Easysession is lightweight Emacs session manager that can persist and restore file editing buffers, indirect buffers/clones, Dired buffers, the tab-bar, and the Emacs frames (with or without the Emacs frames size, width, and height).
