@@ -5,7 +5,7 @@
 ;; Author: James Cherti <https://www.jamescherti.com/contact/>
 ;; Version: 1.2.0
 ;; URL: https://github.com/jamescherti/outline-indent.el
-;; Keywords: outlines
+;; Keywords: outlines, convenience
 ;; Package-Requires: ((emacs "26.1") (kirigami "1.0.5"))
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -82,7 +82,7 @@
 
 (defgroup outline-indent nil
   "Folding text based on indentation."
-  :group 'outline-indent
+  :group 'outlines
   :prefix "outline-indent-")
 
 (defcustom outline-indent-default-offset nil
