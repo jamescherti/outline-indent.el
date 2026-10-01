@@ -434,7 +434,7 @@ indentation as the current line."
       (when found-point
         (goto-char found-point)
         (forward-line -1)
-        (goto-char (line-end-position))
+        (end-of-line)
         (point)))))
 
 (defun outline-indent-insert-heading ()
@@ -541,7 +541,7 @@ To reproduce the issue:
           (forward-line -1)
           (setq moved t))
         (when moved
-          (goto-char (line-end-position)))))))
+          (end-of-line))))))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
@@ -776,8 +776,8 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
 
   ;; Fallback for Emacs 28 and older
   (setq-local outline-regexp (rx line-start
-                                 (group (zero-or-more (any " \t")))
-                                 (not (any " \t\r\n"))))
+                                 (group (zero-or-more (in " \t")))
+                                 (not (in " \t\r\n"))))
   (setq-local outline-heading-end-regexp "\n"))
 
 ;;;###autoload
