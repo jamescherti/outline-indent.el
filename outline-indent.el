@@ -410,6 +410,16 @@ follow the mode-specific coding style automatically."
       (set-display-table-slot display-table 'selective-display value)
       (setq buffer-display-table display-table))))
 
+;; Fix warning (`pos-eol' and `pos-bol' were added in Emacs 29.1)
+(declare-function pos-eol nil)
+(declare-function pos-bol nil)
+
+(defalias 'outline-indent--pos-bol
+  (if (fboundp 'pos-bol) #'pos-bol #'line-beginning-position))
+
+(defalias 'outline-indent--pos-eol
+  (if (fboundp 'pos-eol) #'pos-eol #'line-end-position))
+
 (defun outline-indent--next-lower-or-equal-indentation ()
   "Go to the same indentation level/depth as the current line.
 Go to just before the next heading that shares the same or less indentation
@@ -434,7 +444,7 @@ indentation as the current line."
       (when found-point
         (goto-char found-point)
         (forward-line -1)
-        (end-of-line)
+        (goto-char (outline-indent--pos-eol))
         (point)))))
 
 (defun outline-indent-insert-heading ()
@@ -541,7 +551,7 @@ To reproduce the issue:
           (forward-line -1)
           (setq moved t))
         (when moved
-          (end-of-line))))))
+          (goto-char (outline-indent--pos-eol)))))))
 
 (defun outline-indent-move-subtree-down (&optional arg)
   "Move the current subtree down past ARG headlines of the same level.
@@ -833,7 +843,7 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
         (deactivate-mark))
       (when (ignore-errors (outline-back-to-heading) t)
         (outline-indent-open-fold-rec)
-        (let ((begin (line-beginning-position))
+        (let ((begin (outline-indent--pos-bol))
               (end (outline-indent--next-lower-or-equal-indentation)))
           (if end
               (comment-region begin (min (1+ end) (point-max)))
@@ -845,7 +855,7 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
   (interactive)
   (save-excursion
     (when (ignore-errors (outline-back-to-heading) t)
-      (let ((begin (line-beginning-position))
+      (let ((begin (outline-indent--pos-bol))
             (end (outline-indent--next-lower-or-equal-indentation)))
         (if end
             (narrow-to-region begin (min (1+ end) (point-max)))
