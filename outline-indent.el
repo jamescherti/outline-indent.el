@@ -416,10 +416,6 @@ follow the mode-specific coding style automatically."
       (set-display-table-slot display-table 'selective-display value)
       (setq buffer-display-table display-table))))
 
-;; Fix warning (`pos-eol' and `pos-bol' were added in Emacs 29.1)
-(declare-function pos-eol nil)
-(declare-function pos-bol nil)
-
 (defalias 'outline-indent--pos-bol
   (if (fboundp 'pos-bol) #'pos-bol #'line-beginning-position))
 
