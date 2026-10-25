@@ -5,7 +5,10 @@
 ![License](https://img.shields.io/github/license/jamescherti/outline-indent.el)
 ![](https://jamescherti.com/misc/made-for-gnu-emacs.svg)
 
-The **outline-indent** Emacs package provides a minor mode for indentation-based code folding. It is fast and built directly on top of native Emacs functions.
+- Author: James Cherti <[https://www.jamescherti.com/](https://www.jamescherti.com/)>
+- License: GPL 3.0
+
+The **[outline-indent.el](https://github.com/jamescherti/outline-indent.el)** Emacs package provides a minor mode for indentation-based code folding. It is fast and built directly on top of native Emacs functions.
 
 Beyond basic folding, *outline-indent* includes commands to:
 * Move indented blocks up and down using `(outline-indent-move-subtree-up)` and `(outline-indent-move-subtree-down)`.
