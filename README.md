@@ -1,5 +1,5 @@
 # outline-indent.el - A modern indentation-based folding mode for Emacs
-![Build Status](https://github.com/jamescherti/outline-indent.el/actions/workflows/melpazoid.yml/badge.svg)
+![Build Status](https://github.com/jamescherti/outline-indent.el/actions/workflows/ci.yml/badge.svg)
 [![MELPA](https://melpa.org/packages/outline-indent-badge.svg)](https://melpa.org/#/outline-indent)
 [![MELPA Stable](https://stable.melpa.org/packages/outline-indent-badge.svg)](https://stable.melpa.org/#/outline-indent)
 ![License](https://img.shields.io/github/license/jamescherti/outline-indent.el)
