@@ -347,7 +347,7 @@ Searches `outline-indent--mode-basic-offset-map', falling back to `default'."
 (defun outline-indent--get-mode-basic-offset (mode)
   "Return the basic indentation offset for MODE.
 If the mapping entry contains multiple variables, the last bound
-symbol is used. Returns `standard-indent` if no suitable variable
+symbol is used. Returns `standard-indent' if no suitable variable
 is found."
   (when-let* ((entry (outline-indent--get-mode-basic-offset-entry mode)))
     (let ((list-vars (cdr entry))
@@ -422,6 +422,23 @@ follow the mode-specific coding style automatically."
 (defalias 'outline-indent--pos-eol
   (if (fboundp 'pos-eol) #'pos-eol #'line-end-position))
 
+(defun outline-indent--ignore-line-p ()
+  "Return non-nil if the current line is empty, whitespace only, or a comment."
+  (save-excursion
+    (goto-char (outline-indent--pos-bol))
+    (skip-chars-forward " \t")
+    (or (eolp)
+        ;; Ignore lines inside a multi-line comment or string so their
+        ;; internal indentation does not affect same-level or block boundary checks.
+        (nth 8 (syntax-ppss))
+        ;; Single-line or block comment starting at first non-whitespace char
+        (let ((eol (outline-indent--pos-eol)))
+          (or (save-excursion
+                (and (forward-comment 1)
+                     (>= (point) eol)))
+              (and comment-start-skip
+                   (looking-at-p comment-start-skip)))))))
+
 (defun outline-indent--next-lower-or-equal-indentation ()
   "Go to the same indentation level/depth as the current line.
 Go to just before the next heading that shares the same or less indentation
@@ -436,7 +453,10 @@ indentation as the current line."
       (setq initial-indentation (outline-indent-level))
       (while (and (not found-point) (not (eobp)))
         (forward-line 1)
-        (if (and (not (looking-at-p "^[ \t]*$"))
+        ;; Skip blank lines, comments, and multi-line string internals so they
+        ;; do not prematurely terminate block selection, narrowing, or heading
+        ;; insertion.
+        (if (and (not (outline-indent--ignore-line-p))
                  (>= initial-indentation (outline-indent-level)))
             (setq found-point (point))))
 
@@ -650,7 +670,7 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 It only changes the behavior when `outline-indent-minor-mode' is active.
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
-      ;; Adjust behavior specific to `outline-indent-minor-mode`
+      ;; Adjust behavior specific to `outline-indent-minor-mode'
       (outline-indent-move-subtree-up)
     ;; Apply the original function without modification
     (apply orig-fun args)))
@@ -661,22 +681,53 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 It only changes the behavior when `outline-indent-minor-mode' is active.
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
-      ;; Adjust behavior specific to `outline-indent-minor-mode`
+      ;; Adjust behavior specific to `outline-indent-minor-mode'
       (outline-indent-move-subtree-down)
     ;; Apply the original function without modification
     (apply orig-fun args)))
+
+(defun outline-indent--move-same-level (orig-fun arg)
+  "Move same level using ORIG-FUN and ARG, skipping comments and blank lines."
+  (let ((steps (abs (or arg 1)))
+        (step-arg (if (< (or arg 1) 0) -1 1))
+        (last-valid-point (point))
+        (moved-valid 0)
+        (err nil))
+    (while (and (> steps 0) (not err))
+      (let ((start-point (point)))
+        (condition-case e
+            (funcall orig-fun step-arg)
+          (error (setq err e)))
+        (cond
+         (err
+          (goto-char last-valid-point))
+         ((= (point) start-point)
+          (goto-char last-valid-point)
+          (setq steps 0))
+         ((outline-indent--ignore-line-p)
+          ;; Keep moving from this ignored line without decrementing `steps'
+          nil)
+         (t
+          (setq last-valid-point (point))
+          (setq moved-valid (1+ moved-valid))
+          (setq steps (1- steps))))))
+    (goto-char last-valid-point)
+    ;; If no valid non-comment sibling was found and an error occurred,
+    ;; propagate it
+    (when (and (= moved-valid 0) err)
+      (signal (car err) (cdr err)))))
 
 (defun outline-indent--advice-forward-same-level (orig-fun &rest args)
   "Advice for `outline-forward-same-level'.
 It only changes the behavior when `outline-indent-minor-mode' is active.
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
-      ;; Adjust behavior specific to `outline-indent-minor-mode`
+      ;; Adjust behavior specific to `outline-indent-minor-mode'
       (let ((column (current-column)))
         (unwind-protect
             (progn
               (outline-indent--deactivate-region)
-              (apply orig-fun args))
+              (outline-indent--move-same-level orig-fun (car args)))
           (move-to-column column)))
     ;; Apply the original function without modification
     (apply orig-fun args)))
@@ -686,12 +737,12 @@ ORIG-FUN is the original function being advised, and ARGS are its arguments."
 It only changes the behavior when `outline-indent-minor-mode' is active.
 ORIG-FUN is the original function being advised, and ARGS are its arguments."
   (if (bound-and-true-p outline-indent-minor-mode)
-      ;; Adjust behavior specific to `outline-indent-minor-mode`
+      ;; Adjust behavior specific to `outline-indent-minor-mode'
       (let ((column (current-column)))
         (unwind-protect
             (progn
               (outline-indent--deactivate-region)
-              (apply orig-fun args))
+              (outline-indent--move-same-level orig-fun (car args)))
           (move-to-column column)))
     ;; Apply the original function without modification
     (apply orig-fun args)))
@@ -867,7 +918,9 @@ BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
 (defun outline-indent-backward-same-level (&optional arg)
   "Move the cursor to the previous heading that is at the same indentation level.
 Move backward to the ARG'th subheading at same indentation level as this one.
-Stop at the first and last indented blocks of a superior indentation."
+Stop at the first and last indented blocks of a superior indentation.
+
+ARG is the number of subheadings to move backward."
   (interactive "p")
   (unless arg
     (setq arg 1))
