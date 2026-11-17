@@ -399,7 +399,7 @@ It supports both space and tab-based indentation and offers optional tree-sitter
 
 To install it, add the following to your Emacs init file:
 ```elisp
-(lightemacs-use-package indent-bars
+(use-package indent-bars
   :commands indent-bars-mode
   :custom
   ;; Setting this to nil is not reliable enough
